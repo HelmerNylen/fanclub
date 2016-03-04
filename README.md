@@ -19,6 +19,13 @@ angular.module('starter.apikey', [])
 där du byter ut Shalalie mot en giltig nyckel du fått från [Google Developer Console](https://console.developers.google.com/).
 **Notera**: Du kan behöva lägga till filen och modulen trots att du inte vill testa sektionskalendern, då övriga delar av koden förutsätter att modulen finns.
 
+När man testar via ```ionic serve``` fungerar det inte att anropa API-er direkt med $http eller liknande. Under www/js/app.js finns en bunt konstanter under en kommentarswitch.
+
+1. Du måste antagligen byta ut ip-addresserna mot din egen.
+2. Om du pushar kod, se till att det är de riktiga URL-erna som är aktiva. Detta byts lättast genom att ändra ```//*/``` till ```/*/``` ovanför ip-URLerna. 
+3. Under ionic.project finns en bunt proxys. Om du vill koppla upp något mot en address måste proxyn definieras här för att fungera medan man testar.
+4. Detta lär gå att automatisera med Gulp, men jag har inte orkat.
+
 Bra-att-ha:
 - [Hur du fixar en API-nyckel](http://wpdocs.philderksen.com/google-calendar-events/getting-started/api-key-settings/). Jag tog Android-nyckel i stället för server, men ska man bara testa så funkar nog vilken som.
 - [Ionics Komponenter](http://ionicframework.com/docs/components/#header), bra om man ska göra en ny sida eller tycker att jag har designat något illa.
