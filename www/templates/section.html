@@ -1,0 +1,112 @@
+<ion-view view-title="Fysiksektionen">
+    <ion-nav-buttons side="right">
+        <button class="button icon ion-music-note" ng-click="shalalie($event)"></button>
+    </ion-nav-buttons>
+    <ion-content style="background-color: #fbfbfb">
+		<!--<div class="list card">
+			<div class="item item-divider item-energized">
+				<i class="icon ion-alert-circled"></i>
+				Denna sida är under konstruktion
+			</div>
+			<div class="item item-text-wrap">
+				Så här tråkig kommer den förhoppningsvis inte vara i framtiden. Buggar kan förekomma.
+			</div>
+		</div>-->
+        <!--<div class="row">
+            <div class="col button button-ctfys" on-tap="openInBrowser('spotify:track:5TnZihe1AVVHPtgX1osH6Y')" style="margin: 5px">
+                Sha-la-lie på Spotify
+            </div>
+            <div class="col button button-ctfys" on-tap="openInBrowser('https://youtu.be/PtBG_df3QbQ')" style="margin: 5px">
+                Sha-la-lie på YouTube
+            </div>
+            <div class="col button button-ctfys" on-tap="openInBrowser('https://youtu.be/wzRHqOSg--s')" style="margin: 5px">
+                Sha-la-lie på Nederländska
+            </div>
+        </div>-->
+        <div ng-if="sectionRss && unionRss">
+            <div class="section-headline">
+                Nyheter
+            </div>
+            <div class="row" on-tap="openNews()">
+                <div class="col card section-card" style="padding: 1em">
+                    <div type>
+                        Fysiksektionen
+                    </div>
+                    <div class="section-news" ng-repeat="latest in [sectionRss[0]]">
+                        <div newstitle>
+                            {{ latest.title }}
+                        </div>
+                        <div newscategory>
+                            {{ latest.category }}
+                        </div>
+                        <div ng-bind-html="latest.description" newsdesc></div>
+                        <div newsfooter>
+                            {{ latest.creator}}
+                            <br />
+                            {{ dateFormat(latest.date) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col card section-card" style="padding: 1em">
+                    <div type>
+                        THS
+                    </div>
+                    <div class="section-news" ng-repeat="latest in [unionRss[0]]">
+                        <div newstitle>
+                            {{ latest.title }}
+                        </div>
+                        <div newscategory>
+                            {{ latest.category }}
+                        </div>
+                        <div ng-bind-html="latest.description.replace('Läs mer', '&lt;/a&gt; ...&lt;a&gt;')" newsdesc></div>
+                        <div newsfooter>
+                            {{ latest.creator}}
+                            <br />
+                            {{ dateFormat(latest.date) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-headline">
+            Kalenderflöde
+        </div>
+		<div class="list card" ng-repeat="day in days">
+			<div class="item item-divider">{{ date(day) }}</div>
+			<div class="item" ng-repeat="event in day" style="padding: 0; border: 0" on-tap="openSectionEvent(event)">
+				<table style="width: 100%; height: 100%;">
+                    <tr>
+                        <td style="width: 4px; background-color: #ff642b;">
+                            &nbsp;
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col col-25 item-text-wrap" style="font-weight: bold">{{ sectionEventDuration(event) }}</div>
+                                <div class="col item-text-wrap">
+									<!--div class="fadedbadge" ng-if="event.creator.displayName">{{ event.creator.displayName }}</div-->
+									{{ event.summary }}
+									<br ng-if="event.description" />
+									{{ event.description }}
+								</div>
+                            </div>
+                            <div class="row" ng-if="event.location">
+                                <div class="col col-25">
+                                    &nbsp;
+                                </div>
+                                <div class="col item-text-wrap">
+                                    <b ng-if="event.locations.length != 0">{{ event.location }}</b>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+			</div>
+		</div>
+		
+		<div ng-if="!days" style="text-align: center">
+            <br /><br /><br />
+            <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
+        </div>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,108 @@
+<ion-view view-title="H&auml;ndelsefl&ouml;de">
+	<ion-nav-buttons side="right">
+        <button class="button icon ion-search" on-tap="toggleFilter()" ng-if="days"></button>
+    </ion-nav-buttons>
+    <ion-content style="background-color: #fbfbfb">
+		<!-- Sökruta -->
+		<form ng-submit="refilter()">
+			<label class="item item-input" ng-if="showFilter" style="margin: 15px; border-radius: 5px">
+				<input type="text" autofocus placeholder="Filtrera händelser" ng-model="filter.filter"/>
+				<!--button class="button button-outline button-small button-ctfys" style="margin-right: 8px" on-tap="refilter()"><i class="icon ion-chevron-right"></i></button-->
+			</label>
+		</form>
+		
+		<!-- Felruta -->
+		<div class="list card" ng-if="errors && errors.length != 0">
+			<div class="item divider item-assertive">
+				<i class="icon ion-alert-circled"></i>
+				{{ errors.length == 1 ? 'N&aring;gonting' : 'N&aring;gra saker' }} gick fel!
+			</div>
+			<div class="item item-text-wrap" ng-repeat="error in errors">
+				Felkod <b>{{ error.code }}</b>:
+				<br />
+				{{ error.message }}
+				<div ng-repeat="info in error.information">
+					&nbsp;{{ info.label }}: {{ info.data }}
+				</div>
+			</div>
+		</div>
+		
+		<!-- Sökmeddelande-->
+		<div ng-if="days && !days.length" style="text-align: center; color: #666">Hittade inte några händelser :(</div>
+		
+		<!-- Händelsekort -->
+        <div class="list card" ng-if="days" ng-repeat="day in days">
+            <div class="item item-divider">
+                {{ format(day.date) }}
+            </div>
+			<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day.am" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0">
+				<table style="width: 100%; height: 100%;">
+                    <tr>
+                        <td ng-style="{'background-color': event.course.color}" style="width: 4px">
+                            &nbsp;
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}-{{ getTime(event.end) }}</div>
+                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent">{{ sectionEventDuration(event.original) }}</div>
+                                <div class="col item-text-wrap">
+									<div class="custombadge" ng-if="!event.isSectionEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
+									<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 24px">
+										<i class="icon ion-social-freebsd-devil"></i>
+									</div>
+									{{ event.course.name }}
+								</div>
+                            </div>
+                            <div class="row" ng-if="location(event.locations)">
+                                <div class="col col-25">
+                                    &nbsp;
+                                </div>
+                                <div class="col item-text-wrap">
+                                    <b ng-if="event.locations.length != 0">{{ location(event.locations) }}</b>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </ion-item>
+			<div ng-if="delimiterEnabled && day.am.length != 0 && day.pm.length != 0" style="width: 100%; height: 3px; background-color: #ccc"></div>
+            <!-- Fult att bara kopiera, men det funkar och är lagom okrångligt -->
+			<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day.pm" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0">
+				<table style="width: 100%; height: 100%;">
+                    <tr>
+                        <td ng-style="{'background-color': event.course.color}" style="width: 4px">
+                            &nbsp;
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}-{{ getTime(event.end) }}</div>
+                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent">{{ sectionEventDuration(event.original) }}</div>
+                                <div class="col item-text-wrap">
+									<div class="custombadge" ng-if="!event.isSectionEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
+									<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 20px">
+										<i class="icon ion-social-freebsd-devil"></i>
+									</div>
+									{{ event.course.name }}
+								</div>
+                            </div>
+                            <div class="row" ng-if="location(event.locations)">
+                                <div class="col col-25">
+                                    &nbsp;
+                                </div>
+                                <div class="col item-text-wrap">
+                                    <b ng-if="event.locations.length != 0">{{ location(event.locations) }}</b>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </ion-item>
+        </div>
+		
+		<!-- Laddningsikon -->
+        <div ng-if="!days && !(errors && errors.length != 0)" style="text-align: center">
+            <br /><br /><br />
+            <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
+        </div>
+    </ion-content>
+</ion-view>

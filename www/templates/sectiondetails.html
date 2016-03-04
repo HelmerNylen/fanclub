@@ -1,0 +1,64 @@
+<ion-modal-view>
+  <ion-header-bar style="background-color: #ff642b">
+    <h1 class="title" style="color: white">{{ sectionModalEvent.summary }}</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeSectionDetails()" style="color: white">Stäng</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+	<div style="padding: 5%; font-size: 16px" ng-if="sectionModalEvent">
+		<div style="text-align: center; font-size: 14px">
+			{{ sectionModalEvent.summary }}
+            <br />
+            {{ sectionModalEvent.description }}
+		</div>
+		<div class="row">
+			<b class="col col-33">
+				{{ hasBegun ? "B&ouml;rjade" : "B&ouml;rjar" }}
+			</b>
+			<div class="col" style="text-align: right">
+				{{ dateFormat(sectionModalEvent.start.dateTime || sectionModalEvent.start.date, !!sectionModalEvent.start.date) }}
+			</div>
+		</div>
+		<div class="row">
+			<b class="col col-33">
+				L&auml;ngd
+			</b>
+			<div class="col" style="text-align: right">
+				{{ sectionDuration(sectionModalEvent) }}
+			</div>
+		</div>
+		<div class="row" ng-if="sectionModalEvent.location">
+			<b class="col col-33">
+				Plats
+			</b>
+			<div class="col" style="text-align: right">
+				{{ sectionModalEvent.location }}
+			</div>
+		</div>
+		<div class="row" ng-if="sectionModalEvent.created">
+			<b class="col col-33">
+				Skapat
+			</b>
+			<div class="col" style="text-align: right">
+				{{ exactDateFormat(sectionModalEvent.created) }}
+				<span ng-if="sectionModalEvent.creator && sectionModalEvent.creator.displayName">
+					av {{ sectionModalEvent.creator.displayName }}
+				</span>
+			</div>
+		</div>
+		<div class="row" ng-if="sectionModalEvent.updated && exactDateFormat(sectionModalEvent.updated) != exactDateFormat(sectionModalEvent.created)">
+			<b class="col col-33">
+				Uppdaterat
+			</b>
+			<div class="col" style="text-align: right">
+				{{ exactDateFormat(sectionModalEvent.updated) }}
+			</div>
+		</div>
+	</div>
+	<br/>
+	<div style="text-align: center" ng-if="sectionModalEvent">
+		<button class="button button-dark button-outline icon-left ion-earth" on-tap="openInBrowser(sectionModalEvent.htmlLink)">&Ouml;ppna i webbl&auml;sare</button>
+	</div>
+  </ion-content>
+</ion-modal-view>

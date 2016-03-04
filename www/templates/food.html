@@ -1,0 +1,43 @@
+<ion-view view-title="Matsedlar">
+    <ion-content style="background-color: #fbfbfb">
+		<div class="list card">
+			<div class="item item-divider item-energized">
+				<i class="icon ion-alert-circled"></i>
+				Denna sida är under konstruktion
+			</div>
+			<div class="item item-text-wrap">
+				Så här tråkig kommer den förhoppningsvis inte vara i framtiden. Buggar kan förekomma.
+			</div>
+		</div>
+		
+		<div ng-if="menus && !unavailible">
+			<div class="list card" ng-repeat="restaurant in restaurants" on-tap="openInBrowser(restaurant.url)">
+				<div class="item item-divider item-icon-right">
+					{{ restaurant.name }}
+					<i class="icon ion-earth" style="font-size: 25px; color: #444"></i>
+				</div>
+				<div class="item item-text-wrap" ng-repeat="dish in menus[restaurant.shortName]" ng-bind-html="dish">
+				</div>
+				<div class="item item-text-wrap assertive" ng-if="!menus[restaurant.shortName] || menus[restaurant.shortName].length == 0">
+					Kunde inte h&auml;mta dagens meny.
+				</div>
+			</div>
+		</div>
+		
+		<div ng-if="menus && unavailible">
+			<div class="list list-inset" style="margin-bottom: 15px">
+				<div class="item item-divider">
+					Ej tillg&auml;ngligt
+				</div>
+				<div class="item item-text-wrap">
+					Menyerna &auml;r inte tillg&auml;ngliga under helgen. Kom tillbaka p&aring; m&aring;ndag!
+				</div>
+			</div>
+		</div>
+		
+		<div ng-if="!menus" style="text-align: center">
+            <br /><br /><br />
+            <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
+        </div>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,66 @@
+<ion-modal-view>
+  <ion-header-bar ng-style="{ 'background-color': modalCourse.color }">
+    <h1 class="title" ng-style="{ color: contrastingColor }">{{ modalCourse.courseCode }}</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeCourse()" ng-style="{ color: contrastingColor }">Stäng</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+	<div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px">
+		{{ modalCourse.name }}
+	</div>
+	<div style="text-align: center; color: #333">
+		Starttermin <b>{{ modalCourse.startTerm.substring(0, modalCourse.startTerm.length - 1) + ":" + modalCourse.startTerm[modalCourse.startTerm.length - 1] }}</b>, omgång <b>{{ modalCourse.roundId }}</b>
+		<span ng-if="modalCourse.isExtra"><br />Egentillagd kurs</span>
+	</div>
+	<div class="list card">
+		<div class="item item-text-wrap" style="border: 0">
+			Denna kurs har {{ eventCount == 0 ? "inga" : eventCount }} kommande {{ eventCount == 1 ? "händelse" : "händelser" }} detta läsår.
+		</div>
+		<ion-checkbox class="item-text-wrap checkbox-assertive item-checkbox-right" ng-model="settings.hidden" style="border: 0">
+			Dölj händelser för denna kurs
+		</ion-checkbox>
+		<!--div class="item item-toggle item-text-wrap">
+			Dölj händelser för denna kurs
+			<label class="toggle toggle-ctfys">
+				<input type="checkbox" ng-model="settings.hidden">
+				<div class="track">
+					<div class="handle"></div>
+				</div>
+			</label>
+		</div-->
+		<div class="item item-icon-right" ng-if="modalCourse.isExtra" on-tap="removeCourse()" style="border: 0">
+			Ta bort denna kurs
+			<i class="icon ion-close-round assertive" style="font-size: 25px; margin-right: 2px"></i>
+		</div>
+	</div>
+	<div class="list card" style="margin-bottom: 15px">
+		<div class="item item-divider">
+			Kursfärg
+		</div>
+		<div class="item item-text-wrap">
+			Nyans
+			<div class="range">
+			  <!--i class="icon ion-record" style="color: {{ red }}"></i-->
+			  <input type="range" ng-model="col.hue" min="0" max="360" ng-change="recalculateColor()">
+			  <!--i class="icon ion-record" style="color: {{ red }}"></i-->
+			</div>
+			Mättnad
+			<div class="range">
+			  <i class="icon ion-record" style="color: {{ minSat }}"></i>
+			  <input type="range" ng-model="col.sat" min="0" max="100" ng-change="recalculateColor()">
+			  <i class="icon ion-record" style="color: {{ fullSat }}"></i>
+			</div>
+			Intensitet
+			<div class="range">
+			  <i class="icon ion-record" style="color: black"></i>
+			  <input type="range" ng-model="col.val" min="0" max="100" ng-change="recalculateColor()">
+			  <i class="icon ion-record" style="color: {{ fullVal }}"></i>
+			</div>
+			<div style="text-align: center; color: #777; font-size: 12px;">
+				Färgkod {{ modalCourse.color }}
+			</div>
+		</div>
+	</div>
+  </ion-content>
+</ion-modal-view>

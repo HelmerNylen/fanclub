@@ -1,0 +1,44 @@
+<ion-side-menus enable-menu-with-back-views="true" nav-transition="none">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-ctfys">
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="menuContent"></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="left">
+        <ion-header-bar class="bar-ctfys">
+            <h1 class="title euclid" style="font-size: x-large">
+				<img src="img/Fanclub.png" alt="Fanclub" style="height: 100%" />
+				<!--Fanclub-->
+            </h1>
+        </ion-header-bar>
+        <ion-content>
+            <ion-list>
+                <ion-item class="item-icon-left" menu-close href="#/app/feed/{{ feedStart }}/{{ feedEnd }}" style="border: 0">
+                    <i class="icon ion-stats-bars rotated"></i>
+					Flöde
+                </ion-item>
+                <ion-item class="item-icon-left" menu-close href="#/app/week/{{ weekStart }}" style="border: 0">
+                    <i class="icon ion-calendar"></i>
+                    Vecka
+                </ion-item>
+				<ion-item class="item-icon-left" menu-close href="#/app/food" ng-if="menusEnabled" style="border: 0">
+                    <i class="icon ion-android-restaurant"></i>
+                    Matsedlar
+                </ion-item>
+				<ion-item class="item-icon-left" menu-close href="#/app/section" style="border: 0">
+                    <i class="icon ion-social-tux"></i>
+                    Sektionen
+                </ion-item>
+                <ion-item class="item-icon-left" menu-close href="#/app/settings" style="border: 0">
+                    <i class="icon ion-gear-a"></i>
+                    Inställningar
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

@@ -1,0 +1,126 @@
+<ion-view view-title="Schema{{ weekNumber ? ' v. ' + weekNumber : '' }}" class="wrapper" hide-back-button="true">
+	<!--ion-content scroll="false">
+		<div class="bar bar-header" style="padding: 0; margin: 0">
+			<table style="width: 100%; height: 100%; position: fixed;">
+				<tr style="font-weight: bold; text-align: center;">
+					<td width="10%" style="border-left: 1px solid #ccc;">&nbsp;</td>
+					<td ng-repeat="day in days" ng-style="{ 'background-color': format(day) == today ? '#eee' : '#fff' }" style="border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+						{{ dayName(day.getDay()) }}
+						<br />
+						{{ format(day) }}
+					</td>
+				</tr>
+			</table>
+		</div>
+	</!--ion-content-->
+    <ion-nav-buttons side="right">
+        <a href="#/app/week/{{ previous }}"><button class="button icon ion-chevron-left" ng-if="days"></button></a>
+        <a href="#/app/week/{{ next }}"><button class="button icon ion-chevron-right" ng-if="days"></button></a>
+    </ion-nav-buttons>
+    <ion-content style="background-color: #fbfbfb">
+        <div class="row" style="width: 100%; padding: 0;">
+            <div class="col col-10" style="width: 5ch; margin: 0; padding: 0; padding-right: 10px">
+                <div style="height: 40px">
+                    &nbsp;
+                </div>
+            </div>
+            <div class="col" ng-repeat="day in days" style="margin: 0; padding: 0; background-color: {{ day.date == today ? '#ddd' : 'inherit' }}; border-left: 1px solid #888">
+                <div style="position: relative; height: 100%; margin-bottom: 1em">
+                    <div style="font-size: 11px; font-weight: bold; width: 100%; height: 40px; text-align: center">
+                        {{ day.name }}
+                        <br />
+                        {{ day.dateString }}
+                    </div>
+                    <div ng-repeat="box in day.eventBoxes" ng-if="box.allDay" on-tap="openSectionEvent(box.event.original)"
+                            style="width: 100%; background-color: white; font-size: 12px; border: 2px solid {{ day.index == today ? '#ddd' : '#fbfbfb' }};">
+                        <div style="position: relative; width: 100%; padding: 0 2px; border-left: 2px solid {{ color(box.event) }}; height: 20px" class="allDayEvent">
+                            <div style="position: absolute; white-space: nowrap; height: 100%; overflow: hidden; text-overflow: ellipsis">
+                                <b>{{ box.event.title }}</b>
+                                <span ng-if="!box.event.isSectionEvent && box.event.course.name">
+                                    <br />
+                                    {{ box.event.course.name }}
+                                </span>
+                                <br ng-if="location(box.event.locations)" />
+                                {{ location(box.event.locations) }}
+                            </div>
+                        </div>
+                    </div>
+                    <!--div ng-repeat="box in day.eventBoxes" ng-if="box.allDay"
+                         style="width: 100%; padding: 0 2px; background-color: transparent; font-size: 12px;">
+                        <div style="width: 100%; height: 100%;">
+                            &nbsp;
+                            <span ng-if="!box.event.isSectionEvent && box.event.course.name">
+                                <br />
+                                &nbsp;
+                            </span>
+                            <br ng-if="location(box.event.locations)" />
+                            &nbsp;
+                        </div>
+                    </div-->
+                </div>
+            </div>
+        </div>
+        <div class="row" style="width: 100%; padding: 0;">
+            <div class="col col-10" style="width: 5ch; margin: 0; padding: 0;">
+                <div style="font-weight: bold; height: {{ unit }}vh; text-align: right; font-size: 12px; border-top: 1px solid #bbb; padding-right: 10px; white-space: nowrap;" ng-repeat="hour in hours">
+                    {{ getTime(hour - 3600 * 1000) }}
+                </div>
+            </div>
+            <div class="col" ng-repeat="day in days" style="margin: 0; padding: 0; background-color: {{ day.date == today ? '#ddd' : 'inherit' }}">
+                <div style="position: relative; height: 100%; border-left: 1px solid #888">
+                    <div ng-repeat="hour in hours" style="width: 100%; height: {{ unit }}vh; border-top: 1px solid #bbb">
+                        &nbsp;
+                    </div>
+                    <div ng-repeat="box in day.eventBoxes" ng-if="!box.allDay" on-tap="box.event.isSectionEvent ? openSectionEvent(box.event.original) : openEvent(box.event)"
+                         style="position: absolute; top: {{ ((box.timeTop - earliest) / (1000 * 3600)) * unit }}vh; height: {{ (box.timeHeight / (1000 * 3600)) * unit}}vh; width: {{ 100 / box.simultaneous }}%; left: {{ box.index * 100 / box.simultaneous }}%;
+                         font-size: 12px; border-radius: 0; padding: 1px; border: 0px solid {{ day.index == today ? '#ddd' : '#fbfbfb' }};">
+                        <div style="width: 100%; height: 100%; background-color: {{ 'white' || color(box.event) }}">
+                            <div style="width: 100%; height: 100%; border-radius: 0; padding: 0 2px; border-left: 2px solid {{ color(box.event) }}; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 1.2em">
+                                <b>{{ box.event.title }}</b>
+                                <span ng-if="!box.event.isSectionEvent && box.event.course.name">
+                                    <br />
+                                    {{ box.event.course.name }}
+                                </span>
+                                <br ng-if="location(box.event.locations)" />
+                                {{ location(box.event.locations) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span ng-if="fix()"></span>
+
+
+            <div class="width: 100%; height: 100%" ng-if="1 == 0">
+                <div class="item-word-wrap" ng-repeat="event in events" ng-style="event.style" on-tap="openEvent(event.event)" style="font-size: 12px">
+                    <b>{{ getTime(event.event.start) }}</b> {{ event.event.title }}
+                    <!--<br />
+                {{ location(event.event.locations) }}-->
+                </div>
+                <table ng-if="events" style="width: 100%;">
+                    f=
+                    <!--tr style="font-weight: bold; text-align: center;">
+                    <td width="10%">&nbsp;</td>
+                    <td ng-repeat="day in days">
+                        {{ dayName(day.getDay()) }}
+                        <br />
+                        {{ format(day) }}
+                    </td>
+                </tr-->
+                    <tr ng-repeat="timeslot in timeslots">
+                        <td style="width: 10%; text-align: center; border: 1px solid #ddd">
+                            {{ getTime(timeslot.time) }}
+                        </td>
+                        <td ng-repeat="day in days" ng-style="{ 'background-color': format(day) == today ? '#eee' : '#fff' }" style="border: 1px solid #ccc;">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+                <div ng-if="!days" style="text-align: center">
+                    <br /><br /><br />
+                    <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
+                </div>
+            </div>
+</ion-content>
+</ion-view>

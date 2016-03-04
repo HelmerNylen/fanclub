@@ -1,0 +1,92 @@
+<ion-view view-title="Inst&auml;llningar">
+    <ion-content style="background-color: #fbfbfb">		
+		<div class="list card">
+			<div class="item item-divider">
+				Kurser
+			</div>
+			<ion-item ng-repeat="course in allCourses track by $index" class="row-no-padding" on-tap="openCourse(course)" style="border: 0">
+				<table style="width: 100%; height: 100%;" ng-style="{ color: hiddenIndex(course) == -1 ? undefined : '#777', 'background-color': hiddenIndex(course) == -1 ? undefined : '#fbfbfb' }">
+                    <tr>
+                        <td ng-style="{ 'background-color': course.color }" style="width: 7px">
+                            &nbsp;
+                        </td>
+                        <td class="item-text-wrap" style="padding: 7px; width: 50%">
+                            {{ course.name }}
+                        </td>
+						<td style="padding: 15px; font-family: monospace">
+                            {{ course.courseCode }}
+                        </td>
+						<td style="padding: 15px; text-align: right;">
+                            <i ng-if="hiddenIndex(course) != -1" class="icon ion-close-round" style="color: red"></i>
+							<i ng-if="hiddenIndex(course) == -1" class="icon ion-checkmark-round" style="color: green"></i>
+                        </td>
+                    </tr>
+                </table>
+			</ion-item>
+			<ion-item style="padding-left: 14px; padding-right: 15px; border: 0" on-tap="openAddCourse()">
+				<table style="width: 100%; height: 100%">
+					<tr>
+						<td>
+							L&auml;gg till kurs
+						</td>
+						<td style="text-align: right;">
+                            <i class="icon ion-plus-round" style="color: blue"></i>
+                        </td>
+					</tr>
+				</table>
+			</ion-item>
+		</div>
+		
+		<div class="list card">
+			<div class="item item-divider item-text-wrap">
+				App
+			</div>
+			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.extendedDiscard" ng-change="updateExtendedDiscard()">
+				Filtrera bort händelser för andra grupper med samma kurskod
+				<!--label class="toggle toggle-ctfys">
+					<input type="checkbox" ng-model="settings.extendedDiscard" ng-change="updateExtendedDiscard()">
+					<div class="track">
+						<div class="handle"></div>
+					</div>
+				</label-->
+			</ion-checkbox>
+			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.menusEnabled" ng-change="updateMenusEnabled()">
+				Hämta menyer från restauranger på campus
+				<!--label class="toggle toggle-ctfys">
+					<input type="checkbox" ng-model="settings.menusEnabled" ng-change="updateMenusEnabled()">
+					<div class="track">
+						<div class="handle"></div>
+					</div>
+				</label-->
+			</ion-checkbox>
+			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.delimiterEnabled" ng-change="updateDelimiterEnabled()">
+				Rita streck mellan för- och eftermiddag i händelseflödet
+				<!--label class="toggle toggle-ctfys">
+					<input type="checkbox" ng-model="settings.delimiterEnabled" ng-change="updateDelimiterEnabled()">
+					<div class="track">
+						<div class="handle"></div>
+					</div>
+				</label-->
+			</ion-checkbox>
+			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.mixEvents" ng-change="updateMixEvents()">
+				Inkludera sektionshändelser i det vanliga schemat
+			</ion-checkbox>
+            <div class="item item-icon-right item-text-wrap" style="border: 0; margin-right: 2px" on-tap="update()">
+                Uppdatera händelser och menyer
+                <i class="icon ion-loop balanced"></i>
+            </div>
+			<div class="item item-icon-right item-text-wrap" style="border: 0; margin-right: 2px" on-tap="resetData()">
+				Återställ appdata
+				<i class="icon ion-trash-a assertive"></i>
+			</div>
+		</div>
+		
+		<div ng-if="lastUpdated" style="text-align: center; color: #777; font-size: 12px; padding-left: 10%; padding-right: 10%; margin-bottom: 15px">
+			Schemat senast uppdaterat: <b>{{ lastUpdated }}</b>
+			<br />
+			Åsikter, felrapporter och smicker mottages på <b>helmer.nylen@gmail.com</b>
+			<br />
+			Appversion: 0.3.0 <b>Lime</b>
+		</div>
+    </ion-content>
+</ion-view>

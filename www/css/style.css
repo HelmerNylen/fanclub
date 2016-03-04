@@ -1,0 +1,141 @@
+/*
+    THS: #43b8da;
+    Fysik: #ff642b;
+*/
+
+.custombadge {
+	float: right;
+	height: 20px;
+	border-radius: 10px;
+	padding: 0 10px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	font-weight: bold;
+	font-size: 14px;
+	color: white;
+}
+
+.fadedbadge {
+	float: right;
+	height: 20px;
+	margin-left: 10px;
+	margin-bottom: 5px;
+	font-size: 14px;
+	color: #777;
+}
+
+.section-headline {
+    text-align: center;
+    font-size: 18px;
+    color: #444;
+    padding-top: 2em; padding-bottom: 1em;
+}
+
+.section-card > [type] {
+    width: 100%;
+    text-align: center;
+    /*text-shadow: 2px 2px 2px #ccc;*/
+    font-weight: bold;
+    font-size: 16px;
+    padding-bottom: 1em;
+    padding-top: 0.5em;
+}
+
+.section-news {
+    width: 100%;
+}
+
+.section-news > [newstitle] {
+    text-align: center;
+    padding-bottom: 1em;
+}
+
+.section-news > [newscategory] {
+    font-size: 10px;
+    text-align: center;
+    padding-bottom: 0.4em;
+    color: #444;
+}
+
+.section-news > [newsdesc] {
+    font-size: 12px;
+}
+
+.section-news > [newsfooter] {
+    font-size: 10px;
+    text-align: right;
+    float: right;
+    color: #444;
+}
+
+@font-face{ 
+	font-family: 'Euclid';
+	src: url('../lib/ionic/fonts/euclid_fraktur-webfont.eot');
+    src: url('../lib/ionic/fonts/euclid_fraktur-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../lib/ionic/fonts/euclid_fraktur-webfont.woff2') format('woff2'),
+         url('../lib/ionic/fonts/euclid_fraktur-webfont.woff') format('woff'),
+         url('../lib/ionic/fonts/euclid_fraktur-webfont.ttf') format('truetype'),
+         url('../lib/ionic/fonts/euclid_fraktur-webfont.svg#euclid_frakturregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+.euclid {
+	font-family: 'Euclid';
+}
+
+.rotated {
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+
+@keyframes rotation {
+	0% {
+		-webkit-transform: rotate(0deg);
+		-moz-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		-ms-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		-moz-transform: rotate(180deg);
+		-o-transform: rotate(180deg);
+		-ms-transform: rotate(180deg);
+		transform: rotate(180deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		-moz-transform: rotate(360deg);
+		-o-transform: rotate(360deg);
+		-ms-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+
+.rotating {
+	animation-name: rotation;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+
+@keyframes pulse {
+	0% {
+		color: #444444;
+	}
+	50% {
+		color: #ff642b;
+	}
+	100% {
+		color: #444444;
+	}
+}
+
+.pulsating {
+	animation-name: pulse;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+}

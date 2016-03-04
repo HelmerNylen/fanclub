@@ -1,0 +1,65 @@
+<ion-modal-view>
+  <ion-header-bar ng-style="{ 'background-color': eventBGcolor }">
+    <h1 class="title" ng-style="{ color: eventcolor }">{{ modalEvent.title }}</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeDetails()" ng-style="{ color: eventcolor }">Stäng</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+	<div style="padding: 5%; font-size: 16px" ng-if="modalEvent">
+		<div ng-bind-html="modalEvent.info" style="text-align: center; font-size: 14px"></div>
+		<div class="row">
+			<b class="col col-33">
+				{{ hasBegun ? "B&ouml;rjade" : "B&ouml;rjar" }}
+			</b>
+			<div class="col" style="text-align: right">
+				{{ dateFormat(modalEvent.start) }}
+			</div>
+		</div>
+		<div class="row">
+			<b class="col col-33">
+				L&auml;ngd
+			</b>
+			<div class="col" style="text-align: right">
+				{{ duration(modalEvent) }}
+			</div>
+		</div>
+		<div class="row">
+			<b class="col col-33">
+				Kurs
+			</b>
+			<div class="col" style="text-align: right">
+				{{ course.name }} ({{ course.courseCode }})
+			</div>
+		</div>
+		<div class="row" ng-if="modalEvent.group != ''">
+			<b class="col col-33">
+				Grupp
+			</b>
+			<div class="col" style="text-align: right">
+				{{ modalEvent.group }}
+			</div>
+		</div>
+		<div class="row" ng-if="modalEvent.locations.length">
+			<b class="col col-33">
+				{{ modalEvent.locations.length == 1 ? "Sal" : "Salar" }}
+			</b>
+			<div class="col" style="text-align: right">
+				<div ng-repeat="location in modalEvent.locations">
+					{{ location.name }}
+				</div>
+			</div>
+		</div>
+	</div>
+	<br/>
+	<div style="text-align: center" ng-if="modalEvent">
+		<button class="button button-dark button-outline icon-left ion-earth" on-tap="openInBrowser(modalEvent.url)">&Ouml;ppna i webbl&auml;sare</button>
+	</div>
+    <!--<div class="item-input">
+        <textarea placeholder="Egna anteckningar"></textarea>
+    </div>-->
+	<!--div>
+		{{ modalEvent.url }}
+	</div-->
+  </ion-content>
+</ion-modal-view>

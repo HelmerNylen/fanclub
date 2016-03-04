@@ -1,0 +1,46 @@
+{
+  "name": "Schema",
+  "app_id": "",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ],
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://www.kth.se/"
+    },
+	{
+		"path": "/food/q",
+		"proxyUrl": "http://www.hors.se/"
+	},
+	{
+		"path": "/food/nymble",
+		"proxyUrl": "http://ths.kth.se/"
+	},
+	{
+		"path": "/food/brazilia",
+		"proxyUrl": "https://gastrogate.com/"
+	},
+	{
+		"path": "/food/syster",
+		"proxyUrl": "http://www.systerobror.se/"
+	},
+	{
+		"path": "/calendar",
+		"proxyUrl": "https://www.googleapis.com/calendar/v3/"
+	},
+	{
+		"path": "/rss/f",
+		"proxyUrl": "http://f.kth.se/"
+	},
+	{
+		"path": "/rss/ths",
+		"proxyUrl": "http://ths.kth.se/"
+	}
+  ]
+}

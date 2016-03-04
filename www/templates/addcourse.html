@@ -1,0 +1,31 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-ctfys">
+    <h1 class="title">Lägg till extrakurs</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeAddCourse()">Stäng</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+	<form ng-submit="addCourse()">
+		<div class="list list-inset">
+		  <label class="item item-input item-stacked-label" style="border: 0">
+			<span class="input-label">Kurskod</span>
+			<input type="text" placeholder="t.ex. SG1130" ng-model="newCourse.courseCode">
+		  </label>
+		  <label class="item item-input item-stacked-label" style="border: 0">
+			<span class="input-label">Kursomgång</span>
+			<input type="number" placeholder="t.ex. 3" ng-model="newCourse.roundId">
+		  </label>
+		  <label class="item item-input item-stacked-label" style="border: 0">
+			<span class="input-label">Starttermin</span>
+			<input type="text" placeholder="t.ex. 2016:1" ng-model="newCourse.startTerm">
+		  </label>
+		  <div style="text-align: center; padding-top: 15px; padding-bottom: 15px">
+			<button type="submit" class="button button-ctfys" style="width: 80%">
+				Lägg till kurs
+			</button>
+		  </div>
+		</div>
+	</form>
+  </ion-content>
+</ion-modal-view>

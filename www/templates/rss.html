@@ -1,0 +1,29 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-ctfys">
+        <h1 class="title" ng-style="{ color: contrastingColor }">Nyhetsfl&ouml;de</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeRss()">St&auml;ng</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <div class="item section-news" ng-repeat="item in rssMerge" on-tap="openInBrowser(item.link)">
+                <div class="item-text-wrap" newstitle>
+                    {{ item.title }}
+                </div>
+                <div newscategory>
+                    {{ item.category }}
+                </div>
+                <div class="item-text-wrap" ng-bind-html="item.content" newsdesc></div>
+                <div newsfooter>
+                    {{ item.creator }}
+                    <br />
+                    {{ dateFormat(item.date) }}
+                </div>
+                <div class="euclid" ng-if="item.isSectionPost" style="color: #ff642b; float: left; margin-right: 10px; margin-top: 10px; font-size: 24px">
+                    <i class="icon ion-social-freebsd-devil"></i>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>

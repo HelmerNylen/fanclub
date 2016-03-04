@@ -1,0 +1,75 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+
+For example, you might change some of the default colors:
+
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
+$balanced:                        #33cd5f !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #444 !default;
+*/
+
+//CTFYS-specific
+$ctfys: #ff642b !default;
+$bar-transparency-2:            1 !default;
+
+$button-ctfys-bg:             $ctfys !default;
+$button-ctfys-text:           #fff !default;
+$button-ctfys-border:         darken($ctfys, 5%) !default;
+$button-ctfys-active-bg:      darken($ctfys, 5%) !default;
+$button-ctfys-active-border:  darken($ctfys, 5%) !default;
+
+$bar-ctfys-bg:                rgba($button-ctfys-bg, $bar-transparency-2) !default;
+$bar-ctfys-text:              $button-ctfys-text !default;
+$bar-ctfys-border:            $button-ctfys-border !default;
+$bar-ctfys-active-bg:         $button-ctfys-active-bg !default;
+$bar-ctfys-active-border:     $button-ctfys-active-border !default;
+
+$tabs-ctfys-bg:               $button-ctfys-bg !default;
+$tabs-ctfys-border:           $button-ctfys-border !default;
+$tabs-ctfys-text:             $button-ctfys-text !default;
+
+$item-ctfys-bg:               $button-ctfys-bg !default;
+$item-ctfys-border:           $button-ctfys-border !default;
+$item-ctfys-text:             $button-ctfys-text !default;
+$item-ctfys-active-bg:        $button-ctfys-active-bg !default;
+$item-ctfys-active-border:    $button-ctfys-active-border !default;
+
+$toggle-on-ctfys-bg:          $ctfys !default;
+$toggle-on-ctfys-border:      $toggle-on-ctfys-bg !default;
+
+$checkbox-off-border-ctfys:   $ctfys !default;
+$checkbox-on-bg-ctfys:        $ctfys !default;
+
+$range-ctfys-track-bg:        $button-ctfys-bg !default;
+
+$badge-ctfys-bg:              $button-ctfys-bg !default;
+$badge-ctfys-text:            $button-ctfys-text !default;
+
+$spinner-ctfys-stroke:        $ctfys !default;
+$spinner-ctfys-fill:          $ctfys !default;
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+
+
+.euclid {
+    font-family: 'Euclid Fraktur';
+}
+
+.orange-text {
+    color: $ctfys;
+}
+
+.orange-background {
+    background-color: $ctfys;
+}
