@@ -1,5 +1,6 @@
 angular.module('starter.services', [])
 
+//service för att spara data mellan sessioner
 .factory('StorageService', function () {
     return {
         clear: function () {
@@ -29,11 +30,13 @@ angular.module('starter.services', [])
     var inTwoDays = new Date(new Date().getTime() + 2 * 1000 * 3600 * 24).toDateString();
 
     return {
+		//formaterar ett datum som ex. "2016-02-19"
         dateFormat: function (date) {
             var d = new Date(date);
 
             return d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 9 ? "0" + d.getDate() : d.getDate().toString());
         },
+		//formaterar ett datum som ex. "Imorgon, fredag den 19 februari" eller "Torsdag den 5 maj 2013"
         verboseDateFormat: function (date) {
             var d = new Date(date);
 
@@ -52,9 +55,12 @@ angular.module('starter.services', [])
             return prestring + " den " + d.getDate() + " " + months[d.getMonth()].toLowerCase() + (d.getFullYear() != new Date().getFullYear() ? " " + d.getFullYear() : "");
         },
         today: today, tomorrow: tomorrow, yesterday: yesterday, inTwoDays: inTwoDays, twoDaysAgo: twoDaysAgo,
+		//ger dagens namn. 0 är söndag, då detta är JS :)))
         getDayName: function (day) {
             return weekdays[day];
         },
+		//ger en tid i millisekunder som t.ex. 2 dagar, 1 timme och 30 minuter
+		//ger bara första komponenten (ex. 2 dagar) om roughEstimate är true
 		timeFormat: function(ms, roughEstimate)
 		{
 			var s = [];
@@ -109,6 +115,7 @@ angular.module('starter.services', [])
 				return str;
 			}
 		},
+		//beräknar veckonumret för ett datum
 		weekNumber: function (d) {
 		    // Source: http://weeknumber.net/how-to/javascript
 		    var date = new Date(d.getTime());
@@ -121,6 +128,7 @@ angular.module('starter.services', [])
 		    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
                                   - 3 + (week1.getDay() + 6) % 7) / 7);
 		},
+		//ger en kontrasterande färg beroende på den angivna färgens luma
 		contrastingColor: function(color, brighter, darker) {
 			var c = color.substring(1);
 			if (color.length == 4) {
@@ -135,6 +143,8 @@ angular.module('starter.services', [])
 			else
 				return darker || "#000";
 		},
+		//öppnar ett webbläsarfönster med den angivna urlen
+		//try/catch då detta funkar olika i testmiljön och på telefonen
 		openURL: function (url) {
 			try {
 				cordova.InAppBrowser.open(url, "_system");
@@ -143,6 +153,7 @@ angular.module('starter.services', [])
 				window.open(url, "_blank");
 			}
 		},
+		//ger en slumpad färg, kan göras mörkare med multiplier från 0-1 (default 1)
 		randomColor: function (multiplier) {
 			if (multiplier == undefined)
 				multiplier = 1;
@@ -151,6 +162,7 @@ angular.module('starter.services', [])
 				str = "0" + str;
 			return "#" + str;
 		},
+		//gör om en RGB-array till en hexfärgsträng
 		RGBtohex: function (RGB) {
 			var r = Math.floor(RGB[0]).toString(16);
 			var g = Math.floor(RGB[1]).toString(16);
@@ -160,6 +172,7 @@ angular.module('starter.services', [])
 			b = (b.length == 1) ? "0" + b : b;
 			return "#" + r + g + b;
 		},
+		//gör om en hexfärgsträng till en RGB-array
 		hextoRGB: function (hex) {
 			var c = hex.substring(1);
 			if (hex.length == 4) {
@@ -171,6 +184,7 @@ angular.module('starter.services', [])
 				parseInt(c.substring(4, 6), 16)
 			];
 		},
+		//gör om en RGB-array till en HSV-array (koordinatbyte för färger i princip, från kartesiska till cylinder om man vill)
 		RGBtoHSV: function (RGB) {
 			var r = RGB[0] / 255;
 			var g = RGB[1] / 255;
@@ -194,6 +208,7 @@ angular.module('starter.services', [])
 			var v = cmax;
 			return [h, s * 100, v * 100];
 		},
+		//gör om en HSV-array till en RGB-array
 		HSVtoRGB: function (HSV) {
 			var h = (parseFloat(HSV[0]) + 360) % 360;
 			var s = HSV[1] / 100;
@@ -218,6 +233,7 @@ angular.module('starter.services', [])
 			
 			return [(rgb[0] + m) * 255, (rgb[1] + m) * 255, (rgb[2] + m) * 255]
 		},
+		//beräknar den tidigaste starten för en array med events
 		earliestTimeOfDay: function (events) {
 		    var earliest = 1000 * 3600 * 24;
 		    for (var i = 0; i < events.length; i++)
@@ -232,6 +248,7 @@ angular.module('starter.services', [])
 
 		    return earliest;
 		},
+		//beräknar det sista slutet för en array med events
 		latestTimeOfDay: function (events) {
 		    var latest = 0;
 		    for (var i = 0; i < events.length; i++)
@@ -246,6 +263,7 @@ angular.module('starter.services', [])
 
 		    return latest;
 		},
+		//beräknar hur många krockar som uppstår mellan en given händelse och en mängd eventboxar (se WeekViewCtrl i controllers.js)
 		collisions: function (event, eventBoxes) {
 		    var res = [], eventStart = new Date(event.start), eventEnd = new Date(event.end);
 		    var start, end;
@@ -261,6 +279,7 @@ angular.module('starter.services', [])
     };
 })
 
+//hämtar KTH-händelser och data om olika kurser, samt lite inställningar
 .factory('DataService', function ($http, $state, $rootScope, StorageService, ConvenientService, ApiEndpoint, URLs) {
     //try {
 	var now = new Date();
@@ -271,11 +290,13 @@ angular.module('starter.services', [])
     var updatesLeft = -1;
     var courseColors = {};
 	var errors = [];
+	//läs in inställningar
 	var extendedDiscard = StorageService.getOrDefault("extendedDiscard", true);
 	var menusEnabled = StorageService.getOrDefault("menusEnabled", true);
 	var delimiterEnabled = StorageService.getOrDefault("delimiterEnabled", false);
 	var mixEvents = StorageService.getOrDefault("mixEvents", true);
 
+	//beräkna vilken årskurs fanclub går
     var studyYear = Math.ceil((now - new Date("2015-07-01")) / (1000 * 3600 * 24 * 365));
     if (studyYear > 5) studyYear = 5;
 
@@ -292,15 +313,9 @@ angular.module('starter.services', [])
         return cut.substring(0, cut.indexOf("/"));
     };
 
-    /*var findByCode = function (courseCode) {
-        if (!courses)
-            return null;
-        for (var i = 0; i < courses.length; i++)
-            if (courses[i].courseCode == courseCode)
-                return courses[i];
-    };*/
-
+	//körs när alla api-anrop är klara
     var onDone = function (noUpdate) {
+		//för att se till att onDone bara körs en gång räknar vi alla anrop
         if (updatesLeft == 0) {
 			if (!noUpdate)
 				StorageService.set("lastUpdate", new Date().getTime());
@@ -314,10 +329,14 @@ angular.module('starter.services', [])
 	
 	//get events from the KTH schema api
     var getCourseSchemas = function (_courses, _extra) {
+		//hämtar schemat för en specifik kurs
 		var getCourseSchema = function (cr) {
 			$http.get(ApiEndpoint.url + URLs.schema(cr.courseCode, cr.startTerm, cr.roundId, startDate, endDate)).then(
 				function successCallback(response) {
+					//response.data är i det här fallet ett JSON-objekt, så det kan användas direkt
 					cr.entries = response.data.entries;
+					
+					//vi lägger till kursdata (färg, namn etc.) på alla händelser
 					for (var i = 0; i < cr.entries.length; i++)
 						cr.entries[i].course = {
 							courseCode: cr.courseCode,
@@ -331,6 +350,7 @@ angular.module('starter.services', [])
 					onDone();
 				},
 				function errorCallback(response) {
+					//om vi inte får något svar försöker vi hämta allt från cachen
 					console.log("Error when getting schema " + response.status + ": " + response.statusText + ", " + response.data);
 					updatesLeft--;
 					var res = StorageService.getOrDefault("courses", null);
@@ -354,6 +374,7 @@ angular.module('starter.services', [])
 					}
 					else
 					{
+						//har vi inget i cachen meddelar vi användaren
 						errors.push({
 							code: "Aprikos",
 							message: "Kunde inte hämta schemahändelser från Schema. Kontrollera att du är ansluten till internet.\n" + 
@@ -370,6 +391,7 @@ angular.module('starter.services', [])
 				});
 		};
 		try {
+			//hämtar scheman för alla kurser
 			for (var i = 0; i < _courses.length; i++)
 				getCourseSchema(_courses[i]);
 			if (_extra)
@@ -394,14 +416,18 @@ angular.module('starter.services', [])
 		try {
 			$http.get(ApiEndpoint.url + URLs.courseInfo(course.courseCode)).then(
 				function successCallback(response) {
+					//vi får en del data om kursen, men det enda vi använder är kursens namn
 					var node = parseXml(response.data).documentElement.getElementsByTagName("title")[0];
 					course.name = node.textContent;
+					
+					//vi ger kursen en färg om den inte har det
 					if (!courseColors[course.courseCode]) {
 						courseColors[course.courseCode] = ConvenientService.randomColor();
 						StorageService.set("courseColors", courseColors);
 					}
 					course.color = courseColors[course.courseCode];
 					
+					//vi ger kursens händelser färg- och namndata, om det anropet kom in först
 					if (course.entries) {
 						for (var i = 0; i < course.entries.length; i++) {
 							course.entries[i].course.name = (course.entries[i].course.name || course.name);
@@ -413,6 +439,7 @@ angular.module('starter.services', [])
 					onDone();
 				},
 				function errorCallback(response) {
+					//fick vi ingen kursinfo försöker vi hämta den från cachen
 					console.log("Error when getting course info " + response.status + ": " + response.statusText + ", " + response.data);
 					updatesLeft--;
 					var res = StorageService.getOrDefault("courses", null);
@@ -479,6 +506,7 @@ angular.module('starter.services', [])
 			$http.get(ApiEndpoint.url + URLs.plan(studyYear)).then(
 				function successCallback(response) {
 					try {
+						//hämtar ett xml-dokument över vilka kurser som finns för fanclub, deras kurskod, kursomgång och starttermin
 						var nodes = parseXml(response.data).getElementsByTagName("courseRound");
 						console.log("found " + nodes.length + " courses");
 						var res = [];
@@ -489,6 +517,9 @@ angular.module('starter.services', [])
 								roundId: nodes[i].attributes.getNamedItem("roundId").value
 							});
 						courses = res;
+						
+						//hämta kursinfo och schema för alla dessa kurser, plus schema för alla extrakurser
+						//extrakursernas info hämtas när de läggs till, och vi orkar inte uppdatera dem också
 						updatesLeft = courses.length * 2 + extra.length;
 						getCourseSchemas(courses, extra);
 						for (var i = 0; i < courses.length; i++)
@@ -502,6 +533,7 @@ angular.module('starter.services', [])
 					}
 				},
 				function errorCallback(response) {
+					//om vi inte får svar försöker vi i alla fall hämta scheman och info utifrån de kurser vi har i cachen, om vi har det
 					console.log("Error when getting plan " + response.status + ": " + response.statusText + ", " + response.data);
 					var res = StorageService.getOrDefault("courses", null);
 					if (res)
@@ -515,6 +547,7 @@ angular.module('starter.services', [])
 					}
 					else
 					{
+						//har vi inget cachat meddelar vi användaren
 						errors.push({
 							code: "Apelsin",
 							message: "Kunde inte hämta kurslista från Kopps. Kontrollera att du är ansluten till internet.\n" + 
@@ -524,6 +557,7 @@ angular.module('starter.services', [])
 								response.statusText ? { label: "Statustext", data: response.statusText } : null,
 								response.data ? {
 										label: "Data",
+										//kopps skickar vanligtvis xml-data, men är den nere får man en hel html-sida som svar, så vi skriver inte ut hela den
 										data: response.status == 503 ? "Termporarily unavailible. We apologize for the inconvenience." : response.data
 									} : null
 							]
@@ -545,6 +579,7 @@ angular.module('starter.services', [])
 		}
     };
 	
+	//sorterar in ett event i en lista över events (mha linjärsök)
     var insertInto = function(schemaArray, event) {
         if (schemaArray.length == 0) {
 			schemaArray.push(event);
@@ -564,7 +599,9 @@ angular.module('starter.services', [])
         }
     };
 
+	//sorterar ihop händelser från alla kurser till en enda array
     var sortByDate = function (_courses, _extra) {
+		//funktion för att välja bort händelser, exempelvis kurser användaren valt att gömma
         var discard = function (event) {
 			var course = event.course;
 			
@@ -572,7 +609,8 @@ angular.module('starter.services', [])
 				if (hidden[i].courseCode == course.courseCode && hidden[i].roundId == course.roundId && hidden[i].startTerm == course.startTerm)
 					return true;
 					
-			if (extendedDiscard) { //Specialkod för att ta bort lektioner vi inte går på, kan slås av i inställningarna
+			if (extendedDiscard) {
+				//Specialkod för att ta bort mekaniklektioner vi inte går på, kan slås av i inställningarna
 				if (course.courseCode.toLowerCase() == "sg1130") {
 					return event.url.toLowerCase().indexOf("ctfys") == -1;
 				}
@@ -606,18 +644,21 @@ angular.module('starter.services', [])
     };
 
 
+	//läs in kursfärger, eller skapa en ny tom lista över dem om vi inte har några
     courseColors = StorageService.getOrDefault("courseColors", null);
     if (courseColors == null) {
         courseColors = {};
         StorageService.set("courseColors", courseColors);
     }
+	
+	//läs in händelsetypsfärger, eller skapa en lista med defaultfärgerna om vi inte har några
     var eventTypeColors = StorageService.getOrDefault("eventTypeColors", null);
     if (eventTypeColors == null) {
         eventTypeColors = {
             "frl": "#ac0000",
             "ovn": "#0081ac",
             "ovr": "#00994d",
-            "ks": "#641f7a",
+            "ks":  "#641f7a",
             "ten": "#59b300",
             "sem": "#cc6600"
         };
@@ -627,6 +668,7 @@ angular.module('starter.services', [])
     var lastUpdate = StorageService.getOrDefault("lastUpdate", 0);
     var courses_temp = StorageService.getOrDefault("courses", null);
 	
+	//extra är de kurser användaren lagt till, hidden är de kurser de valt att gömma, så händelserna för kurser i hidden hänger inte med in i sorted
 	var hidden = StorageService.getOrDefault("hidden", []);
 	var extra = StorageService.getOrDefault("extra", []);
 
@@ -641,8 +683,8 @@ angular.module('starter.services', [])
         $state.go($state.current, {}, { reload: true });
     }
 
+	//själva servicen blir ett objekt med getters/setters för olika värden
     return {
-        //findByCode: findByCode,
         getCourses: function () {
             return courses;
         },
@@ -660,8 +702,10 @@ angular.module('starter.services', [])
 			return extra;
 		},
 		addExtra: function (e, success, error) {
+			//hämta info om extrakursen och callbacka beroende på om det lyckades
 			$http.get(ApiEndpoint.url + URLs.courseInfo(e.courseCode, e.startTerm, e.roundId)).then(
 				function successCallback(response) {
+					//vi lägger i princip till kursen som vanligt, fast i extra-arrayen i stället
 					var node = parseXml(response.data).documentElement.getElementsByTagName("title")[0];
 					e.name = node.textContent;
 					if (!courseColors[e.courseCode]) {
@@ -744,6 +788,7 @@ angular.module('starter.services', [])
 		resort: function () {
 		    sorted = sortByDate(courses, extra);
 		},
+		//går igenom alla händelser och sätter rätt färg på dem, ifall kursfärgen ändrats
 		updateEventColors: function () {
 		    for (var i = 0; i < courses.length; i++)
 		        for (var j = 0; j < courses[i].entries.length; j++)

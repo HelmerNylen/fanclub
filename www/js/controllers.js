@@ -1,5 +1,6 @@
 angular.module('starter.controllers', [])
 
+//controller som är synlig i hela appen
 .controller('AppCtrl', function ($scope, $ionicModal, $timeout, DataService, ConvenientService) {
 
     // With the new view caching in Ionic, Controllers are only called
@@ -8,14 +9,16 @@ angular.module('starter.controllers', [])
     // listen for the $ionicView.enter event:
     //$scope.$on('$ionicView.enter', function(e) {
     //});
-
-    // Create the modal that we will use later
+	
+	
+	//skapar detaljyvy för en KTH-händelse som popup
     $ionicModal.fromTemplateUrl('templates/details.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.modal = modal;
     });
 	
+	//skapar detaljyvy för en sektionshändelse som popup
 	$ionicModal.fromTemplateUrl('templates/sectiondetails.html', {
         scope: $scope
     }).then(function (modal) {
@@ -29,6 +32,7 @@ angular.module('starter.controllers', [])
 		$scope.sectionModal.hide();
 	};
 
+	//öppnar KTH-popupen och sätter värden som används
     $scope.openEvent = function (event) {
 		console.log(event);
 		$scope.modalEvent = event;
@@ -52,6 +56,7 @@ angular.module('starter.controllers', [])
 	};
 	$scope.openInBrowser = ConvenientService.openURL;
 	
+	//funktioner för att på ett snyggt sätt skriva hur länge en händelse pågår
 	$scope.duration = function (event) {
 		return ConvenientService.timeFormat(new Date(event.end).getTime() - new Date(event.start).getTime());
 	};
@@ -61,8 +66,9 @@ angular.module('starter.controllers', [])
 			return (days == 1 ? "1 dag" : days + " dagar");
 		} else return ConvenientService.timeFormat(new Date(event.end.dateTime || event.end.date).getTime() - new Date(event.start.dateTime || event.start.date).getTime());
 	};
-	$scope.exactDateFormat = ConvenientService.dateFormat;
 	
+	//funktioner för att på ett snyggt sätt skriva när en händelse nörjar
+	$scope.exactDateFormat = ConvenientService.dateFormat;
 	$scope.dateFormat = function (date, notime) {
 		var d = new Date(date);
 		if (notime)
@@ -78,11 +84,14 @@ angular.module('starter.controllers', [])
 		else
 			return ConvenientService.verboseDateFormat(d) + " kl " + time;
 	};
+	
+	
 	$scope.menusEnabled = DataService.getMenusEnabled();
 	
     $scope.feedStart = ConvenientService.dateFormat(new Date());
     $scope.feedEnd = ConvenientService.dateFormat(DataService.endDate);
 	
+	//visar eller döljer matknappen när användaren ändrar i inställningarna
 	var refresh = function(e) {
 		$scope.menusEnabled = DataService.getMenusEnabled();
     };
@@ -97,9 +106,12 @@ angular.module('starter.controllers', [])
     $scope.weekStart = ConvenientService.dateFormat(new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate()));
 })
 
+//controller för week.html
 .controller('WeekViewCtrl', function ($scope, $state, $stateParams, DataService, ConvenientService, SectionService) {
+	//hämta färglistan för olika händelser
     var colorRef = DataService.getEventTypeColors();
     $scope.typeColor = function (event) {
+		//lägg till ny (lite mörkare) färg för händelsetypen om vi inte stött på den tidigare
         if (event.type) {
             if (!colorRef[event.type.toLowerCase()]) {
                 colorRef[event.type.toLowerCase()] = ConvenientService.randomColor(0.7);
@@ -109,6 +121,7 @@ angular.module('starter.controllers', [])
         }
         else return "#ff642b";
     };
+	
     $scope.color = function (event) {
         return event.course.color;
     };
@@ -118,6 +131,7 @@ angular.module('starter.controllers', [])
 			d = new Date(date);
         return d.getHours() + ":" + (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes());
     };
+	//sammanfatta vilka lokaler händelsen utspelar sig i
     $scope.location = function (eventLocations) {
 	    var str = "";
 	    for (var i = 0; i < eventLocations.length; i++)
@@ -127,27 +141,35 @@ angular.module('starter.controllers', [])
 	$scope.dayName = ConvenientService.getDayName;
 	$scope.contrastingColor = ConvenientService.contrastingColor;
 	$scope.today = ConvenientService.today;
-
+	
+	//definiera gränser för veckan - endast händelser som faller inom denna ram visas
     $scope.start = new Date($stateParams.startTime);
     $scope.start.setHours(0);
     $scope.end = new Date($scope.start.getTime() + 1000 * 3600 * 24 * 7 - 1);
+	
+	//nästa veckas startdag
     $scope.next = (function () {
         var d = new Date($scope.start);
         d.setDate(d.getDate() + 7)
         return d.getFullYear() + "-" + (d.getMonth() + 1 < 10 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1) + "-" + (d.getDate() < 10 ? '0' + d.getDate() : d.getDate());
     })();
+	
+	//föregående veckas startdag
     $scope.previous = (function () {
         var d = new Date($scope.start);
         d.setDate(d.getDate() - 7);
         return d.getFullYear() + "-" + (d.getMonth() + 1 < 10 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1) + "-" + (d.getDate() < 10 ? '0' + d.getDate() : d.getDate());
     })();
 
+	//fult hack för att tvinga "Ovveonsdag!" och andra långa heldagshändelser att inte peta ut på nästa dag
+	//gör egentligen ingenting, men tvingar på något automagiskt sätt in texten i textrutan
     $scope.fix = function () {
         var toFix = document.getElementsByClassName("allDayEvent");
         for (var i = 0; i < toFix.length; i++)
             toFix[i].childNodes[1].style.width = (toFix[i].offsetWidth - 2) + "px";
     };
 
+	//blandar ihop kth- och sektionshändelser i en lista, i kronologisk ordning
     var mergeEvents = function (sorted, section) {
         var res = [];
         var sortedIndex = 0;
@@ -178,25 +200,22 @@ angular.module('starter.controllers', [])
         return res;
     };
 
+	//körs varje gång veckan öppnas 
     var refresh = function () {
         $scope.weekNumber = ConvenientService.weekNumber($scope.start);
-
+	
+		//hämta händelser
         var sorted = DataService.getSortedEvents();
         var section = [];
         if (DataService.getMixEvents())
             section = SectionService.getEvents();
+		
         if (sorted != null) {
-            /*var timeslotlength = 30;
-            var timeSlots = [];
-			
-            for (var i = 0; i < 60 * 24 / timeslotlength; i++) {
-                timeSlots.push({
-                    time: new Date($scope.start.getTime() + i * timeslotlength * 60 * 1000)
-                });
-            }*/
-
             var total = mergeEvents(sorted, section);
-
+			
+			//vi har 5 eller 7 dagar med lite namn och datum, samt en array med eventlådor
+			//eventlådorna har en referens till eventet, och låter oss hålla koll på om det sker fler saker samtidigt
+			//systemet funkar halvkackigt, men krockar bara två saker kan den hantera det iaf
             var events = [];
             var days = [];
             for (var i = 0; i < 7; i++) {
@@ -209,8 +228,13 @@ angular.module('starter.controllers', [])
                 });
             }
 
+			//gå igenom alla händelser och stoppa dem i lådor på rätt dag
 			for (var i = 0; i < total.length; i++) {
 			    var start, end;
+				
+				//googleeventsen har ingen flagga om de är heldagshändelser eller inte,
+				//men om de är de definierar de en start.date i stället för start.dateTime
+				//så detta undersöker om det är en heldagshändelse
 			    if (total[i].isSectionEvent && total[i].original.start.date) {
 			        start = new Date(total[i].original.start.date.substring(0, 4), total[i].original.start.date.substring(5, 7) - 1, total[i].original.start.date.substring(8));
 			        end = new Date(start.getTime() + new Date(total[i].end).getTime() - new Date(total[i].start).getTime() - 1);
@@ -221,7 +245,9 @@ angular.module('starter.controllers', [])
 
 			    if ((start >= $scope.start && start <= $scope.end) || (end >= $scope.start && end <= $scope.end)) {
 			        events.push(total[i]);
-
+					
+					//om det är en heldagshändelse splittar den i en eventbox för varje dag, där alla pekar på samma originalhändelse
+					//heldagshändelser krockar inte utan staplas alltid på varandra, så vi hårdkodar att de är ensamma och först
 			        if (total[i].isSectionEvent && total[i].original.start.date) {
 			            var dur = Math.round((new Date(total[i].end).getTime() - new Date(total[i].start).getTime()) / (1000 * 3600 * 24));
 			            for (var j = 0; j < dur && start.getDay() + j - 1 < 7; j++) {
@@ -233,12 +259,15 @@ angular.module('starter.controllers', [])
 			                });
 			            }
 			        } else {
+						//vi kollar hur många händelser som redan är ditlagda i eventboxlistan på samma tid, oftast är detta 0 (händelsen själv exkluderas)
 			            var sim = ConvenientService.collisions(total[i], days[(start.getDay() + 6) % 7].eventBoxes);
 			            for (var j = 0; j < sim.length; j++) {
 			                sim[j].simultaneous = sim.length + 1;
 			            }
+						//stoppa händelsen i en låda på rött dag
 			            days[(start.getDay() + 6) % 7].eventBoxes.push({
 			                event: total[i],
+							//tiderna mäts i millisekunder
 			                timeTop: (start.getHours() * 60 + start.getMinutes()) * 60 * 1000,
                             timeHeight: (end.getTime() - start.getTime()),
 			                simultaneous: sim.length + 1,
@@ -248,80 +277,26 @@ angular.module('starter.controllers', [])
 			        }
 			    }
 			}
-
+			
+			//om inget händer på helgen tar vi bort de dagarna
+			//det är ett fritt land, vi får göra så
 			if (days[5].eventBoxes.length == 0 && days[6].eventBoxes.length == 0) {
 			    days.pop();
 			    days.pop();
 			}
-			//var weekend = false;
 			
-			//for (var i = 0; i < total.length; i++) {
-			//    var start = new Date(total[i].start);
-			//	try {
-			//	if (start >= $scope.start && start <= $scope.end) {
-			//		
-			//		/*if (start.getDay() == 6 || start.getDay() == 0)
-			//			weekend = true;*/
-			//	}
-			//	} catch (e) { console.log(e, total[i]); }
-			//}
-			
-			//var days = [];
-			//for (var i = 0; i < 5; i++)
-			//	days.push(new Date($scope.start.getTime() + 1000 * 3600 * 24 * i));
-			/*if (weekend) {
-				days.push(new Date($scope.start.getTime() + 1000 * 3600 * 24 * 5));
-				days.push(new Date($scope.start.getTime() + 1000 * 3600 * 24 * 6));
-			}*/
-				
-			
-            /*var days = [];
-            for (var i = 0; i < 7; i++) {
-                var timeSlots = [];
-                for (var j = 0; j < 24; j++)
-                    timeSlots.push({
-                        start: new Date($scope.start.getTime() + 1000 * 3600 * 24 * i + 1000 * 60 * 60 * j),
-                        color: "#fafafa",
-                        event: null,
-                        index: j
-                    });
-                days.push({
-                    date: new Date($scope.start.getTime() + 1000 * 3600 * 24 * i),
-                    events: [],
-                    timeSlots: timeSlots
-                });
-            }
-
-            var date, day;
-            for (var i = 0; i < sorted.length; i++) {
-                date = new Date(sorted[i].start);
-                if (date < $scope.start || date > $scope.end)
-                    continue;
-                day = days[date.getDay() == 0 ? 6 : date.getDay() - 1];
-                day.events.push(sorted[i]);
-                for (var j = 0; j < day.timeSlots.length; j++)
-                    if (day.timeSlots[j].start >= date && day.timeSlots[j].start < new Date(sorted[i].end)) {
-                        day.timeSlots[j].color = $scope.course(sorted[i]).color;
-                        day.timeSlots[j].event = sorted[i];
-                    }
-
-            }
-            if (days[6].events.length == 0) {
-                days.pop(6);
-                if (days[5].events.length == 0)
-                    days.pop(5);
-            }*/
-			//$scope.timeslots = timeSlots;
-            //$scope.events = events;
-
             $scope.days = days;
+			
+			//beräkna hur många tidsstreck vi ska visa, visar alltid minst 8:00-17:00 hur som helst
             $scope.earliest = Math.min(ConvenientService.earliestTimeOfDay(events), 1000 * 3600 * 8);
             $scope.latest = Math.max(ConvenientService.latestTimeOfDay(events), 1000 * 3600 * 17);
 			var hours = [];
 			for (var i = $scope.earliest; i <= $scope.latest; i += 1000 * 3600)
 			    hours.push(i);
 			$scope.hours = hours;
-
+			
+			//beräkna hur många heldagshändelser som ligger på samma dag som mest
+			//detta trycker ned övriga schemat, som måste göras lite kompaktare
 			var maxAllDayEvents = 0;
 			for (var i = 0; i < days.length; i++) {
 			    var counter = 0;
@@ -330,18 +305,18 @@ angular.module('starter.controllers', [])
 			            counter++;
 			    maxAllDayEvents = Math.max(maxAllDayEvents, counter);
 			}
+			
+			//definiera en timmes längd i schemat. ögonmåttat, men verkar typ oftast duga
 			$scope.unit = (80 - 3 * maxAllDayEvents) / (hours.length);
         }
-        else {
-			$scope.timeSlots = null;
-            $scope.events = null;
+        else
 			$scope.days = null;
-        }
     };
 
     $scope.$on('$ionicView.enter', refresh);
 })
 
+//controller för feed.html
 .controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService) {
     //try {
 	$scope.format = ConvenientService.verboseDateFormat;
@@ -351,9 +326,12 @@ angular.module('starter.controllers', [])
     };
 	$scope.sectionEventDuration = SectionService.duration;
 
+	//parsa start- och slutdatum från parametrarna i urlen
     $scope.start = new Date($stateParams.startTime);
     $scope.start.setHours(0);
     $scope.end = new Date(new Date($stateParams.endTime).getTime());
+	
+	//ger en sträng med alla platser händelsen utspelar sig på
     $scope.location = function (eventLocations) {
         var str = "";
         for (var i = 0; i < eventLocations.length - 2; i++)
@@ -363,14 +341,9 @@ angular.module('starter.controllers', [])
         if (eventLocations.length >= 1)
             str += eventLocations[eventLocations.length - 1].name;
         return str;
-        /*if (eventLocations.length > 2)
-            return "bl. a. " + eventLocations[0].name + " och " + eventLocations[1].name;
-        else if (eventLocations.length == 2)
-            return eventLocations[0].name + " och " + eventLocations[1].name;
-        else if (eventLocations.length == 1)
-            return eventLocations[0].name;*/
     };
 
+	//hämta färgdefinitioner för de olika typerna av KTH-händelser (övning, föreläsning etc.)
     var colorRef = DataService.getEventTypeColors();
     $scope.color = function (event) {
         if (!colorRef[event.type.toLowerCase()]) {
@@ -397,14 +370,16 @@ angular.module('starter.controllers', [])
 		$state.go($state.current, {}, { reload: true });
 	};
 	
+	//returnerar true/false beroende på om en händelse anses matcha det givna filtret
 	var matchesFilter = function (event, filter) {
 		var f = filter.toLowerCase();
 		if (event) {
+			//sök efter texten bland properties på händelsen
 			for (var property in {title:0, url:0, info:0, start:0, end:0, type:0}) {
 				if (event[property] && event[property].toLowerCase().indexOf(f) != -1)
 					return true;
 			}
-				
+			
 			if (event.course)
 				for (var property in {courseCode:0, name:0})
 					if (event.course[property] && event.course[property].toLowerCase().indexOf(f) != -1)
@@ -425,6 +400,7 @@ angular.module('starter.controllers', [])
 		return false;
 	};
 	
+	//blanda ihop sektions- och KTH-händelser
 	var mergeEvents = function (sorted, section) {
 		var res = [];
 		var sortedIndex = 0;
@@ -456,6 +432,7 @@ angular.module('starter.controllers', [])
 		return res;
 	};
 	
+	//körs när feedet öppnas
     $scope.refresh = function () {
 		try {
 			$scope.delimiterEnabled = DataService.getDelimiterEnabled();
@@ -467,6 +444,7 @@ angular.module('starter.controllers', [])
 					sorted = mergeEvents(sorted, sectionEvents);
 				}
 				
+				//days är en array med dagar, dvs. objekt som har för- och eftermiddagshändelser samt ett datum
 				var days = [];
 				var day = {am: [], pm: [], date: null};
 				var date;
@@ -502,6 +480,7 @@ angular.module('starter.controllers', [])
 	//} catch (e) {alert(e);}
 })
 
+//controller för settings.html
 .controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, DataService, ConvenientService, StorageService) {
 	$scope.resetData = function() {
 		$ionicPopup.confirm({
@@ -513,6 +492,8 @@ angular.module('starter.controllers', [])
 		}).then(function (yes) {
 			if (yes) {
 				StorageService.clear();
+				
+				
 				var format = function (date) {
 					var d = new Date(date);
 
@@ -522,11 +503,13 @@ angular.module('starter.controllers', [])
 				var end = new Date(start.getFullYear() + 1, start.getMonth());
 				
 				$state.go('app.feed', { startTime: format(new Date().toDateString()), endTime: format(end) });
+				//starta om appen
 				window.location.reload(true);
 			}
 		});
 	};
 	
+	//checkboxarna ändrar värden i $scope.settings
 	$scope.settings = {};
 	$scope.settings.extendedDiscard = DataService.getExtendedDiscard();
 	$scope.updateExtendedDiscard = function () {
@@ -535,6 +518,7 @@ angular.module('starter.controllers', [])
 	$scope.settings.menusEnabled = DataService.getMenusEnabled();
 	$scope.updateMenusEnabled = function () {
 		DataService.setMenusEnabled($scope.settings.menusEnabled);
+		//signalerar till AppCtrl att menyknappen ska bort eller tillbaka
 		$rootScope.$broadcast('menusEnabledToggle');
 	};
 	$scope.settings.delimiterEnabled = DataService.getDelimiterEnabled();
@@ -550,6 +534,8 @@ angular.module('starter.controllers', [])
 		return ConvenientService.RGBtohex(ConvenientService.HSVtoRGB([hue, saturation, value]));
 	};
 	
+	//gör två modals, en för att visa detaljer om en kurs,
+	//en för att lägga till ny kurs
 	$ionicModal.fromTemplateUrl('templates/course.html', {
         scope: $scope
     }).then(function (modal) {
@@ -562,6 +548,7 @@ angular.module('starter.controllers', [])
         $scope.addCourseModal = modal;
     });
 	
+	//sätter en massa värden och visar course.html
 	$scope.openCourse = function (course) {
 		$scope.modalCourse = course;
 		$scope.contrastingColor = ConvenientService.contrastingColor(course.color);
@@ -587,6 +574,7 @@ angular.module('starter.controllers', [])
 		//$scope.red = makeColor(0, $scope.col.sat, $scope.col.val);
 		$scope.minSat = makeColor($scope.col.hue, 0, $scope.col.val);
 		
+		//live-uppdaterar färgerna när man drar i sliders
 		$scope.recalculateColor = function () {
 			$scope.modalCourse.color = makeColor($scope.col.hue, $scope.col.sat, $scope.col.val);
 			$scope.contrastingColor = ConvenientService.contrastingColor($scope.modalCourse.color);
@@ -600,6 +588,7 @@ angular.module('starter.controllers', [])
 		$scope.viewCourseModal.show();
 	};
 	
+	//sparar inställningar och stänger course.html
 	$scope.closeCourse = function () {
 		DataService.saveCourses();
 		DataService.getCourseColors()[$scope.modalCourse.courseCode] = $scope.modalCourse.color;
@@ -650,12 +639,15 @@ angular.module('starter.controllers', [])
 		$scope.addCourseModal.hide();
 	};
 	
+	//lägger till en ny kurs, körs från addcourse.html
 	$scope.addCourse = function () {
 		var cc = $scope.newCourse.courseCode.toUpperCase().trim();
 		var rid = $scope.newCourse.roundId;
 		var st = $scope.newCourse.startTerm.replace(":", "");
 		
+		//kollar att följande stämmer: kurskoden är 6 tecken formaterad som AB1234, kursomgången är endast ett tal, startåret är ett femsiffrigt tal som slutar med 1 eller 2 för vår resp. hösttermin
 		if (cc.length == 6 && /[A-Z][A-Z]\d\d\d\d/i.test(cc) && !/\D+/.test(rid) && /\d+/.test(rid) && st.length == 5 && !/\D+/.test(st) && /\d{5}/.test(st) && /[12]$/.test(st)) {
+			//kolla om kursen redan är med
 			var has = false;
 			var res = {
 				courseCode: cc,
@@ -668,6 +660,7 @@ angular.module('starter.controllers', [])
 					has = true;
 					break;
 				}
+				
 			if (has) {
 				$ionicPopup.alert({
 					title: "Kan inte lägga till kursen",
@@ -675,6 +668,7 @@ angular.module('starter.controllers', [])
 					okType: "button-ctfys"
 				});
 			} else {
+				//lägger till kursen och ser till att kursinfo + händelser hämtas
 				DataService.addExtra(res, function (c) {
 					$ionicPopup.alert({
 						title: "Kursen lades till",
@@ -698,6 +692,7 @@ angular.module('starter.controllers', [])
 			}
 		}
 		else {
+			//ge en fel-popup med vad det var som var ogiltigt
 			var temp = '<div class="list">';
 			if (cc.length != 6 || !/[A-Z][A-Z]\d\d\d\d/i.test(cc))
 				temp += '<div class="item item-text-wrap" style="border: 0; background-color: transparent">Kurskoden måste vara två bokstäver följt av fyra siffror.</div>';
@@ -720,6 +715,7 @@ angular.module('starter.controllers', [])
 		return course1.courseCode.toLowerCase() == course2.courseCode.toLowerCase() && course1.roundId == course2.roundId && course1.startTerm.replace(":", "") == course2.startTerm.replace(":", "");
 	};
 	
+	//ger vilket index kursen har i arrayen med gömda kurser, eller -1
 	$scope.hiddenIndex = function (course) {
 		for (var i = 0; i < $scope.hidden.length; i++)
 			if ($scope.coursesEqual(course, $scope.hidden[i]))
@@ -727,6 +723,7 @@ angular.module('starter.controllers', [])
 		return -1;
 	};
 
+	//sätter alla lastUpdate-värden till null ()så att all data antas vara utgången) och startar om appen
 	$scope.update = function () {
 	    StorageService.set("lastUpdate", null);
 	    StorageService.set("sectionLastUpdated", null);
@@ -735,7 +732,7 @@ angular.module('starter.controllers', [])
 	    window.location.reload();
 	};
 	
-	
+	//körs när man öppnar inställningarna
     var refresh = function () {
 		$scope.courses = DataService.getCourses();
 		$scope.hidden = DataService.getHidden();
@@ -758,7 +755,9 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
+//controller för food.html
 .controller('FoodCtrl', function ($scope, FoodEndpoint, URLs, FoodService, ConvenientService, StorageService) {
+	//definierar vilka restauranger vars menyer hämtas
 	$scope.restaurants = [{
 		name: "Restaurang Q",
 		shortName: "q",
@@ -779,8 +778,10 @@ angular.module('starter.controllers', [])
 	    shortName: "syster",
 	    url: FoodEndpoint.syster + URLs.weekMenuSyster()
 	}];
+	//hämtar menyerna i servicen
     FoodService.update();
 	
+	//läser in menyerna om det går, flaggar dem som otillgängliga om det är helg
 	var refresh = function () {
 		$scope.menus = FoodService.getMenus();
 		$scope.unavailible = (typeof $scope.menus == "string");
@@ -789,29 +790,23 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
+//controller för section.html
 .controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, SectionService, ConvenientService, RssService) {
 	$scope.date = function (day) {
 		return ConvenientService.verboseDateFormat(day[0].start.date ? day[0].start.date : day[0].start.dateTime);
 	};
 	$scope.dateFormat = ConvenientService.dateFormat;
-	/*var pad = function (s) { return s < 10 ? "0" + s : s; };
-	var format = function (d) { return pad(d.getHours()) + ":" + pad(d.getMinutes()) };
-	$scope.times = function (event) {
-		var start = new Date(event.start.dateTime);
-		var end = new Date(event.end.dateTime || event.end.date);
-		return [
-			format(start),
-			(end.getTime() - start.getTime() > 1000 * 3600 * 24 ? " " + end.getDate() + "/" + (end.getMonth() + 1) + "\xa0" : "")
-				+ format(end)
-		];
-	};*/
 	$scope.sectionEventDuration = SectionService.duration;
+	
+	//html-en för shalalie-menyn. bör kanske läggas i egen fil
 	var template = '<ion-popover-view><ion-header-bar class="bar-ctfys"> <h1 class="title">Sha-la-lie på...</h1></ion-header-bar> <ion-content><div class="list" style="border-bottom: 1px solid #ccc; border-top: 1px solid #ccc; padding-top: 0;">'
 	+ '<div class="item" style="text-align: center;" on-tap="openInBrowser(\'spotify:track:5TnZihe1AVVHPtgX1osH6Y\') || shalaliePopover.hide()">Spotify</div>'
 	+ '<div class="item" style="text-align: center;" on-tap="openInBrowser(\'https://youtu.be/PtBG_df3QbQ\') || shalaliePopover.hide()">YouTube</div>'
 	+ '<div class="item" style="text-align: center;" on-tap="openInBrowser(\'https://youtu.be/wzRHqOSg--s\') || shalaliePopover.hide()">Nederländska</div>'
     + '</div></ion-content></ion-popover-view>';
 
+	//gör en popover-meny av koden ovan
+	//popovers öppnas på en viss plats på skärmen, i stället för att ta upp hela likt modals
 	$scope.shalaliePopover = $ionicPopover.fromTemplate(template, {
 	    scope: $scope
 	});
@@ -820,12 +815,14 @@ angular.module('starter.controllers', [])
 	    $scope.shalaliePopover.show($event);
 	};
 
+	//gör en modal av rssflödesvisaren
 	$ionicModal.fromTemplateUrl('templates/rss.html', {
 	    scope: $scope
 	}).then(function (modal) {
 	    $scope.rssmodal = modal;
 	});
-
+	
+	//öppnar rssmodalen, och blandar ihop händelserna om det inte redan gjorts
 	$scope.openNews = function () {
 	    if (!$scope.rssMerge) {
 	        var merge = [];
@@ -863,12 +860,14 @@ angular.module('starter.controllers', [])
 	};
 
 	
+	//körs varje gång sidan öppnas
 	var refresh = function () {
-		$scope.response = SectionService.getResponse();
+		//$scope.response = SectionService.getResponse();
 		//console.log($scope.response);
 		var events = SectionService.getEvents();
 		if (events) {
-
+			//hämta sektionshändelser och sortera dessa per dag
+			//dagarna är här bara arrays av händelser
 		    var days = [];
 		    var day = [];
 		    var today = new Date(ConvenientService.today);
@@ -896,6 +895,7 @@ angular.module('starter.controllers', [])
 		    $scope.days = days;
 		}
 
+		//hämta rsshändelser
 		var rssf = RssService.getSection();
 		var rssths = RssService.getUnion();
 

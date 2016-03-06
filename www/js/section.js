@@ -1,7 +1,9 @@
 angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
+//service som hämtar sektionshändelser från googlekalendern
 .factory('SectionService', function ($http, $state, CalendarEndpoint, URLs, DataService, StorageService, APIkey) {
 	//taget från http://stackoverflow.com/a/7244288
+	//gör en giltig timestamp av ett Date
 	var RFC3339 = function (d) {
 		function pad(n){return n<10 ? '0'+n : n}
 		return d.getUTCFullYear()+'-'
@@ -12,6 +14,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			+ pad(d.getUTCSeconds())+'Z';
 	};
 	
+	//data för api-anropet
 	var calendarId = "e17rpovh5v7j79fpp74d1gker8@group.calendar.google.com";
 	var apikey = APIkey.key;
 	var options = {
@@ -25,17 +28,21 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 	var sectionResponse = null;
 	var lastUpdated = StorageService.getOrDefault("sectionLastUpdated", 0);
 	
+	//körs när alla utgående api-anrop är klara (i detta fall är det bara 1)
+	//refreshar vyn (dvs visar händelserna) om man är på en rimlig sida
 	var onDone = function () {
 		if ($state.current.name == "app.section" || (DataService.getMixEvents() && ($state.current.name == "app.feed" || $state.current.name == "app.week")))
 			$state.go($state.current, {}, { reload: true });
 	};
 	
+	//anropar apit
 	var update = function () {
 		console.log("Calling calendar api");
 		$http.get(CalendarEndpoint.url + URLs.sectionCalendar(calendarId, apikey, options)).then(
 			function successCallback(response) {
 			    try {
-			        sectionResponse = response.data;
+			        //spara svaret från apit
+					sectionResponse = response.data;
 			        StorageService.set("sectionResponse", sectionResponse);
 			        events = sectionResponse.items;
 			        if (!events) {
@@ -59,6 +66,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			});
 	};
 	
+	//uppdatera om det har gått >1 dygn sen senaste gången
 	if (new Date().getTime() - lastUpdated > 1000 * 3600 * 24)
 		update();
 	else {
@@ -93,6 +101,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 				end: event.end.dateTime || event.end.date
 			};
 		},
+		//ger en snygg sträng som beskriver hur länge en händelse pågår
 		duration: function (event) {
 			if (event.start.date && event.end.date) {
 				var days = Math.round((new Date(event.end.date).getTime() - new Date(event.start.date).getTime()) / (1000 * 3600 * 24));
@@ -102,6 +111,8 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     };
 })
 
+//service som hämtar rss-flöden för fysiksektionen och ths
+//egentligen finns inte så mycket intressant där men ska det vara en komplett app så ska det
 .factory('RssService', function ($http, $state, RssEndpoint, StorageService) {
     var section = null;
     var union = null;
@@ -109,10 +120,13 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     var lastUpdate = StorageService.getOrDefault("rssLastUpdate", 0);
     var fail = false;
 
+	//ger ett xmlträd från en sträng
     var parseXml = function (xmlStr) {
         return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
     };
 
+	//läser in händelser från ett xmlträd med rss
+	//händelser = anonyma objekt med title, skapare, beskrivning etc
     var parseRss = function (xml) {
         var res = [];
 
@@ -131,6 +145,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         return res;
     };
 
+	//körs när alla utgående anrop är klara
     var onDone = function () {
         if (requests == 0) {
             requests = -1;
@@ -145,6 +160,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         }
     };
 
+	//hämta båda rss-flödena
     var update = function () {
         requests = 2;
         console.log("getting rss feeds");
@@ -197,6 +213,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			});
     };
 
+	//uppdaterar rss-flödena om det gått ett dygn sen senaste
     if (new Date().getTime() - lastUpdate > 1000 * 3600 * 24)
         update();
     else {

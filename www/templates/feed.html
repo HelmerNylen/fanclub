@@ -35,68 +35,39 @@
             <div class="item item-divider">
                 {{ format(day.date) }}
             </div>
-			<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day.am" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0">
-				<table style="width: 100%; height: 100%;">
-                    <tr>
-                        <td ng-style="{'background-color': event.course.color}" style="width: 4px">
-                            &nbsp;
-                        </td>
-                        <td>
-                            <div class="row">
-                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}-{{ getTime(event.end) }}</div>
-                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent">{{ sectionEventDuration(event.original) }}</div>
-                                <div class="col item-text-wrap">
-									<div class="custombadge" ng-if="!event.isSectionEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
-									<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 24px">
-										<i class="icon ion-social-freebsd-devil"></i>
+			<div ng-repeat="part in ['am', 'pm']">
+				<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day[part]" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0; border-top-left-radius: 0; border-top-right-radius: 0">
+					<table style="width: 100%; height: 100%;">
+						<tr>
+							<td ng-style="{'background-color': event.course.color}" style="width: 4px">
+								&nbsp;
+							</td>
+							<td>
+								<div class="row">
+									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}-{{ getTime(event.end) }}</div>
+									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent">{{ sectionEventDuration(event.original) }}</div>
+									<div class="col item-text-wrap">
+										<div class="custombadge" ng-if="!event.isSectionEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
+										<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 24px">
+											<i class="icon ion-social-freebsd-devil"></i>
+										</div>
+										{{ event.course.name }}
 									</div>
-									{{ event.course.name }}
 								</div>
-                            </div>
-                            <div class="row" ng-if="location(event.locations)">
-                                <div class="col col-25">
-                                    &nbsp;
-                                </div>
-                                <div class="col item-text-wrap">
-                                    <b ng-if="event.locations.length != 0">{{ location(event.locations) }}</b>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </ion-item>
-			<div ng-if="delimiterEnabled && day.am.length != 0 && day.pm.length != 0" style="width: 100%; height: 3px; background-color: #ccc"></div>
-            <!-- Fult att bara kopiera, men det funkar och är lagom okrångligt -->
-			<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day.pm" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0">
-				<table style="width: 100%; height: 100%;">
-                    <tr>
-                        <td ng-style="{'background-color': event.course.color}" style="width: 4px">
-                            &nbsp;
-                        </td>
-                        <td>
-                            <div class="row">
-                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}-{{ getTime(event.end) }}</div>
-                                <div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent">{{ sectionEventDuration(event.original) }}</div>
-                                <div class="col item-text-wrap">
-									<div class="custombadge" ng-if="!event.isSectionEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
-									<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 20px">
-										<i class="icon ion-social-freebsd-devil"></i>
+								<div class="row" ng-if="location(event.locations)">
+									<div class="col col-25">
+										&nbsp;
 									</div>
-									{{ event.course.name }}
+									<div class="col item-text-wrap">
+										<b ng-if="event.locations.length != 0">{{ location(event.locations) }}</b>
+									</div>
 								</div>
-                            </div>
-                            <div class="row" ng-if="location(event.locations)">
-                                <div class="col col-25">
-                                    &nbsp;
-                                </div>
-                                <div class="col item-text-wrap">
-                                    <b ng-if="event.locations.length != 0">{{ location(event.locations) }}</b>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </ion-item>
+							</td>
+						</tr>
+					</table>
+				</ion-item>
+				<div ng-if="$index == 0 && delimiterEnabled && day.am.length != 0 && day.pm.length != 0" style="width: 100%; height: 3px; background-color: #ccc"></div>
+			</div>
         </div>
 		
 		<!-- Laddningsikon -->

@@ -13,7 +13,8 @@
 		Äpple - try/catch runt $http.get
 */
 angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section'])
-//*/
+//Konstanter som används i services som hämtar data, ex. DataService och SectionService
+/*/
 .constant('ApiEndpoint', {
     url: 'http://192.168.0.10:8100/api/'
 })
@@ -52,6 +53,8 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     
 //*/
 
+//funktioner som bygger urler, används i kombination med endpointsen ovan.
+//ex. FoodEndpoint.q + weekMenuQ() för restaurang Q:s anrop
 .constant('URLs', {
     plan: function (year) {
         return 'api/kopps/v1/programme/CTFYS/academic-year-plan/2015:2/' + year;
@@ -111,6 +114,10 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     });
 })
 
+//definierar olika states i appen. Vill man lägga till en ny sida, med en ny controller, görs det här.
+//kolon framför ett ord i urlen betyder argument till sidan, och kan hämtas genom $stateParams.
+//ex. statet app.week betyder att veckovyn visas, och tar som argument måndagen som veckan börjar på
+//states ändras främst via menyknapparna, kolla menu.html
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
 
@@ -171,6 +178,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         }
     });
     
+	//vi tar ett span från läsårets början (räknar juli som start) och ett år framåt
     var format = function (date) {
         var d = new Date(date);
 

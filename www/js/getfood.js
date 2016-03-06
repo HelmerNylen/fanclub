@@ -1,11 +1,14 @@
 angular.module('starter.getfood', ['starter.services'])
 
+//har hand om inläsningen av menyer från restauranghemsidorna
 .factory('FoodService', function ($http, $state, FoodEndpoint, URLs, StorageService) {
 	var menus = {};
 	var day = new Date().getDay() - 1;
 	var restaurantsLeft = -1;
+	var restaurantCount = 4;
 	var foodLastUpdate = StorageService.getOrDefault("foodLastUpdate", "");
 	
+	//körs när alla anrop är klara
 	var onDone = function () {
 		if (restaurantsLeft == 0) {
 			restaurantsLeft = -1;
@@ -64,6 +67,7 @@ angular.module('starter.getfood', ['starter.services'])
 					    for (var i = 0; i < keywords.length - 1; i++) {
 					        var str = partial.substring(partial.search(new RegExp(keywords[i], "im")));
 					        str = str.substring(0, str.search(new RegExp(keywords[i + 1], "im")));
+							//ta bort taggar
 					        str = str.replace(/<([^>]+)>/ig, "");
 
 					        var arr = str.split(/\r?\n/);
@@ -109,27 +113,14 @@ angular.module('starter.getfood', ['starter.services'])
 				});
 				
 		    //Brazilia
-            //buggar eventuellt ibland, så kan förbättras
-				$http.get(FoodEndpoint.brazilia + URLs.weekMenuBrazilia()
+            //buggar ibland, så kan förbättras
+			$http.get(FoodEndpoint.brazilia + URLs.weekMenuBrazilia()
 				).then(
 				function successCallback(response) {
 					var partial = response.data.substring(response.data.indexOf("<table class=\"table lunch_menu\">"));
 					partial = partial.substring(0, partial.indexOf("</table>") + "</table>".length);
 					
-					partial = partial.replace(/<br>/ig, "").replace(/<img([^>]+)>/ig, "");;
-
-					/*while (partial.indexOf("<br>") != -1) {
-						partial = partial.replace("<br>", "");
-						console.log("Removed <br>");
-					}
-					
-					var tag, index;
-					while ((index = partial.indexOf("<img")) != -1) {
-						tag = partial.substring(index);
-						tag = tag.substring(0, tag.indexOf(">") + 1);
-						partial = partial.replace(tag, "");
-						console.log("Replaced " + tag + ", new length: " + partial.length);
-					}*/
+					partial = partial.replace(/<br>/ig, "").replace(/<img([^>]+)>/ig, "");
 					
 					var menu = [];
 					try {
@@ -192,7 +183,7 @@ angular.module('starter.getfood', ['starter.services'])
 				console.log("Getting menus from cache");
 				menus = StorageService.getOrDefault("foodMenus");
 			} else {
-				restaurantsLeft = 4;
+				restaurantsLeft = restaurantCount;
 				if (day >= 0 && day <= 4)
 					updateMenus();
 			}
