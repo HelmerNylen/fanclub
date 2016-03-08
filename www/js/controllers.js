@@ -67,7 +67,7 @@ angular.module('starter.controllers', [])
 		} else return ConvenientService.timeFormat(new Date(event.end.dateTime || event.end.date).getTime() - new Date(event.start.dateTime || event.start.date).getTime());
 	};
 	
-	//funktioner för att på ett snyggt sätt skriva när en händelse nörjar
+	//funktioner för att på ett snyggt sätt skriva när en händelse börjar
 	$scope.exactDateFormat = ConvenientService.dateFormat;
 	$scope.dateFormat = function (date, notime) {
 		var d = new Date(date);
