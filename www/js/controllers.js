@@ -911,4 +911,8 @@ angular.module('starter.controllers', [])
 	
 	$scope.$on('$ionicView.enter', refresh);
 })
+
+.controller('ToolsCtrl', function ($scope) {
+
+})
 ;

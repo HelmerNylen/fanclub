@@ -170,6 +170,16 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         }
     })
 	
+	.state('app.tools', {
+        url: '/tools',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/tools.html',
+                controller: 'ToolsCtrl'
+            }
+        }
+    })
+	
 	.state('app.section', {
         url: '/section',
         views: {
