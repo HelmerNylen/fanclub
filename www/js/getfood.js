@@ -58,11 +58,60 @@ angular.module('starter.getfood', ['starter.services'])
 				).then(
 				function successCallback(response) {
 				    var menu = [];
+					
+					var getDishes = function (str) {
+						//efter första bolden kommer priserna, de är inte sallad
+						var d = str.indexOf("<b>") != -1 ? str.substring(0, str.indexOf("<b>")) : str;
+						d = d.replace(/<([^>]+)>/ig, "|").split("|");
+						
+						var res = [];
+						for (var i = 0; i < d.length; i++)
+							if (d[i].trim().length)
+								res.push(d[i]);
+						
+						return res;
+					};
 
 				    try {
 					    var partial = response.data.substring(response.data.indexOf("<div class=\"post realpost page\""));
 					    partial = partial.substring(0, partial.indexOf("<!-- You can start editing here. -->"));
-					    var keywords = ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Veckans fisk", "Veckans vegetariska", "Veckans sallad", "monday"];
+						
+						var dayNames = ["måndag", "tisdag", "onsdag", "torsdag", "fredag"];
+						
+						//matcha alla rubriker med dagar/veckans fisk/etc.
+					    var matches = partial.match(/<strong>([^<]+)<\/strong>/ig);
+						var dishes = [];
+						for (var i = 0; i < matches.length; i++) {
+							if (/lunch vecka/ig.test(matches[i]))
+								continue;
+							
+							var str = partial.substring(partial.indexOf(matches[i]) + matches[i].length);
+							str = str.substring(0, str.indexOf(matches[i + 1]));
+							
+							dishes.push({
+								title: matches[i].replace(/<(strong|\/strong)>/ig, ""),
+								dish: str
+							});
+						}
+						
+						console.log(dishes);
+						for (var i = 0; i < dishes.length; i++) {
+							if (/(monday|lunch|priser)/ig.test(dishes[i].title))
+								break;
+							
+							var todays = getDishes(dishes[i].dish);
+							//dagens
+							if (dishes[i].title.toLowerCase().indexOf(dayNames[day]) != -1)
+								for (var j = 0; j < todays.length; j++)
+									menu.push(todays[j]);
+							//veckans
+							else if (dayNames.indexOf(dishes[i].title.toLowerCase()) == -1)
+								for (var j = 0; j < todays.length; j++)
+									menu.push(dishes[i].title + "<br />" + todays[j]);
+						}
+						
+						
+					    /*var keywords = ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Veckans fisk", "Veckans vegetariska", "Veckans sallad", "monday"];
 
 					    for (var i = 0; i < keywords.length - 1; i++) {
 					        var str = partial.substring(partial.search(new RegExp(keywords[i], "im")));
@@ -77,7 +126,7 @@ angular.module('starter.getfood', ['starter.services'])
                                     if (arr[j].trim().length != 0) {
 					                    menu.push((i > 4 ? keywords[i] + "<br />" : "") + arr[j].trim());
 					                }
-					    }
+					    }*/
 
 						/*var xml = parseXml(partial);
 						var sections = xml.documentElement.children[1].children;
@@ -144,6 +193,7 @@ angular.module('starter.getfood', ['starter.services'])
 				});
                 
                 //Syster O Bror
+				//buggar
 				$http.get(FoodEndpoint.syster + URLs.weekMenuSyster()
                     ).then(
                     function successCallback(response) {
@@ -152,7 +202,7 @@ angular.module('starter.getfood', ['starter.services'])
                         var menu = [];
                         try {
                             var xml = parseXml(partial);
-                            menu.push(xml.documentElement.children[0].children[0].children[1].children[day].children[0].children[1].innerHTML.trim());
+                            menu.push((xml.documentElement.children[0].tagName == "parsererror" ? xml.documentElement.children[1] : xml.documentElement.children[0]).children[0].children[1].children[day].children[0].children[1].innerHTML.trim());
                         }
                         catch (e) {
                             console.log("Försökte parsea Syster O Brors meny men det sket sig: " + e);
