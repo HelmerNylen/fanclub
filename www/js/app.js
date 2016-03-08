@@ -12,26 +12,25 @@
 		Aprikos - Schema faila
 		Äpple - try/catch runt $http.get
 */
-var ip = '192.168.0.103';
 
 angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section'])
 //Konstanter som används i services som hämtar data, ex. DataService och SectionService
 /*/
 .constant('ApiEndpoint', {
-    url: 'http://' + ip + ':8100/api/'
+    url: 'http://' + window.location.host + '/api/'
 })
 .constant('FoodEndpoint', {
-    q: 'http://' + ip + ':8100/food/q/',
-    nymble: 'http://' + ip + ':8100/food/nymble/',
-    brazilia: 'http://' + ip + ':8100/food/brazilia/',
-    syster: 'http://' + ip + ':8100/food/syster/'
+    q: 'http://' + window.location.host + '/food/q/',
+    nymble: 'http://' + window.location.host + '/food/nymble/',
+    brazilia: 'http://' + window.location.host + '/food/brazilia/',
+    syster: 'http://' + window.location.host + '/food/syster/'
 })
 .constant('CalendarEndpoint', {
-    url: 'http://' + ip + ':8100/calendar/'
+    url: 'http://' + window.location.host + '/calendar/'
 })
 .constant('RssEndpoint', {
-    f: 'http://' + ip + ':8100/rss/f/',
-    ths: 'http://' + ip + ':8100/rss/ths/'
+    f: 'http://' + window.location.host + '/rss/f/',
+    ths: 'http://' + window.location.host + '/rss/ths/'
 })
 
 /*/

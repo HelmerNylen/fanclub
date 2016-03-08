@@ -33,14 +33,16 @@ Ställ ett kommandofönster i projektets rotmapp (dvs. den mapp där bl.a. confi
 Nu får du antagligen upp ett vitt fönster utan någon fin app. Öppnar du webbläsarkonsollen (F12 på Chrome) är det antagligen ett antal ilskna röda felmeddelanden där. Detta beror på två saker:
 
 ##### 4.1 IP-adresser
-När man testar via ```ionic serve``` fungerar det inte att anropa API-er direkt med $http eller liknande. Under ```www/js/app.js``` finns en bunt konstanter under en kommentarswitch.
+Detta gällde fram till 2016-03-08, men nu bör den hitta IP-adressen själv. Punkt 3 stämmer dock fortfarande.
 
-1. Du måste antagligen byta ut ip-addresserna mot din egen.
-2. Om du pushar kod, se till att det är de riktiga URL-erna som är aktiva. Detta byts lättast genom att ändra ```//*/``` till ```/*/``` ovanför ip-URLerna. 
-3. Under ```ionic.project``` finns en bunt proxys. Om du vill koppla upp något mot en address måste proxyn definieras här för att fungera medan man testar.
-4. Detta lär gå att automatisera med Gulp, men jag har inte orkat.
-
-**TLDR**: Öppna ```www/js/app.js``` och byt ut IP-adresserna mot den du valde när du körde ```ionic serve```.
+>När man testar via ```ionic serve``` fungerar det inte att anropa API-er direkt med $http eller liknande. Under ```www/js/app.js``` finns en bunt konstanter under en kommentarswitch.
+>
+>1. Du måste antagligen byta ut ip-addresserna mot din egen.
+>2. Om du pushar kod, se till att det är de riktiga URL-erna som är aktiva. Detta byts lättast genom att ändra ```//*/``` till ```/*/``` ovanför ip-URLerna. 
+>3. Under ```ionic.project``` finns en bunt proxys. Om du vill koppla upp något mot en address måste proxyn definieras här för att fungera medan man testar.
+>4. Detta lär gå att automatisera med Gulp, men jag har inte orkat.
+>
+>**TLDR**: Öppna ```www/js/app.js``` och byt ut IP-adresserna mot den du valde när du körde ```ionic serve```.
 
 ##### 4.2 API-nyckel
 Om sektionskalendern ska funka måste appen ha en giltig api-nyckel. Denna får man hantera lokalt. Skapa ```www/js/apikey.js``` och skriv i den
