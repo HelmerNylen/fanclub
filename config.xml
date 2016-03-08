@@ -11,6 +11,7 @@
   <access origin="*"/>
   <allow-intent href="*"/>
   <allow-navigation href="http://gastrogate.com/* "/>
+  <allow-navigation href="http://*/* "/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
