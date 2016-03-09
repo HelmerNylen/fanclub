@@ -1,6 +1,6 @@
 angular.module('starter.getxkcd', ['starter.services'])
 
-.factory('xkcdService', function($http, $state, StorageServices) {
+.factory('xkcdService', function($http, $state, StorageService) {
 	var data = [];
 	
 	//körs när alla anrop är klara
