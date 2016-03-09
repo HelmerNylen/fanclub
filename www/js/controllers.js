@@ -912,7 +912,43 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
-.controller('ToolsCtrl', function ($scope) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, xkcdService) {
+	$scope.xkcdTitle= xkcdService.getTitle
+	
+	$ionicModal.fromTemplateUrl('templates/map.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.mapModal = modal;
+    });
+	
+	$scope.closeMap = function () {
+		$scope.mapModal.hide();
+	};
 
+    $scope.openXkcd = function () {
+		
+		
+		
+        $scope.xkcdModal.show();
+    };
+	
+	$ionicModal.fromTemplateUrl('templates/xkcd.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.xkcdModal = modal;
+    });
+	
+	$scope.closeXkcd = function () {
+		$scope.xkcdModal.hide();
+	};
+
+	//öppnar KTH-popupen och sätter värden som används
+    $scope.openXkcd = function () {		
+		
+        $scope.xkcdModal.show();
+    };
+	
+	
 })
+
 ;

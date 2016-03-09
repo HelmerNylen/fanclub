@@ -15,7 +15,7 @@
 
 angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section'])
 //Konstanter som används i services som hämtar data, ex. DataService och SectionService
-/*/
+//*/
 .constant('ApiEndpoint', {
     url: 'http://' + window.location.host + '/api/'
 })
@@ -178,6 +178,8 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
             }
         }
     })
+
+	
 	
 	.state('app.section', {
         url: '/section',
