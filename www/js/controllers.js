@@ -913,7 +913,18 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ToolsCtrl', function ($scope, $ionicModal, xkcdService) {
-	$scope.xkcdTitle= xkcdService.getTitle
+	var refresh = function () {
+		xkcdService.update(setVars);
+		$scope.xkcdTitle= xkcdService.getTitle();
+		console.log($scope.xkcdTitle);
+		$scope.xkcdImg= xkcdService.getImg();
+	};
+	var setVars= function (){
+		$scope.xkcdTitle= xkcdService.getTitle();
+		console.log($scope.xkcdTitle);
+		$scope.xkcdImg= xkcdService.getImg();
+	}
+	
 	
 	$ionicModal.fromTemplateUrl('templates/map.html', {
         scope: $scope
@@ -921,32 +932,35 @@ angular.module('starter.controllers', [])
         $scope.mapModal = modal;
     });
 	
-	$scope.closeMap = function () {
-		$scope.mapModal.hide();
-	};
-
-    $scope.openXkcd = function () {
-		
-		
-		
-        $scope.xkcdModal.show();
-    };
-	
 	$ionicModal.fromTemplateUrl('templates/xkcd.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.xkcdModal = modal;
     });
 	
+	$scope.closeMap = function () {
+		$scope.mapModal.hide();
+	};
+	
+	$scope.openMap = function () {
+        $scope.mapModal.show();
+    };
+
+    $scope.openXkcd = function () {
+        $scope.xkcdModal.show();
+    };
+	
 	$scope.closeXkcd = function () {
 		$scope.xkcdModal.hide();
 	};
+	
+	
+	 $scope.$on('loadingIsDone', function (event, args) {
+		$scope.message = args.message;
+		console.log($scope.message);
+ });
+	$scope.$on('modal.shown', refresh);
 
-	//öppnar KTH-popupen och sätter värden som används
-    $scope.openXkcd = function () {		
-		
-        $scope.xkcdModal.show();
-    };
 	
 	
 })

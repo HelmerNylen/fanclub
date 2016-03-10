@@ -1,62 +1,52 @@
 angular.module('starter.getxkcd', ['starter.services'])
 
-.factory('xkcdService', function($http, $state, StorageService) {
-	var data = [];
+.factory('xkcdService', function($http, $state, StorageService, URLs, XkcdEndpoint) {
+		var title="";
+		var img="";
 	
 	//körs när alla anrop är klara
-	var onDone = function () {
-		if ($state.current.name == "tools.food"){
-			$state.go($state.current, {}, { reload: true });
-		}
+	var onDone = function (callbackFunc) {
+		callbackFunc();
+		//TODO: "kör callbacken"
 	};
 	
-	var parseXml = function (xmlStr) {
-		return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
-	};
-	
-	
-	var updateXkcd = function () {
+	var updatexkcd = function (callbackFunc) {
+		//"ta en callback"
 		console.log("Updating xkcd");
 		try {
-			$http.get("http://xkcd.com/info.0.json"
+			$http.get(XkcdEndpoint.url+URLs.xkcdJson()
 				).then(
 				function successCallback(response) {
-					var safetitle = response.safe_title;
-					var im = response.img;
-					data.title = safetitle;
-					data.img=im
-					onDone();
+					var safetitle = response.data.safe_title;
+					var im = response.data.img;
+					title = safetitle;
+					img=im;
+					console.log(title+img);
+					onDone(callbackFunc);
 				},
 				function errorCallback(response) {
-					console.log("Error when getting xkcd " + response.status + ": " + response.statusText + ", " + response.data);
-					onDone();
-				}
-				);
+					console.log("Error when getting xkcd: " + response.status + ": " + response.statusText + ", " + response.data);
+					onDone(callbackFunc);
+				});
 				}catch (e) {
+					img=null;
+					title="No image available";
 					console.log(e);
 					}
-	};
-	
-	
+	};	
 	return {
         getImg: function() {
-			return data.img
+			console.log("titeln är "+img);
+			return img
 		},
 		getTitle: function() {
-			return data.title
+			console.log("url till bild är: "+img);
+			return title
 			
 		},
-		update: function() {
-			updatexkcd();
+		update: function(callbackFunc) {
+			updatexkcd(callbackFunc);
 		}
     };
-	
-
 })
-
-
-
-
-
-
 ;
