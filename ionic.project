@@ -40,7 +40,7 @@
 	},
 	{
 		"path": "/xkcd",
-		"proxyUrl": "http://xkcd.com/"
+		"proxyUrl": "http://www.xkcd.com/"
 	},
 	{
 		"path": "/rss/ths",

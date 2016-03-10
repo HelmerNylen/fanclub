@@ -912,17 +912,19 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, xkcdService) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, xkcdService, StorageService) {
 	var refresh = function () {
+		
 		xkcdService.update(setVars);
-		$scope.xkcdTitle= xkcdService.getTitle();
-		console.log($scope.xkcdTitle);
-		$scope.xkcdImg= xkcdService.getImg();
 	};
 	var setVars= function (){
 		$scope.xkcdTitle= xkcdService.getTitle();
-		console.log($scope.xkcdTitle);
 		$scope.xkcdImg= xkcdService.getImg();
+		$scope.xkcdAlt= xkcdService.getAlt();
+		$scope.xkcdUrl= xkcdService.getUrl();
+		console.log("link is: "+$scope.xkcdUrl);
+
+
 	}
 	
 	
