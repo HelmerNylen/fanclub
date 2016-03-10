@@ -4,31 +4,35 @@
         <a href="#/app/month/{{ next }}"><button class="button icon ion-chevron-right"></button></a>
     </ion-nav-buttons>
     <ion-content style="background-color: #fbfbfb">
-		<div class="list card">
-			<div class="item item-divider item-energized">
-				<i class="icon ion-alert-circled"></i>
-				Denna sida är under konstruktion
-			</div>
-			<div class="item">
-				Den kommer snart att implementeras.
-			</div>
-		</div>
-		<div>
+		<div ng-if="weeks">
 			<div class="row">
+				<div class="col col-10" style="text-align: center">
+					v.
+				</div>
 				<div class="col" ng-repeat="weekday in [1, 2, 3, 4, 5, 6, 7]" style="margin: 0.1em; text-align: center; font-weight: bold;">
 					{{dayName(weekday)}}
 				</div>
 			</div>
-			<div class="row" ng-repeat="week in [1, 2, 3, 4, 5]">
-				<div class="col" ng-repeat="day in [1, 2, 3, 4, 5, 6, 7]" style="margin: 0.2em; padding: 0; padding-bottom: 3px; border: 1px solid #bbb; background-color: {{ week == 1 && day < 4 ? '#eee' :  'white'}}; height: 6em;" overflow-y="hidden">
-					<div class="fadedbadge">{{week}}{{day}}</div>
+			<a class="row" ng-repeat="week in weeks" href="#/app/week/{{ dateFormat(week.days[0].date) }}" style="color: inherit; text-decoration: none;">
+				<div class="col col-10" style="padding-top: 2.5em; text-align: center">
+					{{ week.number }}
+				</div>
+				<div class="col" ng-repeat="day in week.days" overflow-y="hidden"
+					style="margin: 0.2em; padding: 0; padding-bottom: 3px; border: 1px solid {{ day.today ? '#ff642b' : '#bbb' }}; background-color: {{ day.date.getMonth() != month - 1 ? '#eee' : (day.today ? '#ffdacc' : 'white') }}; height: 6em;">
+					<div class="fadedbadge" style="margin-right: 4px">{{ day.date.getDate() }}</div>
 					<br/>
-					<div ng-repeat="i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]"
-						style="background-color: {{ i % 2 == 0 ? '#ff0000' : '#00aaaa' }}; width: 100%; margin-left: 0; margin-right: 0; height: 3px;" ng-style="{ 'border-top': $index == 0 ? 'inherit' : '1px solid #444' }">
+					<div ng-repeat="event in day.events"
+						style="background-color: {{ event.course.color }}; width: 100%; margin-left: 0; margin-right: 0; margin-top: 1px; height: 3px;">
 						&nbsp;
 					</div>
 				</div>
-			</div>
+			</a>
 		</div>
+		
+		<!-- Laddningsikon -->
+        <div ng-if="!weeks" style="text-align: center">
+            <br /><br /><br />
+            <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
+        </div>
 	</ion-content>
 </ion-view>

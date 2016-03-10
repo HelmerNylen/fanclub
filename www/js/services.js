@@ -297,6 +297,8 @@ angular.module('starter.services', [])
 	var menusEnabled = StorageService.getOrDefault("menusEnabled", true);
 	var delimiterEnabled = StorageService.getOrDefault("delimiterEnabled", false);
 	var mixEvents = StorageService.getOrDefault("mixEvents", true);
+	
+	var eventServiceCallback = null;
 
 	//beräkna vilken årskurs fanclub går
     var studyYear = Math.ceil((now - new Date("2015-07-01")) / (1000 * 3600 * 24 * 365));
@@ -320,10 +322,14 @@ angular.module('starter.services', [])
 		//för att se till att onDone bara körs en gång räknar vi alla anrop
         if (updatesLeft == 0) {
 			if (!noUpdate)
-				StorageService.set("lastUpdate", new Date().getTime());
+				StorageService.set("lastUpdate", new Date().toDateString());
             StorageService.set("courses", courses);
 			StorageService.set("extra", extra);
             sorted = sortByDate(courses, extra);
+			
+			if (eventServiceCallback)
+				eventServiceCallback();
+			
             $state.go($state.current, {}, { reload: true });
             updatesLeft = -1;
         }
@@ -641,7 +647,7 @@ angular.module('starter.services', [])
 				total++;
 			}
         console.log("sorted " + total + " events\nres length: " + res.length + "\ndiscarded: " + discarded);
-
+		
         return res;
     };
 
@@ -667,21 +673,25 @@ angular.module('starter.services', [])
         StorageService.set("eventTypeColors", eventTypeColors);
     }
 
-    var lastUpdate = StorageService.getOrDefault("lastUpdate", 0);
+    var lastUpdate = StorageService.getOrDefault("lastUpdate", null);
     var courses_temp = StorageService.getOrDefault("courses", null);
 	
 	//extra är de kurser användaren lagt till, hidden är de kurser de valt att gömma, så händelserna för kurser i hidden hänger inte med in i sorted
 	var hidden = StorageService.getOrDefault("hidden", []);
 	var extra = StorageService.getOrDefault("extra", []);
 
-    if (courses_temp == null || now.getTime() - lastUpdate > 1000 * 3600 * 24) {
+    if (courses_temp == null || now.toDateString() != lastUpdate) {
         updateSchemas();
     }
     else {
-        console.log("updated " + new Date(lastUpdate).toLocaleDateString() + ", skipping this one");
+        console.log("updated " + lastUpdate + ", skipping this one");
         courses = courses_temp;
 		//console.log("Extra:", extra);
         sorted = sortByDate(courses, extra);
+
+		if (eventServiceCallback)
+			eventServiceCallback();
+		
         $state.go($state.current, {}, { reload: true });
     }
 
@@ -754,10 +764,10 @@ angular.module('starter.services', [])
 			return errors;
 		},
 		getLastUpdate: function () {
-			var lu = StorageService.getOrDefault("lastUpdate", 0);
-			if (lastUpdate > lu)
+			var lu = StorageService.getOrDefault("lastUpdate", null);
+			if (new Date(lastUpdate) > new Date(lu))
 				lu = lastUpdate;
-			return lu ? lu : null;
+			return lu || null;
 		},
 		getExtendedDiscard: function () {
 			return extendedDiscard;
@@ -798,8 +808,119 @@ angular.module('starter.services', [])
 		    for (var i = 0; i < extra.length; i++)
 		        for (var j = 0; j < extra[i].entries.length; j++)
 		            extra[i].entries[j].course.color = extra[i].color;
+		},
+		setEventServiceCallback: function (cb) {
+			eventServiceCallback = cb;
 		}
     };
 	//} catch (e) {alert(e);}
 })
+
+
+.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService) {
+	var ready = false;
+	var callbacks = [];
+	
+	var kth = DataService.getSortedEvents();
+	if (!kth)
+		DataService.setEventServiceCallback(function () {
+			kth = DataService.getSortedEvents();
+			merge();
+		});
+	
+	var section = SectionService.getEvents();
+	if (!section)
+		SectionService.setEventServiceCallback(function () {
+			section = SectionService.getEvents();
+			merge();
+		});
+	
+	var all = [];
+	var index = {};
+		
+	var merge = function () {
+		if (!kth || !section)
+			return;
+		
+		var latestDate = null;
+		var add = function (event) {
+			if (new Date(event.start).toDateString() != latestDate) {
+				latestDate = new Date(event.start).toDateString();
+				index[latestDate] = all.length;
+			}
+			all.push(event);
+		};
+		
+		all = [];
+		index = {};
+		
+        var kthIndex = 0;
+        var sectionIndex = 0;
+        var currentSorted;
+        var currentSection;
+
+        while (kthIndex < kth.length && sectionIndex < section.length) {
+            currentSorted = kth[kthIndex];
+            currentSection = SectionService.convert(section[sectionIndex]);
+
+            if (new Date(currentSorted.start).getTime() < new Date(currentSection.start).getTime()) {
+                add(currentSorted);
+                kthIndex++;
+            } else {
+                add(currentSection);
+                sectionIndex++;
+            }
+        }
+
+        if (kthIndex == kth.length)
+            for (; sectionIndex < section.length; sectionIndex++)
+                add(SectionService.convert(section[sectionIndex]));
+        else
+            for (; kthIndex < kth.length; kthIndex++)
+                add(kth[kthIndex]);
+
+        ready = true;
+		for (var i = 0; i < callbacks.length; i++)
+			callbacks[i]();
+	};
+	
+	var eventsByDate = function (dateString, getkth, getsection) {
+		var ind = index[dateString];
+		if (ind) {
+			var res = [];
+			while (ind < all.length && new Date(all[ind].start).toDateString() == dateString) {
+				if ((!all[ind].isSectionEvent && getkth) || (all[ind].isSectionEvent && getsection))
+					res.push(all[ind]);
+				ind++;
+			}
+			return res;
+		}
+		else return [];
+	};
+	
+	merge();
+	
+	
+	return {
+		allByDate: function (dateString) {
+			return ready ? eventsByDate(dateString, true, true) : null;
+		},
+		kthByDate: function (dateString) {
+			return ready ? eventsByDate(dateString, true, false) : null;
+		},
+		sectionByDate: function (dateString) {
+			return ready ? eventsByDate(dateString, false, true) : null;
+		},
+		isReady: function () {
+			return ready;
+		},
+		registerCallback: function (cb) {
+			callbacks.push(cb);
+		},
+		all: function () {
+			return all;
+		}
+	};
+})
+
 ;

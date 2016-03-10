@@ -110,7 +110,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för week.html
-.controller('WeekViewCtrl', function ($scope, $state, $stateParams, DataService, ConvenientService, SectionService) {
+.controller('WeekViewCtrl', function ($scope, $state, $stateParams, DataService, ConvenientService, SectionService, EventService) {
 	//hämta färglistan för olika händelser
     var colorRef = DataService.getEventTypeColors();
     $scope.typeColor = function (event) {
@@ -172,54 +172,16 @@ angular.module('starter.controllers', [])
             toFix[i].childNodes[1].style.width = (toFix[i].offsetWidth - 2) + "px";
     };
 
-	//blandar ihop kth- och sektionshändelser i en lista, i kronologisk ordning
-    var mergeEvents = function (sorted, section) {
-        var res = [];
-        var sortedIndex = 0;
-        var sectionIndex = 0;
-        var currentSorted;
-        var currentSection;
-
-        while (sortedIndex < sorted.length && sectionIndex < section.length) {
-            currentSorted = sorted[sortedIndex];
-            currentSection = SectionService.convert(section[sectionIndex]);
-
-            if (new Date(currentSorted.start).getTime() < new Date(currentSection.start).getTime()) {
-                res.push(currentSorted);
-                sortedIndex++;
-            } else {
-                res.push(currentSection);
-                sectionIndex++;
-            }
-        }
-
-        if (sortedIndex == sorted.length)
-            for (; sectionIndex < section.length; sectionIndex++)
-                res.push(SectionService.convert(section[sectionIndex]));
-        else
-            for (; sortedIndex < sorted.length; sortedIndex++)
-                res.push(sorted[sortedIndex]);
-
-        return res;
-    };
-
-	//körs varje gång veckan öppnas 
-    var refresh = function () {
+	//körs varje gång veckan öppnas
+    var refresh;
+    refresh = function () {
         $scope.weekNumber = ConvenientService.weekNumber($scope.start);
-	
-		//hämta händelser
-        var sorted = DataService.getSortedEvents();
-        var section = [];
-        if (DataService.getMixEvents())
-            section = SectionService.getEvents();
 		
-        if (sorted != null) {
-            var total = mergeEvents(sorted, section);
-			
+        if (EventService.isReady()) {
 			//vi har 5 eller 7 dagar med lite namn och datum, samt en array med eventlådor
 			//eventlådorna har en referens till eventet, och låter oss hålla koll på om det sker fler saker samtidigt
 			//systemet funkar halvkackigt, men krockar bara två saker kan den hantera det iaf
-            var events = [];
+            var allEvents = [];
             var days = [];
             for (var i = 0; i < 7; i++) {
                 var d = new Date($scope.start.getTime() + 1000 * 3600 * 24 * i)
@@ -229,56 +191,53 @@ angular.module('starter.controllers', [])
                     eventBoxes: [],
                     date: d.toDateString()
                 });
-            }
+			}
+			
+			for (var i = 0; i < 7; i++) {
+				var events = DataService.getMixEvents() ? EventService.allByDate(days[i].date) : EventService.kthByDate(days[i].date);
+				for (var j = 0; j < events.length; j++) {
+					var start, end;
+					
+					if (events[j].isAllDayEvent) {
+						start = new Date(events[j].original.start.date.substring(0, 4), events[j].original.start.date.substring(5, 7) - 1, events[j].original.start.date.substring(8));
+						end = new Date(start.getTime() + new Date(events[j].end).getTime() - new Date(events[j].start).getTime() - 1);
+					} else {
+						start = new Date(events[j].start);
+						end = new Date(events[j].end);
+					}
 
-			//gå igenom alla händelser och stoppa dem i lådor på rätt dag
-			for (var i = 0; i < total.length; i++) {
-			    var start, end;
-				
-				//googleeventsen har ingen flagga om de är heldagshändelser eller inte,
-				//men om de är de definierar de en start.date i stället för start.dateTime
-				//så detta undersöker om det är en heldagshändelse
-			    if (total[i].isSectionEvent && total[i].original.start.date) {
-			        start = new Date(total[i].original.start.date.substring(0, 4), total[i].original.start.date.substring(5, 7) - 1, total[i].original.start.date.substring(8));
-			        end = new Date(start.getTime() + new Date(total[i].end).getTime() - new Date(total[i].start).getTime() - 1);
-			    } else {
-			        start = new Date(total[i].start);
-			        end = new Date(total[i].end);
-			    }
-
-			    if ((start >= $scope.start && start <= $scope.end) || (end >= $scope.start && end <= $scope.end)) {
-			        events.push(total[i]);
+					allEvents.push(events[j]);
 					
 					//om det är en heldagshändelse splittar den i en eventbox för varje dag, där alla pekar på samma originalhändelse
 					//heldagshändelser krockar inte utan staplas alltid på varandra, så vi hårdkodar att de är ensamma och först
-			        if (total[i].isSectionEvent && total[i].original.start.date) {
-			            var dur = Math.round((new Date(total[i].end).getTime() - new Date(total[i].start).getTime()) / (1000 * 3600 * 24));
-			            for (var j = 0; j < dur && start.getDay() + j - 1 < 7; j++) {
-			                days[(start.getDay() + 6 + j) % 7].eventBoxes.push({
-			                    event: total[i],
-			                    simultaneous: 1,
-			                    index: 0,
-                                allDay: true
-			                });
-			            }
-			        } else {
+					if (events[j].isSectionEvent && events[j].original.start.date) {
+						var dur = Math.round((new Date(events[j].end).getTime() - new Date(events[j].start).getTime()) / (1000 * 3600 * 24));
+						for (var k = 0; k < dur && start.getDay() + k - 1 < 7; k++) {
+							days[(start.getDay() + 6 + k) % 7].eventBoxes.push({
+								event: events[j],
+								simultaneous: 1,
+								index: 0,
+								allDay: true
+							});
+						}
+					} else {
 						//vi kollar hur många händelser som redan är ditlagda i eventboxlistan på samma tid, oftast är detta 0 (händelsen själv exkluderas)
-			            var sim = ConvenientService.collisions(total[i], days[(start.getDay() + 6) % 7].eventBoxes);
-			            for (var j = 0; j < sim.length; j++) {
-			                sim[j].simultaneous = sim.length + 1;
-			            }
-						//stoppa händelsen i en låda på rött dag
-			            days[(start.getDay() + 6) % 7].eventBoxes.push({
-			                event: total[i],
+						var sim = ConvenientService.collisions(events[j], days[(start.getDay() + 6) % 7].eventBoxes);
+						for (var k = 0; k < sim.length; k++) {
+							sim[k].simultaneous = sim.length + 1;
+						}
+						//stoppa händelsen i en låda på rätt dag
+						days[(start.getDay() + 6) % 7].eventBoxes.push({
+							event: events[j],
 							//tiderna mäts i millisekunder
-			                timeTop: (start.getHours() * 60 + start.getMinutes()) * 60 * 1000,
-                            timeHeight: (end.getTime() - start.getTime()),
-			                simultaneous: sim.length + 1,
-			                index: sim.length,
-                            allDay: false
-			            });
-			        }
-			    }
+							timeTop: (start.getHours() * 60 + start.getMinutes()) * 60 * 1000,
+							timeHeight: (end.getTime() - start.getTime()),
+							simultaneous: sim.length + 1,
+							index: sim.length,
+							allDay: false
+						});
+					}
+				}
 			}
 			
 			//om inget händer på helgen tar vi bort de dagarna
@@ -291,8 +250,8 @@ angular.module('starter.controllers', [])
             $scope.days = days;
 			
 			//beräkna hur många tidsstreck vi ska visa, visar alltid minst 8:00-17:00 hur som helst
-            $scope.earliest = Math.min(ConvenientService.earliestTimeOfDay(events), 1000 * 3600 * 8);
-            $scope.latest = Math.max(ConvenientService.latestTimeOfDay(events), 1000 * 3600 * 17);
+            $scope.earliest = Math.min(ConvenientService.earliestTimeOfDay(allEvents), 1000 * 3600 * 8);
+            $scope.latest = Math.max(ConvenientService.latestTimeOfDay(allEvents), 1000 * 3600 * 17);
 			var hours = [];
 			for (var i = $scope.earliest; i <= $scope.latest; i += 1000 * 3600)
 			    hours.push(i);
@@ -312,34 +271,69 @@ angular.module('starter.controllers', [])
 			//definiera en timmes längd i schemat. ögonmåttat, men verkar typ oftast duga
 			$scope.unit = (80 - 3 * maxAllDayEvents) / (hours.length);
         }
-        else
+        else {
 			$scope.days = null;
+			EventService.registerCallback(refresh);
+		}
     };
 
     $scope.$on('$ionicView.enter', refresh);
 })
 
 //controller för month.html
-.controller('MonthViewCtrl', function ($scope, $state, $stateParams, DataService, ConvenientService, SectionService) {
-	var refresh = function () {
-		$scope.month = $stateParams.month * 1;
-		$scope.year = $stateParams.year * 1;
-		
-		$scope.next = $scope.month == 12 ? ($scope.year + 1) + "/1" : $scope.year + "/" + ($scope.month + 1);
-		$scope.previous = $scope.month == 1 ? ($scope.year - 1) + "/12" : $scope.year + "/" + ($scope.month - 1);
-		$scope.title = ConvenientService.getMonthName($scope.month - 1) + " " + $scope.year;
-		
-		$scope.dayName = function (day)  {
-			return ConvenientService.getDayName(day).replace("dag", "");
-		};
-		//TODO: fortsätt
+.controller('MonthViewCtrl', function ($scope, $state, $stateParams, DataService, ConvenientService, EventService) {
+	$scope.month = $stateParams.month * 1;
+	$scope.year = $stateParams.year * 1;
+	
+	$scope.next = $scope.month == 12 ? ($scope.year + 1) + "/1" : $scope.year + "/" + ($scope.month + 1);
+	$scope.previous = $scope.month == 1 ? ($scope.year - 1) + "/12" : $scope.year + "/" + ($scope.month - 1);
+	$scope.title = ConvenientService.getMonthName($scope.month - 1) + " " + $scope.year;
+	
+	$scope.dayName = function (day) {
+		return ConvenientService.getDayName(day).replace("dag", "");
+	};
+	$scope.dateFormat = ConvenientService.dateFormat;
+	
+	$scope.start = new Date($scope.year, $scope.month - 1, 1);
+	while ($scope.start.getDay() != 1)
+		$scope.start.setDate($scope.start.getDate() - 1);
+	$scope.end = new Date($scope.year, $scope.month, 0);
+	while ($scope.end.getDay() % 7 != 0)
+		$scope.end.setDate($scope.end.getDate() + 1);
+	
+	var refresh;
+	refresh = function () {
+		if (EventService.isReady()) {
+			var weeks = [];
+			var current = new Date($scope.start);
+			while (current < $scope.end) {
+				var week = {
+					number: ConvenientService.weekNumber(current),
+					days: []
+				};
+				for (var i = 0; i < 7; i++) {
+					week.days.push({
+						date: new Date(current),
+						today: current.toDateString() == new Date().toDateString(),
+						events: DataService.getMixEvents() ? EventService.allByDate(current.toDateString()) : EventService.kthByDate(current.toDateString())
+					});
+					current.setDate(current.getDate() + 1);
+				}
+				weeks.push(week);
+			}
+			$scope.weeks = weeks;
+		}
+		else {
+			$scope.weeks = null;
+			EventService.registerCallback(refresh);
+		}
 	};
     
     $scope.$on('$ionicView.enter', refresh);
 })
 
 //controller för feed.html
-.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService) {
+.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService, EventService) {
     //try {
 	$scope.format = ConvenientService.verboseDateFormat;
     $scope.getTime = function (dateString) {
@@ -986,5 +980,4 @@ angular.module('starter.controllers', [])
 	
 	
 })
-
 ;

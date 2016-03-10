@@ -94,7 +94,6 @@ angular.module('starter.getfood', ['starter.services'])
 							});
 						}
 						
-						console.log(dishes);
 						for (var i = 0; i < dishes.length; i++) {
 							if (/(monday|lunch|priser)/ig.test(dishes[i].title))
 								break;
@@ -174,7 +173,8 @@ angular.module('starter.getfood', ['starter.services'])
 					var menu = [];
 					try {
 						var xml = parseXml(partial);
-						var row = xml.getElementsByTagName("tbody")[day];
+						//var row = xml.getElementsByTagName("tbody")[day];
+						var row = xml.getElementsByTagName("tbody")[0];
 						
 						for (var i = 0; i < row.children.length; i++)
 							menu.push(row.children[i].children[0].childNodes[0].nodeValue.trim());

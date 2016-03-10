@@ -26,11 +26,15 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 	
 	var events = null;
 	var sectionResponse = null;
-	var lastUpdated = StorageService.getOrDefault("sectionLastUpdated", 0);
+	var lastUpdated = StorageService.getOrDefault("sectionLastUpdated", null);
+	
+	var eventServiceCallback = null;
 	
 	//körs när alla utgående api-anrop är klara (i detta fall är det bara 1)
 	//refreshar vyn (dvs visar händelserna) om man är på en rimlig sida
 	var onDone = function () {
+		if (eventServiceCallback)
+			eventServiceCallback();
 		if ($state.current.name == "app.section" || (DataService.getMixEvents() && ($state.current.name == "app.feed" || $state.current.name == "app.week")))
 			$state.go($state.current, {}, { reload: true });
 	};
@@ -50,7 +54,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			            events = [];
 			        }
 			        else {
-			            lastUpdated = new Date().getTime();
+			            lastUpdated = new Date().toDateString();
 			            StorageService.set("sectionLastUpdated", lastUpdated);
 			        }
 			    } catch (e) {
@@ -67,12 +71,14 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 	};
 	
 	//uppdatera om det har gått >1 dygn sen senaste gången
-	if (new Date().getTime() - lastUpdated > 1000 * 3600 * 24)
+	if (new Date().toDateString() != lastUpdated)
 		update();
 	else {
 		console.log("Reading section events from cache");
 		sectionResponse = StorageService.getOrDefault("sectionResponse");
 		events = sectionResponse.items;
+		if (eventServiceCallback)
+			eventServiceCallback();
 	}
 	
 	var getTime = function (date) {
@@ -93,10 +99,13 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 		convert: function (event) {
 			return {
 				isSectionEvent: true,
+				//googleeventsen har ingen flagga om de är heldagshändelser eller inte,
+				//men om de är de definierar de en start.date i stället för start.dateTime
+				isAllDayEvent: !!event.start.date,
+				original: event,
 				course: { name: (event.summary || "").trim(), color: "#ff642b" },
 				locations: [{name: event.location || ""}],
 				title: (event.summary || "").trim(),
-				original: event,
 				start: event.start.dateTime || event.start.date,
 				end: event.end.dateTime || event.end.date
 			};
@@ -107,6 +116,9 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 				var days = Math.round((new Date(event.end.date).getTime() - new Date(event.start.date).getTime()) / (1000 * 3600 * 24));
 				return (days == 1 ? "Hela dagen" : days + " dagar");
 			} else return getTime(event.start.dateTime || event.start.date) + "-" + getTime(event.end.dateTime || event.end.date);
+		},
+		setEventServiceCallback: function (cb) {
+			eventServiceCallback = cb;
 		}
     };
 })
@@ -117,7 +129,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     var section = null;
     var union = null;
     var requests = -1;
-    var lastUpdate = StorageService.getOrDefault("rssLastUpdate", 0);
+    var lastUpdate = StorageService.getOrDefault("rssLastUpdate", "");
     var fail = false;
 
 	//ger ett xmlträd från en sträng
@@ -150,7 +162,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         if (requests == 0) {
             requests = -1;
             if (!fail) {
-                lastUpdate = new Date().getTime();
+                lastUpdate = new Date().toDateString();
                 StorageService.set("rssLastUpdate", lastUpdate);
                 StorageService.set("rssF", section);
                 StorageService.set("rssTHS", union);
@@ -214,7 +226,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     };
 
 	//uppdaterar rss-flödena om det gått ett dygn sen senaste
-    if (new Date().getTime() - lastUpdate > 1000 * 3600 * 24)
+    if (new Date().toDateString() != lastUpdate)
         update();
     else {
         console.log("getting rss feeds from cache");
