@@ -12,7 +12,8 @@ angular.module('starter.getxkcd', ['starter.services'])
 	};
 	
 	var updatexkcd = function (callbackFunc,nr) {
-		//"ta en callback"
+		//nr=-1 => random comic
+		//nr!=-1 => latest comic
 		console.log("Updating xkcd");
 		var number="";
 		if(nr==-1){
