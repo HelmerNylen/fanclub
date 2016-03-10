@@ -12,14 +12,14 @@ angular.module('starter.controllers', [])
 	
 	
 	//skapar detaljyvy för en KTH-händelse som popup
-    $ionicModal.fromTemplateUrl('templates/details.html', {
+    $ionicModal.fromTemplateUrl('templates/modals/details.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.modal = modal;
     });
 	
 	//skapar detaljyvy för en sektionshändelse som popup
-	$ionicModal.fromTemplateUrl('templates/sectiondetails.html', {
+	$ionicModal.fromTemplateUrl('templates/modals/sectiondetails.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.sectionModal = modal;
@@ -552,13 +552,13 @@ angular.module('starter.controllers', [])
 	
 	//gör två modals, en för att visa detaljer om en kurs,
 	//en för att lägga till ny kurs
-	$ionicModal.fromTemplateUrl('templates/course.html', {
+	$ionicModal.fromTemplateUrl('templates/modals/course.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.viewCourseModal = modal;
     });
 	
-	$ionicModal.fromTemplateUrl('templates/addcourse.html', {
+	$ionicModal.fromTemplateUrl('templates/modals/addcourse.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.addCourseModal = modal;
@@ -832,7 +832,7 @@ angular.module('starter.controllers', [])
 	};
 
 	//gör en modal av rssflödesvisaren
-	$ionicModal.fromTemplateUrl('templates/rss.html', {
+	$ionicModal.fromTemplateUrl('templates/modals/rss.html', {
 	    scope: $scope
 	}).then(function (modal) {
 	    $scope.rssmodal = modal;
@@ -941,7 +941,7 @@ angular.module('starter.controllers', [])
 	}
 	
 	
-	$ionicModal.fromTemplateUrl('templates/map.html', {
+	$ionicModal.fromTemplateUrl('templates/modals/map.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.mapModal = modal;
@@ -955,7 +955,7 @@ angular.module('starter.controllers', [])
 		$scope.mapModal.hide();
 	};
 		
-	$ionicModal.fromTemplateUrl('templates/xkcd.html', {
+	$ionicModal.fromTemplateUrl('templates/modals/xkcd.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.xkcdModal = modal;

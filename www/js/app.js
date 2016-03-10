@@ -134,7 +134,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
       .state('app', {
           url: '/app',
           abstract: true,
-          templateUrl: 'templates/menu.html',
+          templateUrl: 'templates/regular/menu.html',
           controller: 'AppCtrl'
       })
 
@@ -142,7 +142,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         url: '/week/:startTime',
         views: {
             'menuContent': {
-                templateUrl: 'templates/week.html',
+                templateUrl: 'templates/regular/week.html',
                 controller: 'WeekViewCtrl'
             }
         }
@@ -152,7 +152,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         url: '/feed/:startTime/:endTime',
         views: {
             'menuContent': {
-                templateUrl: 'templates/feed.html',
+                templateUrl: 'templates/regular/feed.html',
                 controller: 'FeedViewCtrl'
             }
         }
@@ -162,7 +162,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         url: '/month/:year/:month',
         views: {
             'menuContent': {
-                templateUrl: 'templates/month.html',
+                templateUrl: 'templates/regular/month.html',
                 controller: 'MonthViewCtrl'
             }
         }
@@ -172,7 +172,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         url: '/settings',
         views: {
             'menuContent': {
-                templateUrl: 'templates/settings.html',
+                templateUrl: 'templates/regular/settings.html',
                 controller: 'SettingsCtrl'
             }
         }
@@ -182,7 +182,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         url: '/food',
         views: {
             'menuContent': {
-                templateUrl: 'templates/food.html',
+                templateUrl: 'templates/regular/food.html',
                 controller: 'FoodCtrl'
             }
         }
@@ -192,7 +192,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         url: '/tools',
         views: {
             'menuContent': {
-                templateUrl: 'templates/tools.html',
+                templateUrl: 'templates/regular/tools.html',
                 controller: 'ToolsCtrl'
             }
         }
@@ -204,7 +204,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         url: '/section',
         views: {
             'menuContent': {
-                templateUrl: 'templates/section.html',
+                templateUrl: 'templates/regular/section.html',
                 controller: 'SectionCtrl'
             }
         }
