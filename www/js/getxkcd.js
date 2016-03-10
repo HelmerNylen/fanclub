@@ -11,11 +11,15 @@ angular.module('starter.getxkcd', ['starter.services'])
 		callbackFunc();
 	};
 	
-	var updatexkcd = function (callbackFunc) {
+	var updatexkcd = function (callbackFunc,nr) {
 		//"ta en callback"
 		console.log("Updating xkcd");
+		var number="";
+		if(nr==-1){
+			number=(Math.floor(Math.random() * 1653) + 1).toString();
+		}
 		try {
-			$http.get(XkcdEndpoint.url+URLs.xkcdJson()
+			$http.get(XkcdEndpoint.url+number+'/'+URLs.xkcdJson()
 				).then(
 				function successCallback(response) {
 					var safetitle = response.data.safe_title;
@@ -25,8 +29,7 @@ angular.module('starter.getxkcd', ['starter.services'])
 					title=safetitle;
 					alt=al;
 					img=im;
-					cLink=XkcdEndpoint.url+n.toString();
-					console.log(img);
+					cLink=XkcdEndpoint.url+n.toString()+'/#';
 					onDone(callbackFunc);
 				},
 				function errorCallback(response) {
@@ -48,7 +51,6 @@ angular.module('starter.getxkcd', ['starter.services'])
 		},
 		getTitle: function() {
 			return title;
-			
 		},
 		getAlt: function() {
 			return alt;
@@ -56,8 +58,8 @@ angular.module('starter.getxkcd', ['starter.services'])
 		getUrl: function() {
 			return cLink;
 		},
-		update: function(callbackFunc) {
-			updatexkcd(callbackFunc);
+		update: function(callbackFunc,nr) {
+			updatexkcd(callbackFunc,nr);
 		}
     };
 })

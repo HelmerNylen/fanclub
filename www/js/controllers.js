@@ -912,10 +912,9 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, xkcdService, StorageService) {
-	var refresh = function () {
-		
-		xkcdService.update(setVars);
+.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicPopover, xkcdService, StorageService, ConvenientService) {
+	var refresh = function (nr) {
+		xkcdService.update(setVars,nr);
 	};
 	var setVars= function (){
 		$scope.xkcdTitle= xkcdService.getTitle();
@@ -923,8 +922,6 @@ angular.module('starter.controllers', [])
 		$scope.xkcdAlt= xkcdService.getAlt();
 		$scope.xkcdUrl= xkcdService.getUrl();
 		console.log("link is: "+$scope.xkcdUrl);
-
-
 	}
 	
 	
@@ -934,21 +931,22 @@ angular.module('starter.controllers', [])
         $scope.mapModal = modal;
     });
 	
+	$scope.openMap = function () {
+        $scope.mapModal.show();
+    };
+	
+	$scope.closeMap = function () {
+		$scope.mapModal.hide();
+	};
+		
 	$ionicModal.fromTemplateUrl('templates/xkcd.html', {
         scope: $scope
     }).then(function (modal) {
         $scope.xkcdModal = modal;
     });
-	
-	$scope.closeMap = function () {
-		$scope.mapModal.hide();
-	};
-	
-	$scope.openMap = function () {
-        $scope.mapModal.show();
-    };
 
     $scope.openXkcd = function () {
+		refresh(0);
         $scope.xkcdModal.show();
     };
 	
@@ -956,12 +954,12 @@ angular.module('starter.controllers', [])
 		$scope.xkcdModal.hide();
 	};
 	
+	$scope.updateXkcd = function(nr){
+		refresh(nr);
+	};
 	
-	 $scope.$on('loadingIsDone', function (event, args) {
-		$scope.message = args.message;
-		console.log($scope.message);
- });
-	$scope.$on('modal.shown', refresh);
+	//0 is latest comic, -1 is random
+	$scope.$on('modal.shown', refresh(0));
 
 	
 	
