@@ -23,19 +23,23 @@
 					Flöde
                 </ion-item>
                 <ion-item class="item-icon-left" menu-close href="#/app/week/{{ weekStart }}" style="border: 0">
-                    <i class="icon ion-calendar"></i>
+                    <i class="icon ion-more"></i>
                     Vecka
                 </ion-item>
-				<ion-item class="item-icon-left" menu-close href="#/app/food" ng-if="menusEnabled" style="border: 0">
-                    <i class="icon ion-android-restaurant"></i>
-                    Matsedlar
+                <ion-item class="item-icon-left" menu-close href="#/app/month/{{ year }}/{{ month }}" style="border: 0">
+                    <i class="icon ion-calendar"></i>
+                    Månad
                 </ion-item>
 				<ion-item class="item-icon-left" menu-close href="#/app/section" style="border: 0">
                     <i class="icon ion-social-tux"></i>
                     Sektionen
                 </ion-item>
+				<ion-item class="item-icon-left" menu-close href="#/app/food" ng-if="menusEnabled" style="border: 0">
+                    <i class="icon ion-android-restaurant"></i>
+                    Matsedlar
+                </ion-item>
 				<ion-item class="item-icon-left" menu-close href="#/app/tools" style="border: 0">
-                    <i class="icon ion-information-circled"></i>
+                    <i class="icon ion-coffee"></i>
                     Bra att ha
                 </ion-item>
                 <ion-item class="item-icon-left" menu-close href="#/app/settings" style="border: 0">

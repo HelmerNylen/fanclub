@@ -104,6 +104,9 @@ angular.module('starter.controllers', [])
     while (weekStart.getDay() > 1)
         weekStart = new Date(weekStart.getTime() - 1000 * 3600 * 24);
     $scope.weekStart = ConvenientService.dateFormat(new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate()));
+	
+	$scope.month = new Date().getMonth() + 1;
+	$scope.year = new Date().getFullYear();
 })
 
 //controller för week.html
@@ -316,6 +319,25 @@ angular.module('starter.controllers', [])
     $scope.$on('$ionicView.enter', refresh);
 })
 
+//controller för month.html
+.controller('MonthViewCtrl', function ($scope, $state, $stateParams, DataService, ConvenientService, SectionService) {
+	var refresh = function () {
+		$scope.month = $stateParams.month * 1;
+		$scope.year = $stateParams.year * 1;
+		
+		$scope.next = $scope.month == 12 ? ($scope.year + 1) + "/1" : $scope.year + "/" + ($scope.month + 1);
+		$scope.previous = $scope.month == 1 ? ($scope.year - 1) + "/12" : $scope.year + "/" + ($scope.month - 1);
+		$scope.title = ConvenientService.getMonthName($scope.month - 1) + " " + $scope.year;
+		
+		$scope.dayName = function (day)  {
+			return ConvenientService.getDayName(day).replace("dag", "");
+		};
+		//TODO: fortsätt
+	};
+    
+    $scope.$on('$ionicView.enter', refresh);
+})
+
 //controller för feed.html
 .controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService) {
     //try {
@@ -497,7 +519,7 @@ angular.module('starter.controllers', [])
 				var format = function (date) {
 					var d = new Date(date);
 
-					return d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 9 ? "0" + d.getDate() : d.getDate().toString());
+					return d.getFullYear() + "-" + (d.getMonth() < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
 				};
 				var start = new Date().getMonth() >= 6 ? new Date(new Date().getFullYear(), 6) : new Date(new Date().getFullYear() - 1, 6);
 				var end = new Date(start.getFullYear() + 1, start.getMonth());
@@ -823,8 +845,8 @@ angular.module('starter.controllers', [])
 	});
 	
 	//öppnar rssmodalen, och blandar ihop händelserna om det inte redan gjorts
-	$scope.openNews = function () {
-	    if (!$scope.rssMerge) {
+	$scope.openNews = function (ths) {
+	    /*if (!$scope.rssMerge) {
 	        var merge = [];
 	        var findex = 0, thsindex = 0;
 	        while (findex < $scope.sectionRss.length && thsindex < $scope.unionRss.length) {
@@ -850,8 +872,8 @@ angular.module('starter.controllers', [])
 	            thsindex++;
 	        }
 	        $scope.rssMerge = merge;
-	    }
-
+	    }*/
+		$scope.currentRss = ths ? $scope.unionRss : $scope.sectionRss;
 	    $scope.rssmodal.show();
 	};
 

@@ -34,7 +34,7 @@ angular.module('starter.services', [])
         dateFormat: function (date) {
             var d = new Date(date);
 
-            return d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 9 ? "0" + d.getDate() : d.getDate().toString());
+            return d.getFullYear() + "-" + (d.getMonth() < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
         },
 		//formaterar ett datum som ex. "Imorgon, fredag den 19 februari" eller "Torsdag den 5 maj 2013"
         verboseDateFormat: function (date) {
@@ -59,6 +59,9 @@ angular.module('starter.services', [])
         getDayName: function (day) {
             return weekdays[day];
         },
+		getMonthName: function (month) {
+			return months[month];
+		},
 		//ger en tid i millisekunder som t.ex. 2 dagar, 1 timme och 30 minuter
 		//ger bara första komponenten (ex. 2 dagar) om roughEstimate är true
 		timeFormat: function(ms, roughEstimate)
@@ -149,7 +152,6 @@ angular.module('starter.services', [])
 			try {
 				cordova.InAppBrowser.open(url, "_system");
 			} catch (e1) {
-				console.log(e1);
 				window.open(url, "_blank");
 			}
 		},

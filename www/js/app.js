@@ -149,6 +149,16 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         }
     })
 	
+	.state('app.month', {
+        url: '/month/:year/:month',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/month.html',
+                controller: 'MonthViewCtrl'
+            }
+        }
+    })
+	
 	.state('app.settings', {
         url: '/settings',
         views: {
@@ -193,7 +203,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     var format = function (date) {
         var d = new Date(date);
 
-        return d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 9 ? "0" + d.getDate() : d.getDate().toString());
+        return d.getFullYear() + "-" + (d.getMonth() < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
     };
     var start = new Date().getMonth() >= 6 ? new Date(new Date().getFullYear(), 6) : new Date(new Date().getFullYear() - 1, 6);
     var end = new Date(start.getFullYear() + 1, start.getMonth());

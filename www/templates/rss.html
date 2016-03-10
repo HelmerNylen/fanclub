@@ -7,7 +7,7 @@
     </ion-header-bar>
     <ion-content>
         <div class="list">
-            <div class="item section-news" ng-repeat="item in rssMerge" on-tap="openInBrowser(item.link)">
+            <div class="item section-news" ng-repeat="item in currentRss" on-tap="openInBrowser(item.link)">
                 <div class="item-text-wrap" newstitle>
                     {{ item.title }}
                 </div>
@@ -20,9 +20,9 @@
                     <br />
                     {{ dateFormat(item.date) }}
                 </div>
-                <div class="euclid" ng-if="item.isSectionPost" style="color: #ff642b; float: left; margin-right: 10px; margin-top: 10px; font-size: 24px">
+                <!--div class="euclid" ng-if="item.isSectionPost" style="color: #ff642b; float: left; margin-right: 10px; margin-top: 10px; font-size: 24px">
                     <i class="icon ion-social-freebsd-devil"></i>
-                </div>
+                </div-->
             </div>
         </div>
     </ion-content>

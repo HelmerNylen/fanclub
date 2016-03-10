@@ -3,15 +3,6 @@
         <button class="button icon ion-music-note" ng-click="shalalie($event)"></button>
     </ion-nav-buttons>
     <ion-content style="background-color: #fbfbfb">
-		<!--<div class="list card">
-			<div class="item item-divider item-energized">
-				<i class="icon ion-alert-circled"></i>
-				Denna sida är under konstruktion
-			</div>
-			<div class="item item-text-wrap">
-				Så här tråkig kommer den förhoppningsvis inte vara i framtiden. Buggar kan förekomma.
-			</div>
-		</div>-->
         <!--<div class="row">
             <div class="col button button-ctfys" on-tap="openInBrowser('spotify:track:5TnZihe1AVVHPtgX1osH6Y')" style="margin: 5px">
                 Sha-la-lie på Spotify
@@ -27,8 +18,8 @@
             <div class="section-headline">
                 Nyheter
             </div>
-            <div class="row" on-tap="openNews()">
-                <div class="col card section-card" style="padding: 1em">
+            <div class="row">
+                <div class="col card section-card" style="padding: 1em" on-tap="openNews(false)">
                     <div type>
                         Fysiksektionen
                     </div>
@@ -47,7 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col card section-card" style="padding: 1em">
+                <div class="col card section-card" style="padding: 1em" on-tap="openNews(true)">
                     <div type>
                         THS
                     </div>

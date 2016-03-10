@@ -62,13 +62,13 @@
         </div>
         <div class="row" style="width: 100%; padding: 0;">
             <div class="col col-10" style="width: 5ch; margin: 0; padding: 0;">
-                <div style="font-weight: bold; height: {{ unit }}vh; text-align: right; font-size: 12px; border-top: 1px solid #bbb; padding-right: 10px; white-space: nowrap;" ng-repeat="hour in hours">
+                <div style="font-weight: bold; height: {{ unit }}vh; text-align: right; font-size: 12px; border-top: 1px solid #bbb; padding-right: 10px; white-space: nowrap;" ng-repeat="hour in hours" ng-style="{ 'border-bottom': $index == hours.length - 1 ? '1px solid #bbb' : 'initial'}">
                     {{ getTime(hour - 3600 * 1000) }}
                 </div>
             </div>
             <div class="col" ng-repeat="day in days" style="margin: 0; padding: 0; background-color: {{ day.date == today ? '#ddd' : 'inherit' }}">
                 <div style="position: relative; height: 100%; border-left: 1px solid #888">
-                    <div ng-repeat="hour in hours" style="width: 100%; height: {{ unit }}vh; border-top: 1px solid #bbb">
+                    <div ng-repeat="hour in hours" style="width: 100%; height: {{ unit }}vh; border-top: 1px solid #bbb" ng-style="{ 'border-bottom': $index == hours.length - 1 ? '1px solid #bbb' : 'initial'}">
                         &nbsp;
                     </div>
                     <div ng-repeat="box in day.eventBoxes" ng-if="!box.allDay" on-tap="box.event.isSectionEvent ? openSectionEvent(box.event.original) : openEvent(box.event)"
@@ -89,38 +89,7 @@
                 </div>
             </div>
         </div>
+		<!-- Kör fix(), som får för långa heldagsevent att passa in i rutorna -->
         <span ng-if="fix()"></span>
-
-
-            <div class="width: 100%; height: 100%" ng-if="1 == 0">
-                <div class="item-word-wrap" ng-repeat="event in events" ng-style="event.style" on-tap="openEvent(event.event)" style="font-size: 12px">
-                    <b>{{ getTime(event.event.start) }}</b> {{ event.event.title }}
-                    <!--<br />
-                {{ location(event.event.locations) }}-->
-                </div>
-                <table ng-if="events" style="width: 100%;">
-                    f=
-                    <!--tr style="font-weight: bold; text-align: center;">
-                    <td width="10%">&nbsp;</td>
-                    <td ng-repeat="day in days">
-                        {{ dayName(day.getDay()) }}
-                        <br />
-                        {{ format(day) }}
-                    </td>
-                </tr-->
-                    <tr ng-repeat="timeslot in timeslots">
-                        <td style="width: 10%; text-align: center; border: 1px solid #ddd">
-                            {{ getTime(timeslot.time) }}
-                        </td>
-                        <td ng-repeat="day in days" ng-style="{ 'background-color': format(day) == today ? '#eee' : '#fff' }" style="border: 1px solid #ccc;">
-                            &nbsp;
-                        </td>
-                    </tr>
-                </table>
-                <div ng-if="!days" style="text-align: center">
-                    <br /><br /><br />
-                    <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
-                </div>
-            </div>
 </ion-content>
 </ion-view>
