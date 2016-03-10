@@ -13,7 +13,7 @@
 		Äpple - try/catch runt $http.get
 */
 
-angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section'])
+angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section', 'starter.getxkcd'])
 //Konstanter som används i services som hämtar data, ex. DataService och SectionService
 /*/
 .constant('ApiEndpoint', {
@@ -31,6 +31,9 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 .constant('RssEndpoint', {
     f: 'http://' + window.location.host + '/rss/f/',
     ths: 'http://' + window.location.host + '/rss/ths/'
+})
+.constant('XkcdEndpoint', {
+    url: 'http://' + window.location.host + '/xkcd/'
 })
 
 /*/
@@ -50,6 +53,9 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 .constant('RssEndpoint', {
     f: 'http://f.kth.se/',
     ths: 'http://ths.kth.se/'
+})
+.constant('XkcdEndpoint', {
+    url: 'http://www.xkcd.com/'
 })
     
 //*/
@@ -96,6 +102,9 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 		for (var option in options)
 			extra += "&" + option + "=" + options[option];
 		return "calendars/" + id + "/events?key=" + key + extra;
+	},
+	xkcdJson: function(){
+		return "info.0.json"
 	}
 })
 
@@ -188,6 +197,8 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
             }
         }
     })
+
+	
 	
 	.state('app.section', {
         url: '/section',

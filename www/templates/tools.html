@@ -1,7 +1,20 @@
-<ion-view view-title="Karta över campus">
+<ion-view view-title="Bra att ha">
     <ion-content>
-				<ion-scroll min-zoom = 0.25 max-zoom=1 zooming="true" direction="xy" style="width: 100%; height: 100%" locking=false overflow-scroll="false">
-						<img src="img/karta.png" alt="karta" />
-				</ion-scroll>	
+		<div class="list">
+
+		  <a class="item item-icon-left" on-tap="openMap()">
+			<i class="icon ion-map"></i>
+			Karta över campus
+		  </a>
+
+		  <a class="item item-icon-left" on-tap="openXkcd()">
+			<i class="icon ion-happy-outline"></i>
+			xkcd
+		  </a>
+
+
+		</div>			
+
+				
     </ion-content>
 </ion-view>

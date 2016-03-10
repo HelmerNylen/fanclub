@@ -934,7 +934,57 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
-.controller('ToolsCtrl', function ($scope) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicPopover, xkcdService, StorageService, ConvenientService) {
+	var refresh = function (nr) {
+		xkcdService.update(setVars,nr);
+	};
+	var setVars= function (){
+		$scope.xkcdTitle= xkcdService.getTitle();
+		$scope.xkcdImg= xkcdService.getImg();
+		$scope.xkcdAlt= xkcdService.getAlt();
+		$scope.xkcdUrl= xkcdService.getUrl();
+		console.log("link is: "+$scope.xkcdUrl);
+	}
+	
+	
+	$ionicModal.fromTemplateUrl('templates/map.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.mapModal = modal;
+    });
+	
+	$scope.openMap = function () {
+        $scope.mapModal.show();
+    };
+	
+	$scope.closeMap = function () {
+		$scope.mapModal.hide();
+	};
+		
+	$ionicModal.fromTemplateUrl('templates/xkcd.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.xkcdModal = modal;
+    });
 
+    $scope.openXkcd = function () {
+		refresh(0);
+        $scope.xkcdModal.show();
+    };
+	
+	$scope.closeXkcd = function () {
+		$scope.xkcdModal.hide();
+	};
+	
+	$scope.updateXkcd = function(nr){
+		refresh(nr);
+	};
+	
+	//0 is latest comic, -1 is random
+	$scope.$on('modal.shown', refresh(0));
+
+	
+	
 })
+
 ;
