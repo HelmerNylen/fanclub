@@ -6,10 +6,7 @@ angular.module('starter.getxkcd', ['starter.services'])
 		var alt="";
 		var cLink="";
 	
-	//körs när alla anrop är klara
-	var onDone = function (callbackFunc) {
-		callbackFunc();
-	};
+	
 	
 	var updatexkcd = function (callbackFunc,nr) {
 		//nr=-1 => random comic
@@ -17,7 +14,23 @@ angular.module('starter.getxkcd', ['starter.services'])
 		console.log("Updating xkcd");
 		var number="";
 		if(nr==-1){
-			number=(Math.floor(Math.random() * 1653) + 1).toString();
+			try {
+			$http.get(XkcdEndpoint.url+'/'+URLs.xkcdJson()
+				).then(
+				function successCallback(resp) {
+					var n= resp.data.num;
+					number=(Math.floor(Math.random() * n) + 1).toString();
+				},
+				function errorCallback(resp) {
+					console.log("Error when getting xkcd: " + resp.status + ": " + resp.statusText + ", " + resp.data);
+					callbackFunc();
+
+				});
+				}catch (e) {
+					console.log(e);
+					}
+		}else{
+			console.log("UPPDATERAR MED SENASTE");
 		}
 		try {
 			$http.get(XkcdEndpoint.url+number+'/'+URLs.xkcdJson()
@@ -25,13 +38,16 @@ angular.module('starter.getxkcd', ['starter.services'])
 				function successCallback(response) {
 					var safetitle = response.data.safe_title;
 					var im = response.data.img;
+					console.log("number generated is "+number+" url requestad is: "+XkcdEndpoint.url+number+'/'+URLs.xkcdJson());
+					console.log(response.data.safe_title);
+
 					var al = response.data.alt;
 					var n= response.data.num;
 					title=safetitle;
 					alt=al;
 					img=im;
 					cLink=XkcdEndpoint.url+n.toString()+'/#';
-					onDone(callbackFunc);
+					callbackFunc();
 				},
 				function errorCallback(response) {
 					console.log("Error when getting xkcd: " + response.status + ": " + response.statusText + ", " + response.data);
@@ -39,7 +55,7 @@ angular.module('starter.getxkcd', ['starter.services'])
 					img="img/error_code.png";
 					alt="It has a section on motherboard beep codes that lists, for each beep pattern, a song that syncs up well with it.";
 					console.log(title);
-					onDone(callbackFunc);
+					callbackFunc();
 
 				});
 				}catch (e) {
