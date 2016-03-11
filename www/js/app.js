@@ -35,6 +35,9 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 .constant('XkcdEndpoint', {
     url: 'http://' + window.location.host + '/xkcd/'
 })
+.constant('BackmanEndpoint', {
+    url: 'http://' + window.location.host + '/backman/'
+})
 
 /*/
 
@@ -56,6 +59,9 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 })
 .constant('XkcdEndpoint', {
     url: 'http://www.xkcd.com/'
+})
+.constant('BackmanEndpoint', {
+    url: 'http://www.jonathanbackman.com/'
 })
     
 //*/
@@ -105,7 +111,11 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 	},
 	xkcdJson: function(){
 		return "info.0.json"
+	},
+	backmanPDF: function(nr){
+		return "wp-content/uploads/2016/01/\u00d6vning"+nr.toString()+".pdf";
 	}
+	
 })
 
 .run(function ($ionicPlatform) {
@@ -197,7 +207,16 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
             }
         }
     })
-
+	
+	.state('app.backman', {
+        url: '/backman',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/regular/backman.html',
+                controller: 'BackmanCtrl'
+            }
+        }
+    })
 	
 	
 	.state('app.section', {

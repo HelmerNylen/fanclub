@@ -928,7 +928,7 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicPopover, xkcdService, StorageService, ConvenientService) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, URLs, xkcdService, StorageService, ConvenientService, BackmanEndpoint) {
 	var refresh = function (nr) {
 		xkcdService.update(setVars,nr);
 	};
@@ -977,7 +977,12 @@ angular.module('starter.controllers', [])
 	//0 is latest comic, -1 is random
 	$scope.$on('modal.shown', refresh(0));
 
-	
+})
+
+.controller('BackmanCtrl', function ($scope, ConvenientService, BackmanEndpoint, URLs) {	
+	$scope.openBrowser = function(nr) {
+		ConvenientService.openURL(BackmanEndpoint.url+URLs.backmanPDF(nr));
+   }
 	
 })
 ;
