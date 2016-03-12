@@ -6,14 +6,13 @@
 		</div>
 	  </ion-header-bar>
     <ion-content>
-		<div style="text-align: center; padding: 1em;">
+		<div style="text-align: center; padding: 1em; padding-top: 2em;">
 			Anteckningar gjorda av <a href="{{ backmanURL }}" target="_blank">Jonathan Backman</a>.
 		</div>
 		
-		<div class="list">
+		<div class="card list">
 			<div class="item item-text-wrap" ng-repeat="subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen']" ng-click="openNotes($index+1)">
 				Övning {{ $index + 1 }} - {{ subject }}
-				{{n}}
 			</div>
 		</div>
     </ion-content>

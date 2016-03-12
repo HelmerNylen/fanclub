@@ -1,20 +1,30 @@
 <ion-view view-title="Bra att ha">
     <ion-content>
-		<div class="list">
+		<div class="card list">
+			<div class="item item-divider">
+				Skola
+			</div>
 			<a class="item item-icon-left" on-tap="openMap()">
 				<i class="icon ion-map"></i>
 				Karta över campus
 			</a>
-
-			<a class="item item-icon-left" on-tap="openXkcd()">
-				<i class="icon ion-happy-outline"></i>
-				xkcd
-			</a>
-			 
 			<a class="item item-icon-left" on-tap="openBackis()">
 				<i class="icon ion-university"></i>
 				Mekanikövningar
 			</a>
-		</div>			
+		</div>
+		<div class="card list">
+			<div class="item item-divider">
+				Annat
+			</div>
+			<a class="item item-icon-left" on-tap="openFood()">
+				<i class="icon ion-android-restaurant"></i>
+				Matsedlar
+			</a>
+			<a class="item item-icon-left" on-tap="openXkcd()">
+				<i class="icon ion-happy-outline"></i>
+				xkcd
+			</a>
+		</div>
     </ion-content>
 </ion-view>

@@ -294,7 +294,7 @@ angular.module('starter.services', [])
 	var errors = [];
 	//läs in inställningar
 	var extendedDiscard = StorageService.getOrDefault("extendedDiscard", true);
-	var menusEnabled = StorageService.getOrDefault("menusEnabled", true);
+	//var menusEnabled = StorageService.getOrDefault("menusEnabled", true);
 	var delimiterEnabled = StorageService.getOrDefault("delimiterEnabled", false);
 	var mixEvents = StorageService.getOrDefault("mixEvents", true);
 	
@@ -776,13 +776,13 @@ angular.module('starter.services', [])
 			extendedDiscard = extD;
 			StorageService.set("extendedDiscard", extD);
 		},
-		getMenusEnabled: function () {
+		/*getMenusEnabled: function () {
 			return menusEnabled;
 		},
 		setMenusEnabled: function (me) {
 			menusEnabled = me;
 			StorageService.set("menusEnabled", me);
-		},
+		},*/
 		getDelimiterEnabled: function () {
 			return delimiterEnabled;
 		},

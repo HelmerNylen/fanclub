@@ -1,15 +1,11 @@
-<ion-view view-title="Matsedlar">
-    <ion-content style="background-color: #fbfbfb">
-		<div class="list card">
-			<div class="item item-divider item-energized">
-				<i class="icon ion-alert-circled"></i>
-				Denna sida är under konstruktion
-			</div>
-			<div class="item item-text-wrap">
-				Så här tråkig kommer den förhoppningsvis inte vara i framtiden. Buggar kan förekomma.
-			</div>
+<ion-modal-view>
+	<ion-header-bar class="bar-ctfys">
+		<h1 class="title">Matsedlar</h1>
+		<div class="buttons">
+		  <button class="button button-clear" ng-click="closeFood()">Stäng</button>
 		</div>
-		
+	  </ion-header-bar>
+    <ion-content style="background-color: #fbfbfb" ng-controller="FoodCtrl">
 		<div ng-if="menus && !unavailible">
 			<div class="list card" ng-repeat="restaurant in restaurants" on-tap="openInBrowser(restaurant.url)">
 				<div class="item item-divider item-icon-right">
@@ -40,4 +36,4 @@
             <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
         </div>
     </ion-content>
-</ion-view>
+</ion-modal-view>

@@ -7,6 +7,7 @@ angular.module('starter.getfood', ['starter.services'])
 	var restaurantsLeft = -1;
 	var restaurantCount = 4;
 	var foodLastUpdate = StorageService.getOrDefault("foodLastUpdate", "");
+	var callbacks = [];
 	
 	//körs när alla anrop är klara
 	var onDone = function () {
@@ -15,8 +16,6 @@ angular.module('starter.getfood', ['starter.services'])
 			foodLastUpdate = new Date().toDateString();
 			StorageService.set("foodLastUpdate", foodLastUpdate);
 			StorageService.set("foodMenus", menus);
-			if ($state.current.name == "app.food")
-				$state.go($state.current, {}, { reload: true });
 		}
 	};
 	
@@ -237,6 +236,11 @@ angular.module('starter.getfood', ['starter.services'])
 				if (day >= 0 && day <= 4)
 					updateMenus();
 			}
+			for (var i = 0; i < callbacks.length; i++)
+				callbacks[i]();
+		},
+		registerCallback: function (cb) {
+			callbacks.push(cb);
 		}
     };
 })

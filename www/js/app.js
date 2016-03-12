@@ -197,7 +197,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         }
     })
 	
-	.state('app.food', {
+	/*.state('app.food', {
         url: '/food',
         views: {
             'menuContent': {
@@ -205,7 +205,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
                 controller: 'FoodCtrl'
             }
         }
-    })
+    })*/
 	
 	.state('app.tools', {
         url: '/tools',

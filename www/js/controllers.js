@@ -86,7 +86,7 @@ angular.module('starter.controllers', [])
 	};
 	
 	
-	$scope.menusEnabled = DataService.getMenusEnabled();
+	//$scope.menusEnabled = DataService.getMenusEnabled();
 	
     $scope.feedStart = ConvenientService.dateFormat(new Date());
     $scope.feedEnd = ConvenientService.dateFormat(DataService.endDate);
@@ -531,12 +531,12 @@ angular.module('starter.controllers', [])
 	$scope.updateExtendedDiscard = function () {
 		DataService.setExtendedDiscard($scope.settings.extendedDiscard);
 	};
-	$scope.settings.menusEnabled = DataService.getMenusEnabled();
+	/*$scope.settings.menusEnabled = DataService.getMenusEnabled();
 	$scope.updateMenusEnabled = function () {
 		DataService.setMenusEnabled($scope.settings.menusEnabled);
 		//signalerar till AppCtrl att menyknappen ska bort eller tillbaka
 		$rootScope.$broadcast('menusEnabledToggle');
-	};
+	};*/
 	$scope.settings.delimiterEnabled = DataService.getDelimiterEnabled();
 	$scope.updateDelimiterEnabled = function () {
 		DataService.setDelimiterEnabled($scope.settings.delimiterEnabled);
@@ -794,8 +794,6 @@ angular.module('starter.controllers', [])
 	    shortName: "syster",
 	    url: FoodEndpoint.syster + URLs.weekMenuSyster()
 	}];
-	//hämtar menyerna i servicen
-    FoodService.update();
 	
 	//läser in menyerna om det går, flaggar dem som otillgängliga om det är helg
 	var refresh = function () {
@@ -804,6 +802,10 @@ angular.module('starter.controllers', [])
 	};
 	
 	$scope.$on('$ionicView.enter', refresh);
+	FoodService.registerCallback(refresh);
+	
+	//hämtar menyerna i servicen
+    FoodService.update();
 })
 
 //controller för section.html
@@ -948,6 +950,21 @@ angular.module('starter.controllers', [])
  	$scope.openNotes = function (nr) {
  		ConvenientService.openURL(BackmanEndpoint.url + URLs.backmanPDF(nr));
 	};
+	
+	
+	
+	$ionicModal.fromTemplateUrl('templates/modals/food.html', {
+         scope: $scope
+     }).then(function (modal) {
+         $scope.foodModal = modal;
+     });
+ 	
+ 	$scope.openFood = function () {
+ 		$scope.foodModal.show();
+ 	};
+ 	$scope.closeFood = function () {
+ 		$scope.foodModal.hide();
+ 	};
 	
 	
 	
