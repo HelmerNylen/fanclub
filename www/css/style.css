@@ -91,6 +91,27 @@
 	transform: rotate(90deg);
 }
 
+/*@keyframes gauss {
+	0% {
+		top: -100%;
+		opacity: 0.0;
+	}
+	100% {
+		top: 0;
+		opacity: 1.0;
+	}
+}
+
+.gauss {
+	position: fixed;
+	width: 100%;
+	animation-name: gauss;
+	animation-duration: 5s;
+	animation-timing-function: linear;
+	animation-delay: 3s;
+	animation-fill-mode: forwards;
+}*/
+
 @keyframes rotation {
 	0% {
 		-webkit-transform: rotate(0deg);

@@ -954,6 +954,8 @@ angular.module('starter.controllers', [])
 	$scope.closeMap = function () {
 		$scope.mapModal.hide();
 	};
+	
+	
 		
 	$ionicModal.fromTemplateUrl('templates/modals/xkcd.html', {
         scope: $scope
@@ -974,15 +976,29 @@ angular.module('starter.controllers', [])
 		refresh(nr);
 	};
 	
+	
+	
+	$ionicModal.fromTemplateUrl('templates/modals/backis.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.backisModal = modal;
+    });
+	
+	$scope.openBackis = function () {
+		$scope.backisModal.show();
+	};
+	$scope.closeBackis = function () {
+		$scope.backisModal.hide();
+	};
+	
+	$scope.backmanURL = BackmanEndpoint.url;
+	
+	$scope.openNotes = function (nr) {
+		ConvenientService.openURL(BackmanEndpoint.url + URLs.backmanPDF(nr));
+    };
+	
 	//0 is latest comic, -1 is random
 	$scope.$on('modal.shown', refresh(0));
 
-})
-
-.controller('BackmanCtrl', function ($scope, ConvenientService, BackmanEndpoint, URLs) {	
-	$scope.openBrowser = function(nr) {
-		ConvenientService.openURL(BackmanEndpoint.url+URLs.backmanPDF(nr));
-   }
-	
 })
 ;

@@ -109,11 +109,11 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 			extra += "&" + option + "=" + options[option];
 		return "calendars/" + id + "/events?key=" + key + extra;
 	},
-	xkcdJson: function(){
+	xkcdJson: function () {
 		return "info.0.json"
 	},
-	backmanPDF: function(nr){
-		return "wp-content/uploads/2016/01/\u00d6vning"+nr.toString()+".pdf";
+	backmanPDF: function (nr) {
+		return "wp-content/uploads/2016/01/\u00d6vning" + nr.toString() + ".pdf";
 	}
 	
 })
@@ -207,17 +207,6 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
             }
         }
     })
-	
-	.state('app.backman', {
-        url: '/backman',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/backman.html',
-                controller: 'BackmanCtrl'
-            }
-        }
-    })
-	
 	
 	.state('app.section', {
         url: '/section',
