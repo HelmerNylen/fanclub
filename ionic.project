@@ -39,6 +39,10 @@
 		"proxyUrl": "http://f.kth.se/"
 	},
 	{
+		"path": "/rss/ths",
+		"proxyUrl": "http://ths.kth.se/"
+	},
+	{
 		"path": "/backman",
 		"proxyUrl": "http://www.jonathanbackman.com/"
     },
@@ -47,8 +51,8 @@
 		"proxyUrl": "http://www.xkcd.com/"
 	},
 	{
-		"path": "/rss/ths",
-		"proxyUrl": "http://ths.kth.se/"
+		"path": "/git",
+		"proxyUrl": "https://raw.githubusercontent.com/"
 	}
   ]
 }
