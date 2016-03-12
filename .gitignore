@@ -10,3 +10,6 @@ plugins/
 keystore.txt
 *.keystore
 www/js/apikey.js
+
+# För Webstorm
+/.idea
