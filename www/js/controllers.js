@@ -928,7 +928,7 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, URLs, xkcdService, StorageService, ConvenientService, BackmanEndpoint) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, BackmanEndpoint) {
 	var refresh = function (nr) {
 		xkcdService.update(setVars,nr);
 	};
@@ -953,7 +953,25 @@ angular.module('starter.controllers', [])
 	
 	$scope.closeMap = function () {
 		$scope.mapModal.hide();
+		console.log($ionicScrollDelegate.getScrollPosition().zoom)
 	};
+	
+	$scope.releaseGauss = function (){
+		console.log("gauss är triggad");
+		if($ionicScrollDelegate.$getByHandle('kartan').getScrollPosition().zoom>99){
+			$scope.gaussModal.show();
+		}
+	};
+	$scope.closeGauss = function () {
+		$scope.gaussModal.hide();
+	};
+	
+
+	$ionicModal.fromTemplateUrl('templates/modals/gauss.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.gaussModal = modal;
+    });
 		
 	$ionicModal.fromTemplateUrl('templates/modals/xkcd.html', {
         scope: $scope
@@ -973,6 +991,7 @@ angular.module('starter.controllers', [])
 	$scope.updateXkcd = function(nr){
 		refresh(nr);
 	};
+	
 	
 	//0 is latest comic, -1 is random
 	$scope.$on('modal.shown', refresh(0));
