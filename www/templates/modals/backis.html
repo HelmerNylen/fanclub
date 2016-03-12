@@ -11,8 +11,9 @@
 		</div>
 		
 		<div class="list">
-			<div class="item item-text-wrap" ng-repeat="subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen']" ng-click="openNotes(n)">
+			<div class="item item-text-wrap" ng-repeat="subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen']" ng-click="openNotes($index+1)">
 				Övning {{ $index + 1 }} - {{ subject }}
+				{{n}}
 			</div>
 		</div>
     </ion-content>

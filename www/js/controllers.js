@@ -929,6 +929,29 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, BackmanEndpoint) {
+	
+	$ionicModal.fromTemplateUrl('templates/modals/backis.html', {
+         scope: $scope
+     }).then(function (modal) {
+         $scope.backisModal = modal;
+     });
+ 	
+ 	$scope.openBackis = function () {
+ 		$scope.backisModal.show();
+ 	};
+ 	$scope.closeBackis = function () {
+ 		$scope.backisModal.hide();
+ 	};
+ 	
+ 	$scope.backmanURL = BackmanEndpoint.url;
+ 	
+ 	$scope.openNotes = function (nr) {
+ 		ConvenientService.openURL(BackmanEndpoint.url + URLs.backmanPDF(nr));
+	};
+	
+	
+	
+	
 	var refresh = function (nr) {
 		xkcdService.update(setVars,nr);
 	};
@@ -998,10 +1021,5 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('BackmanCtrl', function ($scope, ConvenientService, BackmanEndpoint, URLs) {	
-	$scope.openBrowser = function(nr) {
-		ConvenientService.openURL(BackmanEndpoint.url+URLs.backmanPDF(nr));
-   }
-	
-})
+
 ;
