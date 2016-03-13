@@ -10,11 +10,11 @@
 		Apelsin - Kopps faila med kurslista
 		Ananas - Kopps faila med kursinfo
 		Aprikos - Schema faila
-		ƒpple - try/catch runt $http.get
+		√Ñpple - try/catch runt $http.get
 */
 
 angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section', 'starter.getxkcd', 'starter.gitdata'])
-//Konstanter som anv‰nds i services som h‰mtar data, ex. DataService och SectionService
+//Konstanter som anv√§nds i services som h√§mtar data, ex. DataService och SectionService
 /*/
 .constant('ApiEndpoint', {
     url: 'http://' + window.location.host + '/api/'
@@ -70,134 +70,144 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     url: 'https://raw.githubusercontent.com/'
 })
 
-    
+
 //*/
 
-//funktioner som bygger urler, anv‰nds i kombination med endpointsen ovan.
-//ex. FoodEndpoint.q + weekMenuQ() fˆr restaurang Q:s anrop
+//funktioner som bygger urler, anv√§nds i kombination med endpointsen ovan.
+//ex. FoodEndpoint.q + weekMenuQ() f√∂r restaurang Q:s anrop
 .constant('URLs', {
-    plan: function (year) {
-        return 'api/kopps/v1/programme/CTFYS/academic-year-plan/2015:2/' + year;
-    },
-    schema: function (courseCode, startTerm, roundId, start, end) {
-        var s = new Date(start);
-        var e = new Date(end);
-        var pad = function (s) {
-            if (s.toString().length < 2)
-                return "0" + s.toString();
-            return s.toString();
-        };
+  plan: function (year) {
+    return 'api/kopps/v1/programme/CTFYS/academic-year-plan/2015:2/' + year;
+  },
 
-        return "api/schema/v2/course/" + courseCode.toUpperCase() + "/" + startTerm + "/" + roundId + "?startTime=" + s.getFullYear() + "-" + pad(s.getMonth() + 1) + "-" + pad(s.getDate()) + "&endTime=" + e.getFullYear() + "-" + pad(e.getMonth() + 1) + "-" + pad(e.getDate());
-    },
-    courseInfo: function (courseCode, startTerm, roundId) {
-        return "api/kopps/v1/course/" + courseCode;// + "/round/" + startTerm.substring(0, 4) + ":" + startTerm.substring(4, 5) + "/" + roundId;
-    },
+  schema: function (courseCode, startTerm, roundId, start, end) {
+    var startDate = new Date(start);
+    var endDate = new Date(end);
+    var pad = function (s) {
+      if (s.toString().length < 2)
+        return "0" + s.toString();
+          return s.toString();
+    };
+
+    return "api/schema/v2/course/" + courseCode.toUpperCase() + "/" + startTerm + "/" + roundId + "?startTime=" + startDate.getFullYear() + "-" + pad(startDate.getMonth() + 1) + "-" + pad(startDate.getDate()) + "&endTime=" + endDate.getFullYear() + "-" + pad(endDate.getMonth() + 1) + "-" + pad(endDate.getDate());
+  },
+
+  courseInfo: function (courseCode, startTerm, roundId) {
+    return "api/kopps/v1/course/" + courseCode;// + "/round/" + startTerm.substring(0, 4) + ":" + startTerm.substring(4, 5) + "/" + roundId;
+  },
+
 	weekMenuQ: function() {
 		var pad = function (s) {
-            if (s.toString().length < 2)
-                return "0" + s.toString();
-            return s.toString();
-        };
-		return "veckans-meny/?week-for=" + new Date().getFullYear() + "-" + pad(new Date().getMonth() + 1) + "-" + pad(new Date().getDate());
+      if (s.toString().length < 2)
+        return "0" + s.toString();
+          return s.toString();
+    };
+
+    return "veckans-meny/?week-for=" + new Date().getFullYear() + "-" + pad(new Date().getMonth() + 1) + "-" + pad(new Date().getDate());
 	},
+
 	weekMenuNymble: function () {
 		return "om-ths/restaurang-cafe/restaurang-nymble-meny/";
 	},
+
 	weekMenuBrazilia: function () {
 		return "restaurang/brazilia/page/3/";
 	},
+
 	weekMenuSyster: function () {
-	    return "lunch/";
+    return "lunch/";
 	},
+
 	sectionCalendar: function (id, key, options) {
 		var extra = "";
 		for (var option in options)
 			extra += "&" + option + "=" + options[option];
 		return "calendars/" + id + "/events?key=" + key + extra;
 	},
+
 	xkcdJson: function () {
 		return "info.0.json"
 	},
+
 	backmanPDF: function (nr) {
 		return "wp-content/uploads/2016/01/\u00d6vning" + nr.toString() + ".pdf";
 	},
+
 	gitData: function (file) {
 		return "HelmerNylen/fanclub/master/" + file + "?raw=true";
 	}
 })
 
 .run(function ($ionicPlatform) {
-    $ionicPlatform.ready(function () {
-        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-        // for form inputs)
-        if (window.cordova && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-            cordova.plugins.Keyboard.disableScroll(true);
-
-        }
-        if (window.StatusBar) {
-            // org.apache.cordova.statusbar required
-            StatusBar.styleDefault();
-        }
-    });
+  $ionicPlatform.ready(function () {
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+    // for form inputs)
+    if (window.cordova && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      cordova.plugins.Keyboard.disableScroll(true);
+    }
+    if (window.StatusBar) {
+      // org.apache.cordova.statusbar required
+      StatusBar.styleDefault();
+    }
+  });
 })
 
-//definierar olika states i appen. Vill man l‰gga till en ny sida, med en ny controller, gˆrs det h‰r.
-//kolon framfˆr ett ord i urlen betyder argument till sidan, och kan h‰mtas genom $stateParams.
-//ex. statet app.week betyder att veckovyn visas, och tar som argument mÂndagen som veckan bˆrjar pÂ
-//states ‰ndras fr‰mst via menyknapparna, kolla menu.html
+//definierar olika states i appen. Vill man l√§gga till en ny sida, med en ny controller, g√∂rs det h√§r.
+//kolon framf√∂r ett ord i urlen betyder argument till sidan, och kan h√§mtas genom $stateParams.
+//ex. statet app.week betyder att veckovyn visas, och tar som argument m√•ndagen som veckan b√∂rjar p√•
+//states √§ndras fr√§mst via menyknapparna, kolla menu.html
 .config(function ($stateProvider, $urlRouterProvider) {
-    $stateProvider
+  $stateProvider
 
-      .state('app', {
-          url: '/app',
-          abstract: true,
-          templateUrl: 'templates/regular/menu.html',
-          controller: 'AppCtrl'
-      })
+    .state('app', {
+      url: '/app',
+      abstract: true,
+      templateUrl: 'templates/regular/menu.html',
+      controller: 'AppCtrl'
+    })
 
     .state('app.week', {
-        url: '/week/:startTime',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/week.html',
-                controller: 'WeekViewCtrl'
-            }
+      url: '/week/:startTime',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/regular/week.html',
+          controller: 'WeekViewCtrl'
         }
+      }
     })
 
     .state('app.feed', {
-        url: '/feed/:startTime/:endTime',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/feed.html',
-                controller: 'FeedViewCtrl'
-            }
+      url: '/feed/:startTime/:endTime',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/regular/feed.html',
+          controller: 'FeedViewCtrl'
         }
+      }
     })
-	
-	.state('app.month', {
-        url: '/month/:year/:month',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/month.html',
-                controller: 'MonthViewCtrl'
-            }
+
+	  .state('app.month', {
+      url: '/month/:year/:month',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/regular/month.html',
+          controller: 'MonthViewCtrl'
         }
+      }
     })
-	
-	.state('app.settings', {
-        url: '/settings',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/settings.html',
-                controller: 'SettingsCtrl'
-            }
+
+	  .state('app.settings', {
+      url: '/settings',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/regular/settings.html',
+          controller: 'SettingsCtrl'
         }
+      }
     })
-	
-	/*.state('app.food', {
+
+    /*.state('app.food', {
         url: '/food',
         views: {
             'menuContent': {
@@ -206,36 +216,37 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
             }
         }
     })*/
-	
-	.state('app.tools', {
-        url: '/tools',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/tools.html',
-                controller: 'ToolsCtrl'
-            }
-        }
-    })
-	
-	.state('app.section', {
-        url: '/section',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/section.html',
-                controller: 'SectionCtrl'
-            }
-        }
-    });
-    
-	//vi tar ett span frÂn l‰sÂrets bˆrjan (r‰knar juli som start) och ett Âr framÂt
-    var format = function (date) {
-        var d = new Date(date);
 
-        return d.getFullYear() + "-" + (d.getMonth() < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
-    };
-    var start = new Date().getMonth() >= 6 ? new Date(new Date().getFullYear(), 6) : new Date(new Date().getFullYear() - 1, 6);
-    var end = new Date(start.getFullYear() + 1, start.getMonth());
-    
+	  .state('app.tools', {
+      url: '/tools',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/regular/tools.html',
+          controller: 'ToolsCtrl'
+        }
+      }
+    })
+
+	  .state('app.section', {
+      url: '/section',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/regular/section.html',
+          controller: 'SectionCtrl'
+        }
+      }
+    });
+
+	//vi tar ett span fr√•n l√§s√•rets b√∂rjan (r√§knar juli som start) och ett √•r fram√•t
+  var format = function (date) {
+    var d = new Date(date);
+
+    return d.getFullYear() + "-" + (d.getMonth() < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
+  };
+
+  var start = new Date().getMonth() >= 6 ? new Date(new Date().getFullYear(), 6) : new Date(new Date().getFullYear() - 1, 6);
+  var end = new Date(start.getFullYear() + 1, start.getMonth());
+
 	// if none of the above states are matched, use this as the fallback
 	$urlRouterProvider.otherwise('/app/feed/' + format(new Date().toDateString()) + '/' + format(end));
 });
