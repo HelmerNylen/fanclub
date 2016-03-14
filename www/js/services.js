@@ -918,7 +918,7 @@ angular.module('starter.services', [])
 			callbacks.push(cb);
 		},
 		all: function () {
-			return all;
+			return ready ? all : null;
 		}
 	};
 })

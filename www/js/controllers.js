@@ -1,7 +1,7 @@
 angular.module('starter.controllers', [])
 
 //controller som är synlig i hela appen
-.controller('AppCtrl', function ($scope, $ionicModal, $timeout, DataService, ConvenientService) {
+.controller('AppCtrl', function ($scope, $ionicModal, $timeout, DataService, ConvenientService, NoteService) {
 
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
@@ -25,11 +25,45 @@ angular.module('starter.controllers', [])
         $scope.sectionModal = modal;
     });
 
-    $scope.closeDetails = function () {
+	var note = null;
+	var notefield = null, sectionnotefield = null;
+
+	$scope.closeDetails = function () {
+	    var newnote = (notefield || (notefield = document.getElementById("noteField"))).innerHTML;
+	    if (newnote != note) {
+	        if (newnote == null || newnote.length == 0)
+	            NoteService.clearNote($scope.modalEvent);
+	        else
+	            NoteService.setNote(newnote, $scope.modalEvent);
+	    }
+	    note = newnote;
+	    (notefield || (notefield = document.getElementById("noteField"))).innerHTML = "";
+
         $scope.modal.hide();
     };
 	$scope.closeSectionDetails = function () {
+	    var newnote = (sectionnotefield || (sectionnotefield = document.getElementById("sectionNoteField"))).innerHTML;
+	    if (newnote != note) {
+	        if (newnote == null || newnote.length == 0)
+	            NoteService.clearNote($scope.sectionModalEvent);
+	        else
+	            NoteService.setNote(newnote, $scope.sectionModalEvent);
+	    }
+
+	    (sectionnotefield || (sectionnotefield = document.getElementById("sectionNoteField"))).innerHTML = "";
+
 		$scope.sectionModal.hide();
+	};
+
+	$scope.getNote = function () {
+	    try {
+	        (notefield || (notefield = document.getElementById("noteField"))).innerHTML = note;
+	    } catch (e) {}
+	    try {
+	        (sectionnotefield || (sectionnotefield = document.getElementById("sectionNoteField"))).innerHTML = note;
+	    } catch (e) {}
+
+	    return note;
 	};
 
 	//öppnar KTH-popupen och sätter värden som används
@@ -42,7 +76,10 @@ angular.module('starter.controllers', [])
 		$scope.eventBGcolor = DataService.getEventTypeColors()[event.type.toLowerCase()];
 		$scope.eventcolor = ConvenientService.contrastingColor($scope.eventBGcolor);
 		$scope.hasBegun = new Date() >= new Date(event.start);
-		
+
+		note = NoteService.getNote(event);
+		if (note == null)
+		    note = "";
 		
         $scope.modal.show();
     };
@@ -51,6 +88,10 @@ angular.module('starter.controllers', [])
 		console.log(event);
 		$scope.sectionModalEvent = event;
 		$scope.hasBegun = new Date() >= new Date(event.start.dateTime || event.start.date);
+
+		note = NoteService.getNote(event);
+		if (note == null)
+		    note = "";
 		
 		$scope.sectionModal.show();
 	};

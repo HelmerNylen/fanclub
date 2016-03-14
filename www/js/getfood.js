@@ -16,6 +16,9 @@ angular.module('starter.getfood', ['starter.services'])
 			foodLastUpdate = new Date().toDateString();
 			StorageService.set("foodLastUpdate", foodLastUpdate);
 			StorageService.set("foodMenus", menus);
+
+			for (var i = 0; i < callbacks.length; i++)
+			    callbacks[i]();
 		}
 	};
 	
@@ -231,13 +234,13 @@ angular.module('starter.getfood', ['starter.services'])
 			if (foodLastUpdate == new Date().toDateString()){
 				console.log("Getting menus from cache");
 				menus = StorageService.getOrDefault("foodMenus");
+			    for (var i = 0; i < callbacks.length; i++)
+				    callbacks[i]();
 			} else {
 				restaurantsLeft = restaurantCount;
 				if (day >= 0 && day <= 4)
 					updateMenus();
 			}
-			for (var i = 0; i < callbacks.length; i++)
-				callbacks[i]();
 		},
 		registerCallback: function (cb) {
 			callbacks.push(cb);

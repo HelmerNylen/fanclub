@@ -55,9 +55,20 @@
 				{{ exactDateFormat(sectionModalEvent.updated) }}
 			</div>
 		</div>
+        <div class="row">
+            <b class="col col-90">
+                Egna anteckningar
+            </b>
+            <div class="col" style="text-align: right">
+                &nbsp;
+            </div>
+        </div>
+        <div class="row">
+            <div contenteditable="true" style="border: 1px solid #ddd; min-height: 5em; width: 100%; padding: 0.5em; margin: 5px;" id="sectionNoteField">{{ getNote() }}</div>
+        </div>
 	</div>
 	<br/>
-	<div style="text-align: center" ng-if="sectionModalEvent">
+	<div style="text-align: center; padding-bottom: 1em;" ng-if="sectionModalEvent">
 		<button class="button button-dark button-outline icon-left ion-earth" on-tap="openInBrowser(sectionModalEvent.htmlLink)">&Ouml;ppna i webbl&auml;sare</button>
 	</div>
   </ion-content>

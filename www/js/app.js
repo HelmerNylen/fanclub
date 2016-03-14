@@ -13,7 +13,7 @@
 		Äpple - try/catch runt $http.get
 */
 
-angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section', 'starter.getxkcd', 'starter.gitdata'])
+angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'starter.services', 'starter.getfood', 'starter.section', 'starter.getxkcd', 'starter.gitdata', 'starter.notes'])
 //Konstanter som används i services som hämtar data, ex. DataService och SectionService
 /*/
 .constant('ApiEndpoint', {
