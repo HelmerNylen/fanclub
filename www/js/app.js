@@ -134,7 +134,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 	},
 
 	gitData: function (file) {
-		return "HelmerNylen/fanclub/master/" + file + "?raw=true";
+		return "HelmerNylen/fanclub/master/" + file;
 	}
 })
 
@@ -206,16 +206,6 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         }
       }
     })
-
-    /*.state('app.food', {
-        url: '/food',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/regular/food.html',
-                controller: 'FoodCtrl'
-            }
-        }
-    })*/
 
 	  .state('app.tools', {
       url: '/tools',

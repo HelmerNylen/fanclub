@@ -733,7 +733,7 @@ angular.module('starter.controllers', [])
 						okType: "button-ctfys"
 					}).then(function () {
 						//tvinga uppdatering
-						StorageService.set("lastUpdate", 0);
+						StorageService.set("lastUpdate", null);
 						window.location.reload(true);
 					});
 					$state.go($state.current, {}, { reload: true });
@@ -780,13 +780,13 @@ angular.module('starter.controllers', [])
 		return -1;
 	};
 
-	//sätter alla lastUpdate-värden till null ()så att all data antas vara utgången) och startar om appen
+	//sätter alla lastUpdate-värden till null (så att all data antas vara utgången) och startar om appen
 	$scope.update = function () {
 	    StorageService.set("lastUpdate", null);
 	    StorageService.set("sectionLastUpdated", null);
 	    StorageService.set("foodLastUpdate", null);
 	    StorageService.set("rssLastUpdate", null);
-	    window.location.reload();
+	    window.location.reload(true);
 	};
 	
 	//körs när man öppnar inställningarna
@@ -880,36 +880,14 @@ angular.module('starter.controllers', [])
 	}).then(function (modal) {
 	    $scope.rssmodal = modal;
 	});
+
+    //Tar bort "Läs mer"-länken i slutet av nyheten
+	$scope.replace = function (desc) {
+	    return desc.replace(/<a([^>]+)>Läs mer<\/a>/ig, ' ...');
+	};
 	
-	//öppnar rssmodalen, och blandar ihop händelserna om det inte redan gjorts
+	//öppnar rssmodalen
 	$scope.openNews = function (ths) {
-	    /*if (!$scope.rssMerge) {
-	        var merge = [];
-	        var findex = 0, thsindex = 0;
-	        while (findex < $scope.sectionRss.length && thsindex < $scope.unionRss.length) {
-	            if ($scope.sectionRss[findex].date >= $scope.unionRss[thsindex].date) {
-	                $scope.sectionRss[findex].isSectionPost = true;
-	                merge.push($scope.sectionRss[findex]);
-	                findex++;
-	            }
-	            else {
-	                $scope.unionRss[thsindex].isSectionPost = false;
-	                merge.push($scope.unionRss[thsindex]);
-	                thsindex++;
-	            }
-	        }
-	        while (findex < $scope.sectionRss.length) {
-	            $scope.sectionRss[findex].isSectionPost = true;
-	            merge.push($scope.sectionRss[findex]);
-	            findex++;
-	        }
-	        while (thsindex < $scope.unionRss.length) {
-	            $scope.unionRss[thsindex].isSectionPost = false;
-	            merge.push($scope.unionRss[thsindex]);
-	            thsindex++;
-	        }
-	        $scope.rssMerge = merge;
-	    }*/
 		$scope.currentRss = ths ? $scope.unionRss : $scope.sectionRss;
 	    $scope.rssmodal.show();
 	};
@@ -1013,11 +991,12 @@ angular.module('starter.controllers', [])
 	var refresh = function (nr) {
 		xkcdService.update(setVars,nr);
 	};
-	var setVars= function (){
-		$scope.xkcdTitle= xkcdService.getTitle();
-		$scope.xkcdImg= xkcdService.getImg();
-		$scope.xkcdAlt= xkcdService.getAlt();
-		$scope.xkcdUrl= xkcdService.getUrl();
+	var setVars = function (){
+		$scope.xkcdTitle = xkcdService.getTitle();
+		$scope.xkcdImg = xkcdService.getImg();
+		$scope.xkcdAlt = xkcdService.getAlt();
+		$scope.xkcdUrl = xkcdService.getUrl();
+		$scope.xkcdNum = xkcdService.getNumber();
 		console.log("link is: "+$scope.xkcdUrl);
 	}
 	

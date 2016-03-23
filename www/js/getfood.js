@@ -201,6 +201,7 @@ angular.module('starter.getfood', ['starter.services'])
                     function successCallback(response) {
                         var partial = response.data.substring(response.data.indexOf("<div id=\"dagens-lunch-carousel\""));
                         partial = partial.substring(0, partial.indexOf("<div class=\"control-for-carousel\">"));
+                        partial = partial.replace(/& /ig, "&amp; ");
                         var menu = [];
                         try {
                             var xml = parseXml(partial);

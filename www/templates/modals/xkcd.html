@@ -8,18 +8,17 @@
     <ion-content>
 		<div class="card">
 			<div class="item item-divider">
-				{{xkcdTitle}}
+				{{xkcdNum}}: {{xkcdTitle}}
 			</div>
-				<img ng-src="{{xkcdImg}}" alt="{{xkcdAlt}}" style="width: 100%" on-tap="openInBrowser(xkcdUrl)" />
+			<img ng-src="{{xkcdImg}}" alt="{{xkcdAlt}}" style="width: 100%" on-tap="openInBrowser(xkcdUrl)" />
 			<div class="card">
 			  <div class="item item-text-wrap">
 				{{xkcdAlt}}
 			  </div>
 			</div>
-			</div>
-			<button class="button button-block" on-tap="updateXkcd(-1)">
-				Random comic
-			</button>	
-		</div>				
+		</div>
+		<button class="button button-block" on-tap="updateXkcd(-1)">
+			Random comic
+		</button>	
     </ion-content>
 </ion-modal-view>

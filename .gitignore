@@ -11,5 +11,7 @@ keystore.txt
 *.keystore
 www/js/apikey.js
 
+Store description.txt
+
 # För Webstorm
 /.idea

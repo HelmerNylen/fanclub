@@ -1,10 +1,7 @@
 angular.module('starter.getxkcd', ['starter.services'])
 
 .factory('xkcdService', function($http, $state, StorageService, URLs, XkcdEndpoint) {
-		var title="";
-		var img="";
-		var alt="";
-		var cLink="";
+	var title = "", img = "", alt = "", cLink = "", num = "";
 	
 	//körs när alla anrop är klara
 	var onDone = function (callbackFunc) {
@@ -29,13 +26,15 @@ angular.module('starter.getxkcd', ['starter.services'])
 					var n= response.data.num;
 					title=safetitle;
 					alt=al;
-					img=im;
+					img = im;
+					num = n;
 					cLink=XkcdEndpoint.url+n.toString()+'/#';
 					onDone(callbackFunc);
 				},
 				function errorCallback(response) {
 					console.log("Error when getting xkcd: " + response.status + ": " + response.statusText + ", " + response.data);
-					title="Error code";
+					title = "Kunde inte hämta xkcd";
+					num = "-41";
 					img="img/error_code.png";
 					alt="It has a section on motherboard beep codes that lists, for each beep pattern, a song that syncs up well with it.";
 					console.log(title);
@@ -58,6 +57,9 @@ angular.module('starter.getxkcd', ['starter.services'])
 		},
 		getUrl: function() {
 			return cLink;
+		},
+		getNumber: function() {
+		    return num;
 		},
 		update: function(callbackFunc,nr) {
 			updatexkcd(callbackFunc,nr);

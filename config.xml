@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.HelmerNylen.fanclubschema" version="0.3.0 Lime" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.HelmerNylen.fanclubschema" version="1.0.0 Mango" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Fanclubs Schema</name>
   <description>
         Schema för årskurs F-15 Fanclub på Teknisk fysik på KTH.

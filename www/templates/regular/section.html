@@ -30,7 +30,7 @@
                         <div newscategory>
                             {{ latest.category }}
                         </div>
-                        <div ng-bind-html="latest.description" newsdesc></div>
+                        <div ng-bind-html="replace(latest.description)" newsdesc></div>
                         <div newsfooter>
                             {{ latest.creator}}
                             <br />
@@ -49,7 +49,7 @@
                         <div newscategory>
                             {{ latest.category }}
                         </div>
-                        <div ng-bind-html="latest.description.replace('Läs mer', '&lt;/a&gt; ...&lt;a&gt;')" newsdesc></div>
+                        <div ng-bind-html="replace(latest.description)" newsdesc></div>
                         <div newsfooter>
                             {{ latest.creator}}
                             <br />

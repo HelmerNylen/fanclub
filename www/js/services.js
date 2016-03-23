@@ -695,6 +695,16 @@ angular.module('starter.services', [])
         $state.go($state.current, {}, { reload: true });
     }
 
+    //uppdatera datan när användaren öppnar appen om det är en ny dag
+    document.addEventListener("resume", onResume, false);
+    function onResume() {
+        console.log("resume:", new Date().toDateString(), lastUpdate);
+        if (new Date().toDateString() != lastUpdate && new Date().toDateString() != StorageService.getOrDefault("lastUpdate", null)) {
+            console.log("reloading")
+            window.location.reload(true);
+        }
+    }
+
 	//själva servicen blir ett objekt med getters/setters för olika värden
     return {
         getCourses: function () {
