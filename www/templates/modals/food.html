@@ -12,7 +12,7 @@
 					{{ restaurant.name }}
 					<i class="icon ion-earth" style="font-size: 25px; color: #444"></i>
 				</div>
-				<div class="item item-text-wrap" ng-repeat="dish in menus[restaurant.shortName]" ng-bind-html="dish">
+				<div class="item item-text-wrap" ng-repeat="dish in menus[restaurant.shortName] track by $index" ng-bind-html="dish">
 				</div>
 				<div class="item item-text-wrap assertive" ng-if="!menus[restaurant.shortName] || menus[restaurant.shortName].length == 0">
 					Kunde inte h&auml;mta dagens meny.

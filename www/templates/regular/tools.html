@@ -8,9 +8,9 @@
 				<i class="icon ion-map"></i>
 				Karta över campus
 			</a>
-			<a class="item item-icon-left" on-tap="openBackis()">
-				<i class="icon ion-university"></i>
-				Mekanikövningar
+			<a class="item item-icon-left" ng-repeat="modalobj in extraModals.school" on-tap="openToolModal(modalobj)">
+				<i class="icon {{ modalobj.icon }}"></i>
+				{{ modalobj.title }}
 			</a>
 		</div>
 		<div class="card list">
@@ -25,6 +25,10 @@
 				<i class="icon ion-happy-outline"></i>
 				xkcd
 			</a>
+            <a class="item item-icon-left" ng-repeat="modalobj in extraModals.other" on-tap="openToolModal(modalobj)">
+                <i class="icon {{ modalobj.icon }}"></i>
+                {{ modalobj.title }}
+            </a>
 		</div>
     </ion-content>
 </ion-view>

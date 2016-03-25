@@ -374,7 +374,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för feed.html
-.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService, EventService) {
+.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService, EventService, GitService) {
     //try {
 	$scope.format = ConvenientService.verboseDateFormat;
     $scope.getTime = function (dateString) {
@@ -949,27 +949,8 @@ angular.module('starter.controllers', [])
 	$scope.$on('$ionicView.enter', refresh);
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, BackmanEndpoint) {
-	
-	$ionicModal.fromTemplateUrl('templates/modals/backis.html', {
-         scope: $scope
-     }).then(function (modal) {
-         $scope.backisModal = modal;
-     });
- 	
- 	$scope.openBackis = function () {
- 		$scope.backisModal.show();
- 	};
- 	$scope.closeBackis = function () {
- 		$scope.backisModal.hide();
- 	};
- 	
- 	$scope.backmanURL = BackmanEndpoint.url;
- 	
- 	$scope.openNotes = function (nr) {
- 		ConvenientService.openURL(BackmanEndpoint.url + URLs.backmanPDF(nr));
-	};
-	
+.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, GitService) {
+ 	$scope.openURL = ConvenientService.openURL;
 	
 	
 	$ionicModal.fromTemplateUrl('templates/modals/food.html', {
@@ -986,10 +967,36 @@ angular.module('starter.controllers', [])
  	};
 	
 	
+
+	$scope.openToolModal = function (modal) {
+	    $scope.currentModal = modal.modal;
+	    $scope.vars = modal.vars;
+	    $scope.currentModal.show();
+	};
+	$scope.closeToolModal = function () {
+	    $scope.currentModal.hide();
+	};
 	
 	
-	var refresh = function (nr) {
-		xkcdService.update(setVars,nr);
+	var refresh = function () {
+	    var git = GitService.getContent();
+
+	    if (git && git.tools && git.tools.modals) {
+	        var extraModals = {
+	            school: [],
+                other: []
+	        };
+            for (var prop in extraModals)
+	            for (var i = 0; i < git.tools.modals[prop].length; i++) {
+	                var o = git.tools.modals[prop][i];
+	                o.modal = $ionicModal.fromTemplate(git.tools.modals[prop][i].template, {
+	                    scope: $scope
+	                });
+	                extraModals[prop].push(o);
+	            }
+	        $scope.extraModals = extraModals;
+	    }
+        
 	};
 	var setVars = function (){
 		$scope.xkcdTitle = xkcdService.getTitle();
@@ -1051,10 +1058,13 @@ angular.module('starter.controllers', [])
 	$scope.updateXkcd = function(nr){
 		refresh(nr);
 	};
+
 	
-	
-	//0 is latest comic, -1 is random
-	$scope.$on('modal.shown', refresh(0));
+    //0 is latest comic, -1 is random
+	xkcdService.update(setVars, 0);
+
+	$scope.$on('$ionicView.enter', refresh);
+	GitService.registerCallback(refresh);
 
 })
 
