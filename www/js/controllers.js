@@ -386,7 +386,8 @@ angular.module('starter.controllers', [])
 	//parsa start- och slutdatum från parametrarna i urlen
     $scope.start = new Date($stateParams.startTime);
     $scope.start.setHours(0);
-    $scope.end = new Date(new Date($stateParams.endTime).getTime());
+    $scope.end = new Date($stateParams.endTime);
+    $scope.end.setHours(0);
 	
 	//ger en sträng med alla platser händelsen utspelar sig på
     $scope.location = function (eventLocations) {
@@ -490,50 +491,42 @@ angular.module('starter.controllers', [])
 	};
 	
 	//körs när feedet öppnas
-    $scope.refresh = function () {
-		try {
-			$scope.delimiterEnabled = DataService.getDelimiterEnabled();
-			
-			var sorted = DataService.getSortedEvents();
-			if (sorted != null) {
-				var sectionEvents = SectionService.getEvents();
-				if (DataService.getMixEvents() && sectionEvents) {
-					sorted = mergeEvents(sorted, sectionEvents);
-				}
-				
-				//days är en array med dagar, dvs. objekt som har för- och eftermiddagshändelser samt ett datum
-				var days = [];
-				var day = {am: [], pm: [], date: null};
-				var date;
-				var ev;
-				for (var i = 0; i < sorted.length; i++) {
-					ev = sorted[i];
-					date = new Date(ev.start);
-					if (date < $scope.start || date > $scope.end || !matchesFilter(ev, $scope.filter.filter))
-						continue;
-					if (day.am.length + day.pm.length == 0 || new Date((day.am[0] || day.pm[0]).start).toDateString() == date.toDateString()) {
-						(date.getHours() < 12 ? day.am : day.pm).push(ev);
-						day.date = day.date || date;
-					}
-					else {
-						days.push(day);
-						day = (date.getHours() < 12 ? {am: [ev], pm: []} : {am: [], pm: [ev]});
-						day.date = date;
-					}
-				}
-				if (day.am.length + day.pm.length != 0)
-					days.push(day);
-				$scope.days = days;
-			}
-			else {
-				$scope.days = null;
-			}
-			
-			$scope.errors = DataService.getErrors();
-		} catch (e) {alert(e);}
+	$scope.refresh = function () {
+	    $scope.delimiterEnabled = DataService.getDelimiterEnabled();
+
+	    if (EventService.isReady()) {
+			//days är en array med dagar, dvs. objekt som har för- och eftermiddagshändelser samt ett datum
+	        var days = [];
+	        var mix = DataService.getMixEvents();
+	        var date = new Date($scope.start);
+	        var events, day;
+
+	        while (date < $scope.end) {
+	            events = mix ? EventService.allByDate(date.toDateString()) : EventService.kthByDate(date.toDateString());
+
+	            if (events.length > 0) {
+	                day = { am: [], pm: [], date: new Date(date) };
+	                for (var i = 0; i < events.length; i++)
+	                    if (matchesFilter(events[i], $scope.filter.filter)) {
+	                        if (new Date(events[i].start).getHours() < 12)
+	                            day.am.push(events[i]);
+	                        else
+	                            day.pm.push(events[i]);
+	                    }
+
+                    if (day.am.length + day.pm.length > 0)
+	                    days.push(day);
+	            }
+
+	            date.setDate(date.getDate() + 1);
+	        }
+
+	        $scope.days = days;
+	    }
     };
     
-    $scope.$on('$ionicView.enter', $scope.refresh);
+	$scope.$on('$ionicView.enter', $scope.refresh);
+	EventService.registerCallback($scope.refresh);
 	//} catch (e) {alert(e);}
 })
 
@@ -786,6 +779,7 @@ angular.module('starter.controllers', [])
 	    StorageService.set("sectionLastUpdated", null);
 	    StorageService.set("foodLastUpdate", null);
 	    StorageService.set("rssLastUpdate", null);
+	    StorageService.set("gitLastUpdate", null);
 	    window.location.reload(true);
 	};
 	
