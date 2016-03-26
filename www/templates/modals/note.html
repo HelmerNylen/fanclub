@@ -1,0 +1,23 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-ctfys">
+        <h1 class="title">Anteckning</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeNote()">Stäng</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <form>
+            <div style="padding: 10px">
+                <textarea placeholder="Anteckning" rows="10" style="width: 100%; resize: none;" ng-model="note.note"></textarea></div>
+            <br/>
+            <div class="button-bar" style="padding: 10px">
+                <button class="button button-ctfys icon ion-checkmark-round" ng-click="saveNote(note.event, note.note)">
+                    Spara
+                </button>
+                <button class="button button-assertive button-outline icon ion-close-round" ng-click="closeNote()">
+                    Avbryt
+                </button>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

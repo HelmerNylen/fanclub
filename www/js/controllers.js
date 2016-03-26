@@ -16,6 +16,7 @@ angular.module('starter.controllers', [])
         scope: $scope
     }).then(function (modal) {
         $scope.modal = modal;
+        modal.show(); modal.hide();
     });
 	
 	//skapar detaljyvy för en sektionshändelse som popup
@@ -23,47 +24,44 @@ angular.module('starter.controllers', [])
         scope: $scope
     }).then(function (modal) {
         $scope.sectionModal = modal;
+        modal.show(); modal.hide();
     });
 
-	var note = null;
-	var notefield = null, sectionnotefield = null;
+    //skapar modal för att skriva anteckningar på händelser
+	$ionicModal.fromTemplateUrl('templates/modals/note.html', {
+	    scope: $scope
+	}).then(function (modal) {
+	    $scope.noteModal = modal;
+	});
+	$scope.note = {};
+
 
 	$scope.closeDetails = function () {
-	    var newnote = (notefield || (notefield = document.getElementById("noteField"))).innerHTML;
-	    if (newnote != note) {
-	        if (newnote == null || newnote.length == 0)
-	            NoteService.clearNote($scope.modalEvent);
-	        else
-	            NoteService.setNote(newnote, $scope.modalEvent);
-	    }
-	    note = newnote;
-	    (notefield || (notefield = document.getElementById("noteField"))).innerHTML = "";
-
         $scope.modal.hide();
     };
 	$scope.closeSectionDetails = function () {
-	    var newnote = (sectionnotefield || (sectionnotefield = document.getElementById("sectionNoteField"))).innerHTML;
-	    if (newnote != note) {
-	        if (newnote == null || newnote.length == 0)
-	            NoteService.clearNote($scope.sectionModalEvent);
-	        else
-	            NoteService.setNote(newnote, $scope.sectionModalEvent);
-	    }
-
-	    (sectionnotefield || (sectionnotefield = document.getElementById("sectionNoteField"))).innerHTML = "";
-
 		$scope.sectionModal.hide();
 	};
 
-	$scope.getNote = function () {
-	    try {
-	        (notefield || (notefield = document.getElementById("noteField"))).innerHTML = note;
-	    } catch (e) {}
-	    try {
-	        (sectionnotefield || (sectionnotefield = document.getElementById("sectionNoteField"))).innerHTML = note;
-	    } catch (e) {}
+	$scope.openNote = function (event) {
+	    $scope.noteModal.show();
+	};
 
-	    return note;
+	$scope.saveNote = function (event, note) {
+	    if (note == null || note.length == 0)
+	        NoteService.clearNote(event);
+	    else
+	        NoteService.setNote(note, event);
+	    $scope.noteModal.hide();
+	};
+
+	$scope.closeNote = function () {
+	    $scope.note.note = NoteService.getNote($scope.note.event) || "";
+	    $scope.noteModal.hide();
+	};
+
+	$scope.split = function (n) {
+	    return n.split(/\r?\n/ig);
 	};
 
 	//öppnar KTH-popupen och sätter värden som används
@@ -76,10 +74,8 @@ angular.module('starter.controllers', [])
 		$scope.eventBGcolor = DataService.getEventTypeColors()[event.type.toLowerCase()];
 		$scope.eventcolor = ConvenientService.contrastingColor($scope.eventBGcolor);
 		$scope.hasBegun = new Date() >= new Date(event.start);
-
-		note = NoteService.getNote(event);
-		if (note == null)
-		    note = "";
+		$scope.note.note = NoteService.getNote(event) || "";
+		$scope.note.event = event;
 		
         $scope.modal.show();
     };
@@ -88,10 +84,8 @@ angular.module('starter.controllers', [])
 		console.log(event);
 		$scope.sectionModalEvent = event;
 		$scope.hasBegun = new Date() >= new Date(event.start.dateTime || event.start.date);
-
-		note = NoteService.getNote(event);
-		if (note == null)
-		    note = "";
+		$scope.note.note = NoteService.getNote(event) || "";
+		$scope.note.event = event;
 		
 		$scope.sectionModal.show();
 	};

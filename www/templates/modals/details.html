@@ -55,12 +55,12 @@
                 Egna anteckningar
             </b>
             <div class="col" style="text-align: right">
-                &nbsp;
+                <i class="icon ion-edit" ng-click="openNote(sectionModalEvent)"></i>
             </div>
         </div>
         <div class="row">
-            <div contenteditable="true" style="border: 1px solid #ddd; min-height: 5em; width: 100%; padding: 0.5em; margin: 5px;" ng-bind="getNote()" id="noteField">
-
+            <div style="padding: 2%;">
+                <span ng-repeat="line in split(note.note) track by $index">{{ line }} <br /></span>
             </div>
         </div>
 	</div>

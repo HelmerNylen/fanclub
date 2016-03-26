@@ -36,7 +36,7 @@
                 {{ format(day.date) }}
             </div>
 			<div ng-repeat="part in ['am', 'pm']">
-				<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day[part]" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0; border-top-left-radius: 0; border-top-right-radius: 0">
+				<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day[part] track by $index" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0; border-top-left-radius: 0; border-top-right-radius: 0">
 					<table style="width: 100%; height: 100%;">
 						<tr>
 							<td ng-style="{'background-color': event.course.color}" style="width: 4px">
