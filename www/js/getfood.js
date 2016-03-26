@@ -240,7 +240,10 @@ angular.module('starter.getfood', ['starter.services'])
 			} else {
 				restaurantsLeft = restaurantCount;
 				if (day >= 0 && day <= 4)
-					updateMenus();
+				    updateMenus();
+				else
+				    for (var i = 0; i < callbacks.length; i++)
+				        callbacks[i]();
 			}
 		},
 		registerCallback: function (cb) {
