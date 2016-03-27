@@ -131,6 +131,11 @@ angular.module('starter.controllers', [])
 		$scope.menusEnabled = DataService.getMenusEnabled();
     };
 	$scope.$on('menusEnabledToggle', refresh);
+	$scope.$on('$destroy', function () {
+	    $scope.modal.remove();
+	    $scope.sectionModal.remove();
+	    $scope.noteModal.remove();
+	});
 
     //pick monday this week, or the next week if it is currently weekend
     var weekStart = new Date();
@@ -452,38 +457,6 @@ angular.module('starter.controllers', [])
 		return false;
 	};
 	
-	//blanda ihop sektions- och KTH-händelser
-	var mergeEvents = function (sorted, section) {
-		var res = [];
-		var sortedIndex = 0;
-		var sectionIndex = 0;
-		var currentSorted;
-		var currentSection;
-		
-		while (sortedIndex < sorted.length && sectionIndex < section.length) {
-			currentSorted = sorted[sortedIndex];
-			currentSection = SectionService.convert(section[sectionIndex]);
-			
-			if (new Date(currentSorted.start).getTime() < new Date(currentSection.start).getTime()) {
-				res.push(currentSorted);
-				sortedIndex++;
-			} else {
-				res.push(currentSection);
-				sectionIndex++;
-			}
-		}
-		
-		if (sortedIndex == sorted.length)
-			for (; sectionIndex < section.length; sectionIndex++)
-				res.push(SectionService.convert(section[sectionIndex]));
-		else
-			for (; sortedIndex < sorted.length; sortedIndex++)
-				res.push(sorted[sortedIndex]);
-		
-		console.log("Merged " + sorted.length + " + " + section.length + " = " + res.length + " events");
-		return res;
-	};
-	
 	//körs när feedet öppnas
 	$scope.refresh = function () {
 	    $scope.delimiterEnabled = DataService.getDelimiterEnabled();
@@ -797,7 +770,11 @@ angular.module('starter.controllers', [])
 		$scope.lastUpdated = lu ? ConvenientService.dateFormat(lu) : "Aldrig";
 	};
 	
-	$scope.$on('$ionicView.enter', refresh);
+    $scope.$on('$ionicView.enter', refresh);
+    $scope.$on('$destroy', function () {
+        $scope.viewCourseModal.remove();
+        $scope.addCourseModal.remove();
+    });
 })
 
 //controller för food.html
@@ -935,6 +912,9 @@ angular.module('starter.controllers', [])
 	};
 	
 	$scope.$on('$ionicView.enter', refresh);
+	$scope.$on('$destroy', function () {
+	    $scope.rssmodal.remove();
+	});
 })
 
 .controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, GitService) {
@@ -1044,7 +1024,7 @@ angular.module('starter.controllers', [])
 	};
 	
 	$scope.updateXkcd = function(nr){
-		refresh(nr);
+	    xkcdService.update(setVars, nr);
 	};
 
 	
@@ -1052,6 +1032,18 @@ angular.module('starter.controllers', [])
 	xkcdService.update(setVars, 0);
 
 	$scope.$on('$ionicView.enter', refresh);
+	$scope.$on('$destroy', function () {
+	    $scope.foodModal.remove();
+	    $scope.mapModal.remove();
+	    $scope.gaussModal.remove();
+	    $scope.xkcdModal.remove();
+	    if ($scope.extraModals) {
+	        for (var i = 0; i < $scope.extraModals.school.length; i++)
+	            $scope.extraModals.school[i].modal.remove();
+            for (var i = 0; i < $scope.extraModals.other.length; i++)
+                $scope.extraModals.other[i].modal.remove();
+	    }
+	});
 	GitService.registerCallback(refresh);
 
 })

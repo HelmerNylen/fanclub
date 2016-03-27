@@ -589,11 +589,14 @@ angular.module('starter.services', [])
 	
 	//sorterar in ett event i en lista över events (mha linjärsök)
     var insertInto = function(schemaArray, event) {
+        //för att inte ios ska gå sönder
+        event.start = event.start.replace(/-/ig, "/");
+        event.end = event.end.replace(/-/ig, "/");
         if (schemaArray.length == 0) {
 			schemaArray.push(event);
 		}
         else {
-			var put = false;
+            var put = false;
 			var eventDate = new Date(event.start);
 			for (var i = 0; i < schemaArray.length; i++) {
 				if (new Date(schemaArray[i].start) >= eventDate) {

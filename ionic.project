@@ -43,10 +43,6 @@
 		"proxyUrl": "http://ths.kth.se/"
 	},
 	{
-		"path": "/backman",
-		"proxyUrl": "http://www.jonathanbackman.com/"
-    },
-	{
 		"path": "/xkcd",
 		"proxyUrl": "http://www.xkcd.com/"
 	},
