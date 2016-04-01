@@ -4,7 +4,25 @@ Schemaapp för Teknisk Fysik F-15 Fanclub på KTH.
 ![Logga](https://lh3.googleusercontent.com/6smOW8EC7md_V6UiYiZNd4hKzMf861GiuF5BL3-zuE2BHWNeI7ZAalYw8klp29wCUQ=w300-rw "Logga")
 
 - [Google Play](https://play.google.com/store/apps/details?id=com.HelmerNylen.fanclubschema)
-- Applelänk kommer när den finns på App Store, vilket kan ta ett tag
+- [App Store](https://itunes.apple.com/us/app/fanclubs-schema/id1095423388)
+
+## För användare
+#### Appen kraschar >:(
+Den behöver internetanslutning, särskilt allra första gången man öppnar den, men den *borde* ändå inte krascha. Händer det ändå så har jag gjort något dumt, så säg gärna till. Den kan krascha på lite olika sätt:
+
+1. **Den öppnas och stängs direkt** -
+Nånting har gått riktigt snett, och det är nog inte din telefons fel. Håll tummarna för att appen uppdateras snart, men detta kan ta ett tag (särskilt för Apple-användare).
+2. **Den öppnas men det är bara en vit ruta** -
+Funkar kanske att installera om appen.
+3. **Den öppnas och det finns en orange menyrad, men det står något felmeddelande i toppen av skärmen** -
+Prova att gå in i inställningar och trycka på den röda soptunnan efter ca en halvtimme, KTH:s servrar är nere ibland.
+
+#### Appen hämtar inte dagens meny för en viss restaurang
+Den delen av appen buggar ur ganska ofta. Är du jättenyfiken på vad det blir för mat, tryck på restaurangens namn så öppnas deras hemsida.
+
+#### Jag försöker lägga till en kurs, vad är kursomgång och startår?
+Startår är det år och halvår kursen börjar. Exempelvis betyder```2016:1``` våren 2016, och ```2017:2``` hösten 2017. Kursomgång vet jag ärligt talat inte vad det är, antagligen något som behövs för att hålla isär olika grupper med samma kurs. Prova ett lågt tal 1 till 3 och se om det verkar stämma. Funkar inte det går det kanske att ta reda på den riktiga siffran via programwebben eller KTH Social.
+
 
 ## För utvecklare
 Bra-att-ha:
@@ -33,16 +51,10 @@ Ställ ett kommandofönster i projektets rotmapp (dvs. den mapp där bl.a. confi
 Nu får du antagligen upp ett vitt fönster utan någon fin app. Öppnar du webbläsarkonsollen (F12 på Chrome) är det antagligen ett antal ilskna röda felmeddelanden där. Detta beror på två saker:
 
 ##### 4.1 IP-adresser
-Detta gällde fram till 2016-03-08, men nu bör den hitta IP-adressen själv. Punkt 3 stämmer dock fortfarande.
+När man testar via ```ionic serve``` fungerar det inte att anropa API-er direkt med $http eller liknande. Under ```www/js/app.js``` finns en bunt konstanter under en kommentarswitch.
 
->När man testar via ```ionic serve``` fungerar det inte att anropa API-er direkt med $http eller liknande. Under ```www/js/app.js``` finns en bunt konstanter under en kommentarswitch.
->
->1. Du måste antagligen byta ut ip-addresserna mot din egen.
->2. Om du pushar kod, se till att det är de riktiga URL-erna som är aktiva. Detta byts lättast genom att ändra ```//*/``` till ```/*/``` ovanför ip-URLerna. 
->3. Under ```ionic.project``` finns en bunt proxys. Om du vill koppla upp något mot en address måste proxyn definieras här för att fungera medan man testar.
->4. Detta lär gå att automatisera med Gulp, men jag har inte orkat.
->
->**TLDR**: Öppna ```www/js/app.js``` och byt ut IP-adresserna mot den du valde när du körde ```ionic serve```.
+1. För att det ska funka när du debuggar, ändra ```//*/``` till ```/*/``` ovanför ip-URLerna. Byt tillbaka innan du committar kod.
+2. Under ```ionic.project``` finns en bunt proxys. Om du vill koppla upp något mot en address måste proxyn definieras här för att fungera medan man testar.
 
 ##### 4.2 API-nyckel
 Om sektionskalendern ska funka måste appen ha en giltig api-nyckel. Denna får man hantera lokalt. Skapa ```www/js/apikey.js``` och skriv i den
@@ -53,7 +65,7 @@ angular.module('starter.apikey', [])
 });
 ```
 där du byter ut Shalalie mot en giltig nyckel du fått från [Google Developer Console](https://console.developers.google.com/).
-**Notera**: Du kan behöva lägga till filen och modulen trots att du inte vill testa sektionskalendern, då övriga delar av koden förutsätter att modulen finns.
+**Notera**: Du behöver lägga till filen och modulen, även om du inte vill testa sektionskalendern, då övriga delar av koden förutsätter att modulen finns.
 
 #### 5. That's it!
 Ionic, ett terminalfönster, en webbläsare (rekommenderar Chrome) och någon form av texteditor (jag kör Visual Studio eller Notepad++) är allt du behöver.
@@ -76,12 +88,12 @@ Men då tar vi ett exempel. Säg att vi vill göra en ny menysida med en enkel r
 </ion-view>
 ```
 
-Nu går vi till app.js. Kopiera ett state, typ ```app.food```, och klistra in det strax under. Byt sedan ut ```'app.food'``` mot ```'app.counter'```,  ```'/food'``` mot ```'/counter'```, ```'templates/food.html'``` mot ```'templates/counter.html'``` och ```'FoodCtrl'``` mot ```'CounterCtrl'```. Slutresultatet bör bli typ
+Nu går vi till app.js. Kopiera ett state, typ ```app.tools```, och klistra in det strax under. Byt sedan ut ```'app.tools'``` mot ```'app.counter'```,  ```'/tools'``` mot ```'/counter'```, ```'templates/tools.html'``` mot ```'templates/counter.html'``` och ```'ToolsCtrl'``` mot ```'CounterCtrl'```. Slutresultatet bör bli typ
 ```
 (...)
           'menuContent': {
-              templateUrl: 'templates/food.html',
-              controller: 'FoodCtrl'
+              templateUrl: 'templates/tools.html',
+              controller: 'ToolsCtrl'
           }
       }
   })
