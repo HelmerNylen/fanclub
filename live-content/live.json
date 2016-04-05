@@ -1,12 +1,12 @@
 ﻿{
-  "lastupdated": "2016-03-25",
+  "lastupdated": "2016-04-06",
   "tools": {
     "modals": {
       "school": [
         {
           "title": "Mekanikövningar",
           "icon": "ion-university",
-          "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mekanikövningar</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Anteckningar gjorda av <a href=\"{{ vars.backmanURL }}\" target=\"_blank\">Jonathan Backman</a>.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen']\" ng-click=\"openURL(vars.backmanURL + vars.backmanPDF + ($index+1) + '.pdf')\">Övning {{ $index + 1 }} - {{ subject }}</div></div></ion-content></ion-modal-view>",
+          "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mekanikövningar</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Anteckningar gjorda av <a href=\"{{ vars.backmanURL }}\" target=\"_blank\">Jonathan Backman</a>.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen', 'Kraftekvationen fortsättning']\" ng-click=\"openURL(vars.backmanURL + vars.backmanPDF + ($index+1) + '.pdf')\">Övning {{ $index + 1 }} - {{ subject }}</div></div></ion-content></ion-modal-view>",
           "vars": {
             "backmanURL": "http://www.jonathanbackman.com/",
             "backmanPDF": "wp-content/uploads/2016/01/Övning"

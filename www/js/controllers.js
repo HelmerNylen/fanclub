@@ -983,6 +983,7 @@ angular.module('starter.controllers', [])
     });
 	
 	$scope.openMap = function () {
+		$ionicScrollDelegate.zoomTo(1);
         $scope.mapModal.show();
     };
 	
