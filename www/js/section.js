@@ -126,8 +126,9 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 //service som hämtar rss-flöden för fysiksektionen och ths
 //egentligen finns inte så mycket intressant där men ska det vara en komplett app så ska det
 .factory('RssService', function ($http, $state, RssEndpoint, StorageService) {
-    var section = null;
-    var union = null;
+    var section = StorageService.getOrDefault("rssF", []);
+    var union = StorageService.getOrDefault("rssTHS", []);
+    var kth = StorageService.getOrDefault("rssKTH", []);
     var requests = -1;
     var lastUpdate = StorageService.getOrDefault("rssLastUpdate", "");
     var fail = false;
@@ -139,20 +140,31 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 	//läser in händelser från ett xmlträd med rss
 	//händelser = anonyma objekt med title, skapare, beskrivning etc
-    var parseRss = function (xml) {
+    var parseRss = function (xml, isKTH) {
         var res = [];
 
         var items = xml.getElementsByTagName("item");
         for (var i = 0; i < items.length; i++)
-            res.push({
-                title: items[i].getElementsByTagName("title")[0].textContent,
-                link: items[i].getElementsByTagName("link")[0].textContent,
-                date: new Date(items[i].getElementsByTagName("pubDate")[0].textContent),
-                creator: items[i].getElementsByTagName("creator")[0].textContent,
-                category: items[i].getElementsByTagName("category")[0].textContent,
-                description: items[i].getElementsByTagName("description")[0].textContent,
-                content: items[i].getElementsByTagName("encoded")[0].textContent
-            });
+			if (isKTH)
+				res.push({
+					title: items[i].getElementsByTagName("title")[0].textContent,
+					link: items[i].getElementsByTagName("link")[0].textContent,
+					description: items[i].getElementsByTagName("description")[0].textContent,
+					date: new Date(items[i].getElementsByTagName("pubDate")[0].textContent),
+					creator: "KTH",
+					category: "",
+					content: items[i].getElementsByTagName("description")[0].textContent //samma som description
+				});
+			else
+				res.push({
+					title: items[i].getElementsByTagName("title")[0].textContent,
+					link: items[i].getElementsByTagName("link")[0].textContent,
+					date: new Date(items[i].getElementsByTagName("pubDate")[0].textContent),
+					creator: items[i].getElementsByTagName("creator")[0].textContent,
+					category: items[i].getElementsByTagName("category")[0].textContent,
+					description: items[i].getElementsByTagName("description")[0].textContent,
+					content: items[i].getElementsByTagName("encoded")[0].textContent
+				});
 
         return res;
     };
@@ -166,6 +178,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
                 StorageService.set("rssLastUpdate", lastUpdate);
                 StorageService.set("rssF", section);
                 StorageService.set("rssTHS", union);
+                StorageService.set("rssKTH", kth);
             }
             if ($state.current.name == "app.section")
                 $state.go($state.current, {}, { reload: true });
@@ -174,17 +187,14 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 	//hämta båda rss-flödena
     var update = function () {
-        requests = 2;
+        requests = 3;
         console.log("getting rss feeds");
 
         $http.get(RssEndpoint.f + "feed/").then(
 			function successCallback(response) {
 			    try {
 			        var xml = parseXml(response.data);
-
 			        section = parseRss(xml);
-			        console.log(section);
-
 			    } catch (e) {
 			        console.log(e);
 			        fail = true;
@@ -205,9 +215,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			function successCallback(response) {
 			    try {
 			        var xml = parseXml(response.data);
-
 			        union = parseRss(xml);
-			        console.log(union);
 			    } catch (e) {
 			        console.log(e);
 			        fail = true;
@@ -223,15 +231,34 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    requests--;
 			    onDone();
 			});
+
+        $http.get(RssEndpoint.kth + "aktuellt/nyheter?rss=news").then(
+			function successCallback(response) {
+			    try {
+			        var xml = parseXml(response.data);
+			        kth = parseRss(xml, true);
+			    } catch (e) {
+			        console.log(e);
+			        fail = true;
+			    }
+
+			    requests--;
+			    onDone();
+			},
+			function errorCallback(response) {
+			    console.log("Error when getting kth rss feed " + response.status + ": " + response.statusText + ", " + response.data);
+			    fail = true;
+
+			    requests--;
+			    onDone();
+			});
     };
 
 	//uppdaterar rss-flödena om det gått ett dygn sen senaste
     if (new Date().toDateString() != lastUpdate)
         update();
     else {
-        console.log("getting rss feeds from cache");
-        section = StorageService.getOrDefault("rssF", []);
-        union = StorageService.getOrDefault("rssTHS", []);
+        console.log("using cached rss feeds");
     }
 
 
@@ -241,7 +268,10 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         },
         getUnion: function () {
             return union;
-        }
+        },
+		getKTH: function () {
+			return kth;
+		}
     };
 })
 ;

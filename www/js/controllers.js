@@ -263,9 +263,21 @@ angular.module('starter.controllers', [])
 					} else {
 						//vi kollar hur många händelser som redan är ditlagda i eventboxlistan på samma tid, oftast är detta 0 (händelsen själv exkluderas)
 						var sim = ConvenientService.collisions(events[j], days[(start.getDay() + 6) % 7].eventBoxes);
+						var indexes = [true];
 						for (var k = 0; k < sim.length; k++) {
 							sim[k].simultaneous = sim.length + 1;
+							indexes.push(true);
 						}
+						var simindex = sim.length;
+						for (var k = 0; k < sim.length; k++)
+							if (sim[k].index < indexes.length)
+								indexes[sim[k].index] = false;
+						for (var k = 0; k < indexes.length; k++)
+							if (indexes[k]) {
+								simindex = k;
+								break;
+							}
+						
 						//stoppa händelsen i en låda på rätt dag
 						days[(start.getDay() + 6) % 7].eventBoxes.push({
 							event: events[j],
@@ -273,7 +285,7 @@ angular.module('starter.controllers', [])
 							timeTop: (start.getHours() * 60 + start.getMinutes()) * 60 * 1000,
 							timeHeight: (end.getTime() - start.getTime()),
 							simultaneous: sim.length + 1,
-							index: sim.length,
+							index: simindex,
 							allDay: false
 						});
 					}
@@ -373,7 +385,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för feed.html
-.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService, EventService, GitService) {
+.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService, EventService, GitService, NoteService) {
     //try {
 	$scope.format = ConvenientService.verboseDateFormat;
     $scope.getTime = function (dateString) {
@@ -425,6 +437,10 @@ angular.module('starter.controllers', [])
 	};
 	$scope.refilter = function () {
 		$state.go($state.current, {}, { reload: true });
+	};
+	
+	$scope.hasNote = function (event) {
+		return NoteService.getNote(event.original || event) != null;
 	};
 	
 	//returnerar true/false beroende på om en händelse anses matcha det givna filtret
@@ -815,7 +831,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för section.html
-.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, SectionService, ConvenientService, RssService) {
+.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, SectionService, ConvenientService, RssService) {
 	$scope.date = function (day) {
 		return ConvenientService.verboseDateFormat(day[0].start.date ? day[0].start.date : day[0].start.dateTime);
 	};
@@ -851,10 +867,14 @@ angular.module('starter.controllers', [])
 	    return desc.replace(/<a([^>]+)>Läs mer<\/a>/ig, ' ...');
 	};
 	
-	//öppnar rssmodalen
-	$scope.openNews = function (ths) {
-		$scope.currentRss = ths ? $scope.unionRss : $scope.sectionRss;
+	var lastfeed = -1;
+	//öppnar rssmodalen. feed: 0 = fysiksektionen, 1 = ths, 2 = kth
+	$scope.openNews = function (feed) {
+		$scope.currentRss = [$scope.sectionRss, $scope.unionRss, $scope.kthRss][feed];
 	    $scope.rssmodal.show();
+		if (feed != lastfeed)
+			$ionicScrollDelegate.$getByHandle("rss").scrollTop(false);
+		lastfeed = feed;
 	};
 
 	$scope.closeRss = function () {
@@ -900,6 +920,7 @@ angular.module('starter.controllers', [])
 		//hämta rsshändelser
 		var rssf = RssService.getSection();
 		var rssths = RssService.getUnion();
+		var rsskth = RssService.getKTH();
 
 		if (rssf) {
 		    $scope.sectionRss = rssf;
@@ -909,11 +930,16 @@ angular.module('starter.controllers', [])
 		    $scope.unionRss = rssths;
 		    console.log(rssths);
 		}
+		if (rsskth) {
+		    $scope.kthRss = rsskth;
+		    console.log(rsskth);
+		}
 	};
 	
 	$scope.$on('$ionicView.enter', refresh);
 	$scope.$on('$destroy', function () {
 	    $scope.rssmodal.remove();
+		$scope.shalaliePopover.remove();
 	});
 })
 
@@ -1026,6 +1052,7 @@ angular.module('starter.controllers', [])
 	
 	$scope.updateXkcd = function(nr){
 	    xkcdService.update(setVars, nr);
+		$ionicScrollDelegate.scrollTop(false);
 	};
 
 	

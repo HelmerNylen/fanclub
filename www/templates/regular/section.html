@@ -14,50 +14,73 @@
                 Sha-la-lie på Nederländska
             </div>
         </div>-->
-        <div ng-if="sectionRss && unionRss">
+        <div ng-if="sectionRss && unionRss && kthRss">
             <div class="section-headline">
                 Nyheter
             </div>
-            <div class="row">
-                <div class="col card section-card" style="padding: 1em" on-tap="openNews(false)">
-                    <div type>
-                        Fysiksektionen
-                    </div>
-                    <div class="section-news" ng-repeat="latest in [sectionRss[0]]">
-                        <div newstitle>
-                            {{ latest.title }}
-                        </div>
-                        <div newscategory>
-                            {{ latest.category }}
-                        </div>
-                        <div ng-bind-html="replace(latest.description)" newsdesc></div>
-                        <div newsfooter>
-                            {{ latest.creator}}
-                            <br />
-                            {{ dateFormat(latest.date) }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col card section-card" style="padding: 1em" on-tap="openNews(true)">
-                    <div type>
-                        THS
-                    </div>
-                    <div class="section-news" ng-repeat="latest in [unionRss[0]]">
-                        <div newstitle>
-                            {{ latest.title }}
-                        </div>
-                        <div newscategory>
-                            {{ latest.category }}
-                        </div>
-                        <div ng-bind-html="replace(latest.description)" newsdesc></div>
-                        <div newsfooter>
-                            {{ latest.creator}}
-                            <br />
-                            {{ dateFormat(latest.date) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+			<div class="row">
+				<div class="col card section-card" style="padding: 1em; margin-bottom: 0" on-tap="openNews(0)">
+					<div class="news-type">
+						Fysiksektionen
+					</div>
+					<div class="section-news" ng-repeat="latest in [sectionRss[0]]">
+						<div class="news-title">
+							{{ latest.title }}
+						</div>
+						<div class="news-category">
+							{{ latest.category }}
+						</div>
+						<div ng-bind-html="replace(latest.description)" class="news-desc"></div>
+						<div class="news-footer">
+							{{ latest.creator}}
+							<br />
+							{{ dateFormat(latest.date) }}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col card section-card" style="padding: 1em; margin-bottom: 0" on-tap="openNews(1)">
+					<div class="news-type">
+						THS
+					</div>
+					<div class="section-news" ng-repeat="latest in [unionRss[0]]">
+						<div class="news-title">
+							{{ latest.title }}
+						</div>
+						<div class="news-category">
+							{{ latest.category }}
+						</div>
+						<div ng-bind-html="replace(latest.description)" class="news-desc"></div>
+						<div class="news-footer">
+							{{ latest.creator}}
+							<br />
+							{{ dateFormat(latest.date) }}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col card section-card" style="padding: 1em; margin-bottom: 0" on-tap="openNews(2)">
+					<div class="news-type">
+						KTH
+					</div>
+					<div class="section-news" ng-repeat="latest in [kthRss[0]]">
+						<div class="news-title">
+							{{ latest.title }}
+						</div>
+						<div class="news-category">
+							{{ latest.category }}
+						</div>
+						<div ng-bind-html="replace(latest.description)" class="news-desc"></div>
+						<div class="news-footer">
+							{{ latest.creator}}
+							<br />
+							{{ dateFormat(latest.date) }}
+						</div>
+					</div>
+				</div>
+			</div>
         </div>
 
         <div class="section-headline">

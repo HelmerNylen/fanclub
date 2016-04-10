@@ -5,24 +5,21 @@
             <button class="button button-clear" ng-click="closeRss()">St&auml;ng</button>
         </div>
     </ion-header-bar>
-    <ion-content>
+    <ion-content delegate-handle="rss">
         <div class="list">
             <div class="item section-news" ng-repeat="item in currentRss" on-tap="openInBrowser(item.link)">
-                <div class="item-text-wrap" newstitle>
+                <div class="item-text-wrap news-title">
                     {{ item.title }}
                 </div>
-                <div newscategory>
+                <div class="news-category">
                     {{ item.category }}
                 </div>
-                <div class="item-text-wrap" ng-bind-html="item.content" newsdesc></div>
-                <div newsfooter>
+                <div class="item-text-wrap news-desc" ng-bind-html="item.content"></div>
+                <div class="news-footer">
                     {{ item.creator }}
                     <br />
                     {{ dateFormat(item.date) }}
                 </div>
-                <!--div class="euclid" ng-if="item.isSectionPost" style="color: #ff642b; float: left; margin-right: 10px; margin-top: 10px; font-size: 24px">
-                    <i class="icon ion-social-freebsd-devil"></i>
-                </div-->
             </div>
         </div>
     </ion-content>

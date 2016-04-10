@@ -31,7 +31,7 @@
     padding-top: 2em; padding-bottom: 1em;
 }
 
-.section-card > [type] {
+.news-type {
     width: 100%;
     text-align: center;
     /*text-shadow: 2px 2px 2px #ccc;*/
@@ -45,23 +45,23 @@
     width: 100%;
 }
 
-.section-news > [newstitle] {
+.news-title {
     text-align: center;
     padding-bottom: 1em;
 }
 
-.section-news > [newscategory] {
+.news-category {
     font-size: 10px;
     text-align: center;
     padding-bottom: 0.4em;
     color: #444;
 }
 
-.section-news > [newsdesc] {
+.news-desc {
     font-size: 12px;
 }
 
-.section-news > [newsfooter] {
+.news-footer {
     font-size: 10px;
     text-align: right;
     float: right;

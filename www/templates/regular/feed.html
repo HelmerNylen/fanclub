@@ -54,9 +54,9 @@
 										{{ event.course.name }}
 									</div>
 								</div>
-								<div class="row" ng-if="location(event.locations)">
+								<div class="row" ng-if="location(event.locations) || hasNote(event)">
 									<div class="col col-25">
-										&nbsp;
+										<i class="icon ion-edit" ng-if="hasNote(event)"></i>
 									</div>
 									<div class="col item-text-wrap">
 										<b ng-if="event.locations.length != 0">{{ location(event.locations) }}</b>

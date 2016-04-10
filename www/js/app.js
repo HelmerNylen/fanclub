@@ -30,7 +30,8 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 })
 .constant('RssEndpoint', {
     f: 'http://' + window.location.host + '/rss/f/',
-    ths: 'http://' + window.location.host + '/rss/ths/'
+    ths: 'http://' + window.location.host + '/rss/ths/',
+	kth: 'http://' + window.location.host + '/rss/kth/'
 })
 .constant('XkcdEndpoint', {
     url: 'http://' + window.location.host + '/xkcd/'
@@ -55,7 +56,8 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 })
 .constant('RssEndpoint', {
     f: 'http://f.kth.se/',
-    ths: 'http://ths.kth.se/'
+    ths: 'http://ths.kth.se/',
+    kth: 'http://www.kth.se/'
 })
 .constant('XkcdEndpoint', {
     url: 'http://www.xkcd.com/'

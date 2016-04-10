@@ -43,6 +43,10 @@
 		"proxyUrl": "http://ths.kth.se/"
 	},
 	{
+		"path": "/rss/kth",
+		"proxyUrl": "http://www.kth.se/"
+	},
+	{
 		"path": "/xkcd",
 		"proxyUrl": "http://www.xkcd.com/"
 	},
