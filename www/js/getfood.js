@@ -110,44 +110,6 @@ angular.module('starter.getfood', ['starter.services'])
 								for (var j = 0; j < todays.length; j++)
 									menu.push(dishes[i].title + "<br />" + todays[j]);
 						}
-						
-						
-					    /*var keywords = ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Veckans fisk", "Veckans vegetariska", "Veckans sallad", "monday"];
-
-					    for (var i = 0; i < keywords.length - 1; i++) {
-					        var str = partial.substring(partial.search(new RegExp(keywords[i], "im")));
-					        str = str.substring(0, str.search(new RegExp(keywords[i + 1], "im")));
-							//ta bort taggar
-					        str = str.replace(/<([^>]+)>/ig, "");
-
-					        var arr = str.split(/\r?\n/);
-
-					        if (i == day || i > 4)
-					            for (var j = 1; j < arr.length; j++)
-                                    if (arr[j].trim().length != 0) {
-					                    menu.push((i > 4 ? keywords[i] + "<br />" : "") + arr[j].trim());
-					                }
-					    }*/
-
-						/*var xml = parseXml(partial);
-						var sections = xml.documentElement.children[1].children;
-						//dagens
-						var today = sections[day + 2];
-						for (var i = today.children.length - 1; i >= 0; i--)
-							today.removeChild(today.children[i]);
-						for (var i = 0; i < today.childNodes.length; i++)
-							menu.push(today.childNodes[i].nodeValue.trim());
-						
-						//veckans
-						for (var i = 7; i < sections.length; i++)
-						{
-							if (sections[i].innerHTML.toLowerCase().indexOf("veckans") == -1)
-								break;
-							var str = sections[i].innerHTML;
-							var type = str.substring(str.toLowerCase().indexOf("veckans"));
-							type = type.substring(0, type.indexOf("<br"));
-							menu.push(type + ": " + sections[i].childNodes[sections[i].childNodes.length - 1].nodeValue);
-						}*/
 					}
 					catch (e) {
 						console.log("Försökte parsea nymbles meny men det sket sig: " + e);
@@ -163,14 +125,13 @@ angular.module('starter.getfood', ['starter.services'])
 				});
 				
 		    //Brazilia
-            //buggar ibland, så kan förbättras
 			$http.get(FoodEndpoint.brazilia + URLs.weekMenuBrazilia()
 				).then(
 				function successCallback(response) {
 					var partial = response.data.substring(response.data.indexOf("<table class=\"table lunch_menu\">"));
 					partial = partial.substring(0, partial.indexOf("</table>") + "</table>".length);
-					
-					partial = partial.replace(/<br>/ig, "").replace(/<img([^>]+)>/ig, "");
+					partial = partial.replace(/& /ig, "&amp; ");
+					partial = partial.replace(/<br>/ig, "").replace(/<br \/>/ig, "").replace(/<img([^>]+)>/ig, "");
 					
 					var menu = [];
 					try {
@@ -178,8 +139,13 @@ angular.module('starter.getfood', ['starter.services'])
 						//var row = xml.getElementsByTagName("tbody")[day];
 						var row = xml.getElementsByTagName("tbody")[0];
 						
-						for (var i = 0; i < row.children.length; i++)
-							menu.push(row.children[i].children[0].childNodes[0].nodeValue.trim());
+						for (var i = 0; i < row.children.length; i++) {
+							var str = row.children[i].children[0].childNodes[0].nodeValue;
+							str = str.trim();
+							if (str[str.length - 1] == "." && (str.match(/\./g) || []).length == 1)
+								str = str.substring(0, str.length - 1);
+							menu.push(str);
+						}
 					}
 					catch (e) {
 						console.log("Försökte parsea brazilias meny men det sket sig: " + e);
@@ -195,7 +161,6 @@ angular.module('starter.getfood', ['starter.services'])
 				});
                 
                 //Syster O Bror
-				//buggar
 				$http.get(FoodEndpoint.syster + URLs.weekMenuSyster()
                     ).then(
                     function successCallback(response) {
