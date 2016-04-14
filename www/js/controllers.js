@@ -831,7 +831,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för section.html
-.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, SectionService, ConvenientService, RssService) {
+.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, SectionService, ConvenientService, RssService, KthCalendarService) {
 	$scope.date = function (day) {
 		return ConvenientService.verboseDateFormat(day[0].start.date ? day[0].start.date : day[0].start.dateTime);
 	};
@@ -922,18 +922,12 @@ angular.module('starter.controllers', [])
 		var rssths = RssService.getUnion();
 		var rsskth = RssService.getKTH();
 
-		if (rssf) {
+		if (rssf)
 		    $scope.sectionRss = rssf;
-		    console.log(rssf);
-		}
-		if (rssths) {
+		if (rssths)
 		    $scope.unionRss = rssths;
-		    console.log(rssths);
-		}
-		if (rsskth) {
+		if (rsskth)
 		    $scope.kthRss = rsskth;
-		    console.log(rsskth);
-		}
 	};
 	
 	$scope.$on('$ionicView.enter', refresh);

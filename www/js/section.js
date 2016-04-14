@@ -185,7 +185,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         }
     };
 
-	//hämta båda rss-flödena
+	//hämta alla rss-flöden
     var update = function () {
         requests = 3;
         console.log("getting rss feeds");
@@ -273,5 +273,108 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			return kth;
 		}
     };
+})
+
+//service som hämtar KTH:s officiella händelser, typ lunchkonserter
+.factory('KthCalendarService', function ($http, $state, RssEndpoint, StorageService) {
+    var events = StorageService.getOrDefault("KthCalendarEvents", []);
+    var lastUpdate = StorageService.getOrDefault("KthCalendarLastUpdate", null);
+    var fail = false;
+    var callbacks = [];
+    var serializer = new XMLSerializer();
+
+    //ger ett xmlträd från en sträng
+    var parseXml = function (xmlStr) {
+        return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
+    };
+
+    var parseRss = function (xml) {
+        var items = xml.documentElement.getElementsByTagName("item");
+        var res = [];
+        for (var i = 0; i < items.length; i++) {
+            var event = {
+                title: items[i].getElementsByTagName("title")[0].textContent,
+                url: items[i].getElementsByTagName("link")[0].textContent
+            };
+
+            var elementXml = parseXml(items[i].getElementsByTagName("description")[0].textContent).documentElement;
+            var serialized = serializer.serializeToString(elementXml);
+
+            if (serialized.indexOf("parsererror") != -1) {
+                elementXml = parseXml("<p>" + items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, "<br/>") + "</p>").documentElement;
+
+                var short = serializer.serializeToString(elementXml.children[0]).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim();
+                var long = "";
+                for (var j = 1; j < elementXml.children.length; j++)
+                    long += serializer.serializeToString(elementXml.children[j]).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim() + (j != elementXml.children.length - 1 ? " " : "");
+
+                event.info = short;
+                event.longInfo = short + " " + long;
+            } else {
+                var desc = serialized.replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim();
+
+                event.info = desc;
+                event.longInfo = desc;
+            }
+
+            var elementInfo = elementXml.getElementsByClassName("eventInfo")[0];
+            for (var prop in { date: 0, location: 0, subject: 0 }) {
+                var tag = elementInfo.getElementsByClassName(prop)[0];
+                event[prop] = tag.textContent.substring(tag.textContent.indexOf(": ") + 2);
+            }
+
+            res.push(event);
+        }
+
+        console.log("Händelser från KTH-kalendern", res);
+        return res;
+    };
+
+    var onDone = function () {
+        if (!fail) {
+            StorageService.set("KthCalendarEvents", events);
+            StorageService.set("KthCalendarLastUpdate", new Date().toDateString());
+
+            for (var i = 0; i < callbacks.length; i++)
+                callbacks[i]();
+        }
+    };
+
+    var update = function () {
+        $http.get(RssEndpoint.kth + "aktuellt/kalender?rss=calendar").then(
+			function successCallback(response) {
+			    try {
+			        var xml = parseXml(response.data);
+			        events = parseRss(xml);
+			    } catch (e) {
+			        console.log(e);
+			        fail = true;
+			    }
+			    onDone();
+			},
+			function errorCallback(response) {
+			    console.log("Error when getting kth rss feed " + response.status + ": " + response.statusText + ", " + response.data);
+			    fail = true;
+			    onDone();
+			});
+    };
+
+    if (new Date().toDateString() != lastUpdate)
+        update();
+    else {
+        console.log("Using cached kth calendar events");
+
+        for (var i = 0; i < callbacks.length; i++)
+            callbacks[i]();
+    }
+
+    return {
+        getEvents: function () {
+            return events;
+        },
+        registerCallback: function (cb) {
+            callbacks.push(cb);
+        }
+    }
 })
 ;

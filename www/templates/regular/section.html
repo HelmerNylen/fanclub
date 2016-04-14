@@ -14,11 +14,11 @@
                 Sha-la-lie på Nederländska
             </div>
         </div>-->
-        <div ng-if="sectionRss && unionRss && kthRss">
+        <div ng-if="sectionRss && unionRss && kthRss && (sectionRss.length || unionRss.length || kthRss.length)">
             <div class="section-headline">
                 Nyheter
             </div>
-			<div class="row">
+			<div class="row" ng-if="sectionRss.length">
 				<div class="col card section-card" style="padding: 1em; margin-bottom: 0" on-tap="openNews(0)">
 					<div class="news-type">
 						Fysiksektionen
@@ -39,7 +39,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" ng-if="unionRss.length">
 				<div class="col card section-card" style="padding: 1em; margin-bottom: 0" on-tap="openNews(1)">
 					<div class="news-type">
 						THS
@@ -60,7 +60,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" ng-if="kthRss.length">
 				<div class="col card section-card" style="padding: 1em; margin-bottom: 0" on-tap="openNews(2)">
 					<div class="news-type">
 						KTH
