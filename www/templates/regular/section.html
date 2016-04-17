@@ -91,17 +91,16 @@
 			<div class="item" ng-repeat="event in day" style="padding: 0; border: 0" on-tap="openSectionEvent(event)">
 				<table style="width: 100%; height: 100%;">
                     <tr>
-                        <td style="width: 4px; background-color: #ff642b;">
+                        <td style="width: 4px; background-color: {{ event.isOfficialEvent ? '#1954a6' : '#ff642b' }};">
                             &nbsp;
                         </td>
                         <td>
                             <div class="row">
                                 <div class="col col-25 item-text-wrap" style="font-weight: bold">{{ sectionEventDuration(event) }}</div>
                                 <div class="col item-text-wrap">
-									<!--div class="fadedbadge" ng-if="event.creator.displayName">{{ event.creator.displayName }}</div-->
-									{{ event.summary }}
-									<br ng-if="event.description" />
-									{{ event.description }}
+									{{ event.summary || event.title }}
+									<br ng-if="event.description || event.info" />
+									{{ event.description || event.info }}
 								</div>
                             </div>
                             <div class="row" ng-if="event.location">

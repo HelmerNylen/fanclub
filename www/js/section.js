@@ -277,7 +277,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 //service som hämtar KTH:s officiella händelser, typ lunchkonserter
 .factory('KthCalendarService', function ($http, $state, RssEndpoint, StorageService) {
-    var events = StorageService.getOrDefault("KthCalendarEvents", []);
+    var events = StorageService.getOrDefault("KthCalendarEvents", null);
     var lastUpdate = StorageService.getOrDefault("KthCalendarLastUpdate", null);
     var fail = false;
     var callbacks = [];
@@ -294,7 +294,9 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         for (var i = 0; i < items.length; i++) {
             var event = {
                 title: items[i].getElementsByTagName("title")[0].textContent,
-                url: items[i].getElementsByTagName("link")[0].textContent
+                url: items[i].getElementsByTagName("link")[0].textContent,
+				id: items[i].getElementsByTagName("guid")[0].textContent,
+				isOfficialEvent: true
             };
 
             var elementXml = parseXml(items[i].getElementsByTagName("description")[0].textContent).documentElement;
@@ -322,11 +324,19 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
                 var tag = elementInfo.getElementsByClassName(prop)[0];
                 event[prop] = tag.textContent.substring(tag.textContent.indexOf(": ") + 2);
             }
-
-            res.push(event);
+			
+			try {
+				var date = event.date.match(/\d\d\d\d-\d\d-\d\d/)[0].replace(/-/g, "/");
+				event.start = new Date(date + " " + event.date.match(/kl \d\d.\d\d/)[0].substring(3).replace(/\./g, ":") + ":00");
+				if (event.date.match(/- \d\d.\d\d/))
+					event.end = new Date(date + " " + event.date.match(/- \d\d.\d\d/)[0].substring(2).replace(/\./g, ":") + ":00");
+				res.push(event);
+			} catch (e) {
+				console.log(e);
+			}
         }
 
-        console.log("Händelser från KTH-kalendern", res);
+        //console.log("Händelser från KTH-kalendern", res);
         return res;
     };
 
@@ -363,6 +373,8 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         update();
     else {
         console.log("Using cached kth calendar events");
+		if (events == null)
+			events = [];
 
         for (var i = 0; i < callbacks.length; i++)
             callbacks[i]();

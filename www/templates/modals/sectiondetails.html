@@ -1,6 +1,6 @@
 <ion-modal-view>
-  <ion-header-bar style="background-color: #ff642b">
-    <h1 class="title" style="color: white">{{ sectionModalEvent.summary }}</h1>
+  <ion-header-bar style="background-color: {{ sectionModalEvent.isOfficialEvent ? '#1954a6' : '#ff642b' }}">
+    <h1 class="title" style="color: white">{{ sectionModalEvent.summary || sectionModalEvent.subject }}</h1>
     <div class="buttons">
       <button class="button button-clear" ng-click="closeSectionDetails()" style="color: white">Stäng</button>
     </div>
@@ -8,19 +8,19 @@
   <ion-content>
 	<div style="padding: 5%; font-size: 16px" ng-if="sectionModalEvent">
 		<div style="text-align: center; font-size: 14px">
-			{{ sectionModalEvent.summary }}
+			{{ sectionModalEvent.summary || sectionModalEvent.title }}
             <br />
-            {{ sectionModalEvent.description }}
+            {{ sectionModalEvent.description || event.longInfo || event.info }}
 		</div>
 		<div class="row">
 			<b class="col col-33">
 				{{ hasBegun ? "B&ouml;rjade" : "B&ouml;rjar" }}
 			</b>
 			<div class="col" style="text-align: right">
-				{{ dateFormat(sectionModalEvent.start.dateTime || sectionModalEvent.start.date, !!sectionModalEvent.start.date) }}
+				{{ dateFormat(sectionModalEvent.start.dateTime || sectionModalEvent.start.date || sectionModalEvent.start, !!sectionModalEvent.start.date) }}
 			</div>
 		</div>
-		<div class="row">
+		<div class="row" ng-if="sectionDuration(sectionModalEvent)">
 			<b class="col col-33">
 				L&auml;ngd
 			</b>

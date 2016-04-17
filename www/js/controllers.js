@@ -83,7 +83,7 @@ angular.module('starter.controllers', [])
 	$scope.openSectionEvent = function (event) {
 		console.log(event);
 		$scope.sectionModalEvent = event;
-		$scope.hasBegun = new Date() >= new Date(event.start.dateTime || event.start.date);
+		$scope.hasBegun = new Date() >= new Date(event.isOfficialEvent ? event.start : event.start.dateTime || event.start.date);
 		$scope.note.note = NoteService.getNote(event) || "";
 		$scope.note.event = event;
 		
@@ -96,6 +96,11 @@ angular.module('starter.controllers', [])
 		return ConvenientService.timeFormat(new Date(event.end).getTime() - new Date(event.start).getTime());
 	};
 	$scope.sectionDuration = function (event) {
+		if (event.isOfficialEvent) {
+			if (event.end)
+				return ConvenientService.timeFormat(new Date(event.end).getTime() - new Date(event.start).getTime());
+			else return false;
+		}
 		if (event.start.date && event.end.date) {
 			var days = Math.round((new Date(event.end.date).getTime() - new Date(event.start.date).getTime()) / (1000 * 3600 * 24));
 			return (days == 1 ? "1 dag" : days + " dagar");
@@ -833,10 +838,25 @@ angular.module('starter.controllers', [])
 //controller för section.html
 .controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, SectionService, ConvenientService, RssService, KthCalendarService) {
 	$scope.date = function (day) {
-		return ConvenientService.verboseDateFormat(day[0].start.date ? day[0].start.date : day[0].start.dateTime);
+		if (day[0].isOfficialEvent)
+			return ConvenientService.verboseDateFormat(day[0].start);
+		else
+			return ConvenientService.verboseDateFormat(day[0].start.date ? day[0].start.date : day[0].start.dateTime);
 	};
+    var getTime = function (dateString) {
+        var d = new Date(dateString);
+        return d.getHours() + ":" + (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes());
+    };
 	$scope.dateFormat = ConvenientService.dateFormat;
-	$scope.sectionEventDuration = SectionService.duration;
+	$scope.sectionEventDuration = function (e) {
+		if (e.isOfficialEvent) {
+			if (e.end)
+				return getTime(e.start) + "-" + getTime(e.end);
+			else
+				return getTime(e.start);
+		} else
+			return SectionService.duration(e);
+	};
 	
 	//html-en för shalalie-menyn. bör kanske läggas i egen fil
 	var template = '<ion-popover-view><ion-header-bar class="bar-ctfys"> <h1 class="title">Sha-la-lie på...</h1></ion-header-bar> <ion-content><div class="list" style="border-bottom: 1px solid #ccc; border-top: 1px solid #ccc; padding-top: 0;">'
@@ -880,31 +900,57 @@ angular.module('starter.controllers', [])
 	$scope.closeRss = function () {
 	    $scope.rssmodal.hide();
 	};
+	
+	var merge = function (events, kthEvents) {
+		var eindex = 0, kindex = 0;
+		var res = [];
+		
+		while (eindex < events.length && kindex < kthEvents.length) {
+			if (new Date(kthEvents[kindex].start) < new Date(events[eindex].start.date || events[eindex].start.dateTime))
+				res.push(kthEvents[kindex++]);
+			else
+				res.push(events[eindex++]);
+		}
+		while (eindex < events.length)
+			res.push(events[eindex++]);
+		while (kindex < kthEvents.length)
+			res.push(kthEvents[kindex++]);
+		
+		return res;
+	};
 
 	
 	//körs varje gång sidan öppnas
 	var refresh = function () {
-		//$scope.response = SectionService.getResponse();
-		//console.log($scope.response);
 		var events = SectionService.getEvents();
-		if (events) {
+		var kthEvents = KthCalendarService.getEvents();
+		
+		if (!kthEvents)
+			KthCalendarService.registerCallback(refresh);
+		
+		if (events && kthEvents) {
 			//hämta sektionshändelser och sortera dessa per dag
 			//dagarna är här bara arrays av händelser
 		    var days = [];
 		    var day = [];
 		    var today = new Date(ConvenientService.today);
-
+			
+			events = merge(events, kthEvents);
+			console.log("merged");
+			
 		    for (var i = 0; i < events.length; i++) {
 		        var push = false;
-		        if (events[i].start.date && new Date(events[i].start.date).getTime() >= today.getTime()) {
+		        if (!events[i].isOfficialEvent && events[i].start.date && new Date(events[i].start.date).getTime() >= today.getTime()) {
 		            events[i].start.dateTime = events[i].start.date;
 		            push = true;
 		        }
-		        else if (events[i].start.dateTime && new Date(events[i].start.dateTime).getTime() >= today.getTime())
+		        else if (!events[i].isOfficialEvent && events[i].start.dateTime && new Date(events[i].start.dateTime).getTime() >= today.getTime())
 		            push = true;
+				else if (events[i].isOfficialEvent && new Date(events[i].start) >= today.getTime())
+					push = true;
 
 		        if (push) {
-		            if (day.length == 0 || new Date(day[0].start.dateTime).toDateString() == new Date(events[i].start.dateTime).toDateString())
+		            if (day.length == 0 || new Date(day[0].isOfficialEvent ? day[0].start : (day[0].start.dateTime || day[0].start.date)).toDateString() == new Date(events[i].isOfficialEvent ? events[i].start : (events[i].start.dateTime || events[i].start.date)).toDateString())
 		                day.push(events[i]);
 		            else {
 		                days.push(day);
