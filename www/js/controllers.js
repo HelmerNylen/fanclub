@@ -553,12 +553,11 @@ angular.module('starter.controllers', [])
 	$scope.updateExtendedDiscard = function () {
 		DataService.setExtendedDiscard($scope.settings.extendedDiscard);
 	};
-	/*$scope.settings.menusEnabled = DataService.getMenusEnabled();
-	$scope.updateMenusEnabled = function () {
-		DataService.setMenusEnabled($scope.settings.menusEnabled);
-		//signalerar till AppCtrl att menyknappen ska bort eller tillbaka
-		$rootScope.$broadcast('menusEnabledToggle');
-	};*/
+	$scope.modeLabels = ["Inga", "Lunch & Musik", "Alla"];
+	$scope.settings.interestingMode = $scope.modeLabels[StorageService.getOrDefault("KthCalendarInterestingMode", 1)];
+	$scope.updateInterestingMode = function () {
+	    StorageService.set("KthCalendarInterestingMode", $scope.modeLabels.indexOf($scope.settings.interestingMode));
+	};
 	$scope.settings.delimiterEnabled = DataService.getDelimiterEnabled();
 	$scope.updateDelimiterEnabled = function () {
 		DataService.setDelimiterEnabled($scope.settings.delimiterEnabled);
@@ -843,7 +842,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för section.html
-.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, SectionService, ConvenientService, RssService, KthCalendarService) {
+.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, SectionService, ConvenientService, RssService, KthCalendarService, NoteService) {
 	$scope.date = function (day) {
 		if (day[0].isOfficialEvent)
 			return ConvenientService.verboseDateFormat(day[0].start);
@@ -880,6 +879,10 @@ angular.module('starter.controllers', [])
 
 	$scope.shalalie = function ($event) {
 	    $scope.shalaliePopover.show($event);
+	};
+
+	$scope.hasNote = function (event) {
+	    return NoteService.getNote(event.original || event) != null;
 	};
 
 	//gör en modal av rssflödesvisaren

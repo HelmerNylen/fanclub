@@ -38,7 +38,7 @@
                 </table>
             </div>
         </div>
-        <div ng-if="lyricsMode.chapter && lyricsMode.song" ng-repeat="song in [lyrics[lyricsMode.chapter - 1].songs[lyricsMode.song - 1]]" style="padding: 10px; color: #444;">
+        <div ng-if="lyricsMode.chapter && lyricsMode.song" ng-repeat="song in [lyrics[lyricsMode.chapter - 1].songs[lyricsMode.song - 1]]" style="padding: 15px; margin-left: 1ex; margin-right: 1ex; color: #444;">
             <p ng-if="song.melody" ng-bind-html="parseLyrics(song.melody)" style="text-align: center; font-style: italic;"></p>
             <p ng-bind-html="parseLyrics(song.text)" style="font-size: 14px; font-family: monospace"></p>
             <p ng-if="song.author" ng-bind-html="parseLyrics(song.author)" style="text-align: right"></p>

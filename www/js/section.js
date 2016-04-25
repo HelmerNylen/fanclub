@@ -279,9 +279,27 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 .factory('KthCalendarService', function ($http, $state, RssEndpoint, StorageService) {
     var events = StorageService.getOrDefault("KthCalendarEvents", null);
     var lastUpdate = StorageService.getOrDefault("KthCalendarLastUpdate", null);
+    var interestingMode = StorageService.getOrDefault("KthCalendarInterestingMode", 1);
     var fail = false;
     var callbacks = [];
     var serializer = new XMLSerializer();
+
+    //avgör om en händelse är intressant nog att få sparas
+    var interestingEvent = function (ev) {
+        switch (interestingMode) {
+            case 1:
+                try {
+                    return ev.subject.toLowerCase().indexOf("musik") != -1 || ev.longInfo.toLowerCase().indexOf("lunch") != -1 || ev.title.toLowerCase().indexOf("lunch") != -1;
+                }
+                catch (e) {
+                    console.log(e);
+                    return false;
+                }
+            case 2:
+                return true;
+            default: return false;
+        }
+    };
 
     //ger ett xmlträd från en sträng
     var parseXml = function (xmlStr) {
@@ -302,6 +320,8 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
             var elementXml = parseXml(items[i].getElementsByTagName("description")[0].textContent).documentElement;
             var serialized = serializer.serializeToString(elementXml);
 
+            //bör väl göras på bättre sätt
+            //beskrivningarna innehåller ibland html som måste fixas till för att fungera som xml
             if (serialized.indexOf("parsererror") != -1) {
                 elementXml = parseXml("<p>" + items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, "<br/>") + "</p>").documentElement;
 
@@ -330,6 +350,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 				event.start = new Date(date + " " + event.date.match(/kl \d\d.\d\d/)[0].substring(3).replace(/\./g, ":") + ":00");
 				if (event.date.match(/- \d\d.\d\d/))
 					event.end = new Date(date + " " + event.date.match(/- \d\d.\d\d/)[0].substring(2).replace(/\./g, ":") + ":00");
+
 				res.push(event);
 			} catch (e) {
 				console.log(e);
@@ -382,6 +403,15 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
     return {
         getEvents: function () {
+            interestingMode = StorageService.getOrDefault("KthCalendarInterestingMode", 1);
+            var res = [];
+            for (var i = 0; i < events.length; i++)
+                if (interestingEvent(events[i]))
+                    res.push(events[i]);
+
+            return res;
+        },
+        getAllEvents: function () {
             return events;
         },
         registerCallback: function (cb) {

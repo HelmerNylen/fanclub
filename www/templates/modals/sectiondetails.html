@@ -10,7 +10,9 @@
 		<div style="text-align: center; font-size: 14px">
 			{{ sectionModalEvent.summary || sectionModalEvent.title }}
             <br />
-            {{ sectionModalEvent.description || event.longInfo || event.info }}
+            <div style="text-align: left; padding: 1em 0">
+                {{ sectionModalEvent.description || sectionModalEvent.longInfo || sectionModalEvent.info }}
+            </div>
 		</div>
 		<div class="row">
 			<b class="col col-33">
