@@ -1,7 +1,8 @@
 angular.module('starter.getxkcd', ['starter.services'])
 
 .factory('xkcdService', function($http, $state, StorageService, URLs, XkcdEndpoint) {
-	var title = "", img = "", alt = "", cLink = "", num = "";
+    var title = "", img = "", alt = "", cLink = "", num = "";
+    var randmax = 1600; //skrivs över
 	
 	//körs när alla anrop är klara
 	var onDone = function (callbackFunc) {
@@ -13,8 +14,14 @@ angular.module('starter.getxkcd', ['starter.services'])
 		//nr!=-1 => latest comic
 		console.log("Updating xkcd");
 		var number="";
-		if(nr==-1){
-			number=(Math.floor(Math.random() * 1653) + 1).toString();
+		if (nr == -1) {
+			number=(Math.floor(Math.random() * randmax) + 1).toString();
+		}
+		else if (nr == -2) {
+		    number = Math.min(num + 1, randmax);
+		}
+		else if (nr == -3) {
+		    number = Math.max(num - 1, 1);
 		}
 		try {
 			$http.get(XkcdEndpoint.url+number+'/'+URLs.xkcdJson()
@@ -28,7 +35,10 @@ angular.module('starter.getxkcd', ['starter.services'])
 					alt=al;
 					img = im;
 					num = n;
-					cLink=XkcdEndpoint.url+n.toString()+'/#';
+					cLink = XkcdEndpoint.url + n.toString() + '/#';
+
+					if (num > randmax)
+					    randmax = num;
 					onDone(callbackFunc);
 				},
 				function errorCallback(response) {

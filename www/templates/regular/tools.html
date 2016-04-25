@@ -25,6 +25,10 @@
 				<i class="icon ion-happy-outline"></i>
 				xkcd
 			</a>
+            <a class="item item-icon-left" on-tap="openLyrics()">
+                <i class="icon ion-music-note"></i>
+                Sångboken
+            </a>
             <a class="item item-icon-left" ng-repeat="modalobj in extraModals.other" on-tap="openToolModal(modalobj)">
                 <i class="icon {{ modalobj.icon }}"></i>
                 {{ modalobj.title }}

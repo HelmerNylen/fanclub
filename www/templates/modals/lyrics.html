@@ -1,0 +1,51 @@
+<ion-modal-view>
+    <ion-header-bar style="background-color: #ff642b">
+        <h1 class="title" style="color: white">Sångboken</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="!(lyricsMode = {}) || closeLyrics()" style="color: white">Stäng</button>
+        </div>
+        <div class="buttons" side="left">
+            <button class="button button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter" ng-click="(lyricsMode[lyricsMode.song ? 'song' : 'chapter'] = false) || (lyricsMode.chapter ? resetLyricsScroll() : scrollLyrics())"></button>
+        </div>
+    </ion-header-bar>
+    <ion-content delegate-handle="lyrics">
+        <div ng-if="lyricsMode.chapter" style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px">
+            {{ lyricsMode.song ? lyricsIndexes[lyricsMode.chapter - 1][lyricsMode.song - 1] + ' - ' + lyrics[lyricsMode.chapter - 1].songs[lyricsMode.song - 1].title : lyrics[lyricsMode.chapter - 1].chapter }}
+        </div>
+        <div class="card list" ng-if="!lyricsMode.song">
+            <div class="item item-text-wrap" ng-if="!lyricsMode.chapter" ng-repeat="chapter in lyrics" ng-click="!(lyricsMode.chapter = $index + 1) || scrollLyrics()">
+                <table>
+                    <tr>
+                        <td style="font-family: monospace; width: 6ex">
+                            {{ chapter.prefix }}
+                        </td>
+                        <td>
+                            {{ chapter.chapter }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="item item-text-wrap" ng-if="lyricsMode.chapter && !lyricsMode.song" ng-repeat="song in lyrics[lyricsMode.chapter - 1].songs" ng-click="!(lyricsMode.song = $index + 1) || scrollLyrics(true)">
+                <table>
+                    <tr>
+                        <td style="font-family: monospace; width: 6ex">
+                            {{ lyricsIndexes[lyricsMode.chapter - 1][$index] }}
+                        </td>
+                        <td>
+                            {{ song.title }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div ng-if="lyricsMode.chapter && lyricsMode.song" ng-repeat="song in [lyrics[lyricsMode.chapter - 1].songs[lyricsMode.song - 1]]" style="padding: 10px; color: #444;">
+            <p ng-if="song.melody" ng-bind-html="parseLyrics(song.melody)" style="text-align: center; font-style: italic;"></p>
+            <p ng-bind-html="parseLyrics(song.text)" style="font-size: 14px; font-family: monospace"></p>
+            <p ng-if="song.author" ng-bind-html="parseLyrics(song.author)" style="text-align: right"></p>
+        </div>
+        <br />
+        <div style="text-align: center; color: #444; font-size: 12px; margin-bottom: 1em;" ng-if="!lyricsMode.chapter">
+            f.kth.se/sangbok
+        </div>
+    </ion-content>
+</ion-modal-view>

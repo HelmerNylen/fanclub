@@ -99,8 +99,8 @@
                                 <div class="col col-25 item-text-wrap" style="font-weight: bold">{{ sectionEventDuration(event) }}</div>
                                 <div class="col item-text-wrap">
 									{{ event.summary || event.title }}
-									<br ng-if="event.description || event.info" />
-									{{ event.description || event.info }}
+									<br ng-if="event.description" />
+									{{ event.description}}
 								</div>
                             </div>
                             <div class="row" ng-if="event.location">

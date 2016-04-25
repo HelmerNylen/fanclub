@@ -683,8 +683,8 @@ angular.module('starter.controllers', [])
 		var rid = $scope.newCourse.roundId;
 		var st = $scope.newCourse.startTerm.replace(":", "");
 		
-		//kollar att följande stämmer: kurskoden är 6 tecken formaterad som AB1234, kursomgången är endast ett tal, startåret är ett femsiffrigt tal som slutar med 1 eller 2 för vår resp. hösttermin
-		if (cc.length == 6 && /[A-Z][A-Z]\d\d\d\d/i.test(cc) && !/\D+/.test(rid) && /\d+/.test(rid) && st.length == 5 && !/\D+/.test(st) && /\d{5}/.test(st) && /[12]$/.test(st)) {
+		//kollar att följande stämmer: kurskoden är 6 tecken formaterad som AB1234 eller AB123X, kursomgången är endast ett tal, startåret är ett femsiffrigt tal som slutar med 1 eller 2 för vår resp. hösttermin
+		if (cc.length == 6 && /[A-Z][A-Z]\d\d\d(\d|X)/i.test(cc) && !/\D+/.test(rid) && /\d+/.test(rid) && st.length == 5 && !/\D+/.test(st) && /\d{5}/.test(st) && /[12]$/.test(st)) {
 			//kolla om kursen redan är med
 			var has = false;
 			var res = {
@@ -720,11 +720,18 @@ angular.module('starter.controllers', [])
 					$state.go($state.current, {}, { reload: true });
 				},
 				function (response) {
-					$ionicPopup.alert({
-						title: "Kan inte lägga till kursen",
-						template: response.status ? "Kopps svarade med kod " + response.status + (response.statusText ? ": " + response.statusText : ".") : "Kunde inte nå Kopps.",
-						okType: "button-ctfys"
-					});
+				    if (response.status == 404)
+				        $ionicPopup.alert({
+				            title: "Kan inte lägga till kursen",
+				            template: "Kursen hittades inte",
+				            okType: "button-ctfys"
+				        });
+                    else
+					    $ionicPopup.alert({
+						    title: "Kan inte lägga till kursen",
+						    template: response.status ? "Kopps svarade med kod " + response.status + (response.statusText ? ": " + response.statusText : ".") : "Kunde inte nå Kopps.",
+						    okType: "button-ctfys"
+					    });
 				});
 				$scope.closeAddCourse();
 			}
@@ -732,8 +739,8 @@ angular.module('starter.controllers', [])
 		else {
 			//ge en fel-popup med vad det var som var ogiltigt
 			var temp = '<div class="list">';
-			if (cc.length != 6 || !/[A-Z][A-Z]\d\d\d\d/i.test(cc))
-				temp += '<div class="item item-text-wrap" style="border: 0; background-color: transparent">Kurskoden måste vara två bokstäver följt av fyra siffror.</div>';
+			if (cc.length != 6 || !/[A-Z][A-Z]\d\d\d(\d|X)/i.test(cc))
+				temp += '<div class="item item-text-wrap" style="border: 0; background-color: transparent">Kurskoden måste vara två bokstäver följt av fyra siffror, eller tre siffror och ett X.</div>';
 			if (/\D+/.test(rid) || !/\d+/.test(rid))
 				temp += '<div class="item item-text-wrap" style="border: 0; background-color: transparent">Kursomgången måste vara ett tal.</div>';
 			if (st.length != 5 || /\D+/.test(st) || !/\d{5}/.test(st) || !/[12]$/.test(st))
@@ -940,6 +947,7 @@ angular.module('starter.controllers', [])
 			
 		    for (var i = 0; i < events.length; i++) {
 		        var push = false;
+                //gave fel (start odefinierat)
 		        if (!events[i].isOfficialEvent && events[i].start.date && new Date(events[i].start.date).getTime() >= today.getTime()) {
 		            events[i].start.dateTime = events[i].start.date;
 		            push = true;
@@ -983,7 +991,7 @@ angular.module('starter.controllers', [])
 	});
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, GitService) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, GitService, Lyrics) {
  	$scope.openURL = ConvenientService.openURL;
 	
 	
@@ -998,6 +1006,35 @@ angular.module('starter.controllers', [])
  	};
  	$scope.closeFood = function () {
  		$scope.foodModal.hide();
+ 	};
+
+ 	$scope.lyrics = null;
+ 	$scope.lyricsMode = {};
+ 	$scope.parseLyrics = function (text) {
+ 	    return text.replace(/</gm, "&lt;").replace(/>/gm, "&gt;").replace(/\n/igm, '<br />');
+ 	};
+ 	$scope.lyricsScrollAmount = 0;
+ 	$scope.scrollLyrics = function (save) {
+ 	    if (save)
+ 	        $scope.lyricsScrollAmount = $ionicScrollDelegate.$getByHandle("lyrics").getScrollPosition().top;
+ 	    $ionicScrollDelegate.$getByHandle("lyrics").scrollTop();
+ 	};
+ 	$scope.resetLyricsScroll = function () {
+ 	    $ionicScrollDelegate.$getByHandle("lyrics").scrollTo(0, $scope.lyricsScrollAmount);
+ 	};
+    $ionicModal.fromTemplateUrl('templates/modals/lyrics.html', {
+         scope: $scope
+     }).then(function (modal) {
+         $scope.lyricsModal = modal;
+     });
+ 	
+ 	$scope.openLyrics = function () {
+ 	    $scope.lyrics = Lyrics.chapters;
+ 	    $scope.lyricsIndexes = Lyrics.indexes;
+ 	    $scope.lyricsModal.show();
+ 	};
+ 	$scope.closeLyrics = function () {
+ 		$scope.lyricsModal.hide();
  	};
 	
 	
@@ -1082,7 +1119,7 @@ angular.module('starter.controllers', [])
     });
 
     $scope.openXkcd = function () {
-		refresh(0);
+		refresh();
         $scope.xkcdModal.show();
     };
 	
