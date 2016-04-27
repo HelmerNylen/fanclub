@@ -683,7 +683,7 @@ angular.module('starter.controllers', [])
 		var st = $scope.newCourse.startTerm.replace(":", "");
 		
 		//kollar att följande stämmer: kurskoden är 6 tecken formaterad som AB1234 eller AB123X, kursomgången är endast ett tal, startåret är ett femsiffrigt tal som slutar med 1 eller 2 för vår resp. hösttermin
-		if (cc.length == 6 && /[A-Z][A-Z]\d\d\d(\d|X)/i.test(cc) && !/\D+/.test(rid) && /\d+/.test(rid) && st.length == 5 && !/\D+/.test(st) && /\d{5}/.test(st) && /[12]$/.test(st)) {
+		if (cc.length == 6 && /[A-Z][A-Z]\d\d\d(\d|X|N|V)/i.test(cc) && !/\D+/.test(rid) && /\d+/.test(rid) && st.length == 5 && !/\D+/.test(st) && /\d{5}/.test(st) && /[12]$/.test(st)) {
 			//kolla om kursen redan är med
 			var has = false;
 			var res = {
@@ -738,8 +738,8 @@ angular.module('starter.controllers', [])
 		else {
 			//ge en fel-popup med vad det var som var ogiltigt
 			var temp = '<div class="list">';
-			if (cc.length != 6 || !/[A-Z][A-Z]\d\d\d(\d|X)/i.test(cc))
-				temp += '<div class="item item-text-wrap" style="border: 0; background-color: transparent">Kurskoden måste vara två bokstäver följt av fyra siffror, eller tre siffror och ett X.</div>';
+			if (cc.length != 6 || !/[A-Z][A-Z]\d\d\d(\d|X|N|V)/i.test(cc))
+				temp += '<div class="item item-text-wrap" style="border: 0; background-color: transparent">Kurskoden måste vara två bokstäver följt av fyra siffror, eller tre siffror och ett X, N eller V.</div>';
 			if (/\D+/.test(rid) || !/\d+/.test(rid))
 				temp += '<div class="item item-text-wrap" style="border: 0; background-color: transparent">Kursomgången måste vara ett tal.</div>';
 			if (st.length != 5 || /\D+/.test(st) || !/\d{5}/.test(st) || !/[12]$/.test(st))
@@ -994,7 +994,7 @@ angular.module('starter.controllers', [])
 	});
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, URLs, xkcdService, StorageService, ConvenientService, GitService, Lyrics) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, $ionicPlatform, URLs, xkcdService, StorageService, ConvenientService, GitService, Lyrics) {
  	$scope.openURL = ConvenientService.openURL;
 	
 	
@@ -1020,24 +1020,79 @@ angular.module('starter.controllers', [])
  	$scope.scrollLyrics = function (save) {
  	    if (save)
  	        $scope.lyricsScrollAmount = $ionicScrollDelegate.$getByHandle("lyrics").getScrollPosition().top;
- 	    $ionicScrollDelegate.$getByHandle("lyrics").scrollTop();
+ 	    $ionicScrollDelegate.$getByHandle("lyrics").scrollTop(false);
  	};
  	$scope.resetLyricsScroll = function () {
- 	    $ionicScrollDelegate.$getByHandle("lyrics").scrollTo(0, $scope.lyricsScrollAmount);
+ 	    $ionicScrollDelegate.$getByHandle("lyrics").scrollTo(0, $scope.lyricsScrollAmount, false);
  	};
     $ionicModal.fromTemplateUrl('templates/modals/lyrics.html', {
-         scope: $scope
+        scope: $scope,
+        hardwareBackButtonClose: false
      }).then(function (modal) {
          $scope.lyricsModal = modal;
      });
- 	
+
+    $scope.searchLyrics = function (lm) {
+        var res = [];
+        var strs = lm.filter.toLowerCase().trim().split(" ");
+
+        for (var i = 0; i < $scope.lyrics.length; i++)
+            for (var j = 0; j < $scope.lyrics[i].songs.length; j++) {
+                skip = false;
+                for (var k = 0; k < strs.length; k++) {
+                    if (!($scope.lyrics[i].songs[j].title.toLowerCase().indexOf(strs[k]) != -1
+                        || $scope.lyrics[i].songs[j].text.toLowerCase().indexOf(strs[k]) != -1
+                        || ($scope.lyrics[i].songs[j].author || "").toLowerCase().indexOf(strs[k]) != -1
+                        || ($scope.lyrics[i].songs[j].melody || "").toLowerCase().indexOf(strs[k]) != -1))
+                        skip = true;
+
+                }
+                if (!skip)
+                    res.push({ chapter: i + 1, song: j + 1 });
+            }
+
+        if (lm.filter.trim().length == 0)
+            lm.searchResults = false;
+        else {
+            lm.searchResults = res;
+        }
+    };
  	$scope.openLyrics = function () {
  	    $scope.lyrics = Lyrics.chapters;
  	    $scope.lyricsIndexes = Lyrics.indexes;
+ 	    try {
+ 	        $ionicPlatform.onHardwareBackButton($scope.backLyrics);
+ 	    } catch (e) {
+ 	        console.log(e);
+ 	    }
  	    $scope.lyricsModal.show();
  	};
  	$scope.closeLyrics = function () {
+ 	    try {
+ 	        $ionicPlatform.offHardwareBackButton($scope.backLyrics);
+ 	    } catch (e) {
+ 	        console.log(e);
+ 	    }
  		$scope.lyricsModal.hide();
+ 	};
+ 	$scope.backLyrics = function (lm) {
+ 	    lm = lm || $scope.lyricsMode;
+ 	    $scope.lyricsMode = lm;
+
+ 	    if (lm.searchResults)
+ 	        lm.song = (lm.chapter = false);
+
+ 	    if (lm.song)
+ 	        lm.song = false;
+ 	    else
+ 	        lm.chapter = false;
+
+ 	    if (lm.chapter)
+ 	        $scope.resetLyricsScroll();
+ 	    else
+ 	        $scope.scrollLyrics();
+
+ 	    //($scope.lyricsMode[$scope.lyricsMode.song ? 'song' : 'chapter'] = false) || ($scope.lyricsMode.chapter ? $scope.resetLyricsScroll() : $scope.scrollLyrics());
  	};
 	
 	
@@ -1145,11 +1200,18 @@ angular.module('starter.controllers', [])
 	    $scope.mapModal.remove();
 	    $scope.gaussModal.remove();
 	    $scope.xkcdModal.remove();
+	    $scope.lyricsModal.remove();
 	    if ($scope.extraModals) {
 	        for (var i = 0; i < $scope.extraModals.school.length; i++)
 	            $scope.extraModals.school[i].modal.remove();
             for (var i = 0; i < $scope.extraModals.other.length; i++)
                 $scope.extraModals.other[i].modal.remove();
+	    }
+
+	    try {
+	        $ionicPlatform.offHardwareBackButton($scope.backLyrics);
+	    } catch (e) {
+	        console.log(e);
 	    }
 	});
 	GitService.registerCallback(refresh);

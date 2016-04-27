@@ -1,18 +1,26 @@
 <ion-modal-view>
-    <ion-header-bar style="background-color: #ff642b">
+    <ion-header-bar align-title="center" style="background-color: #ff642b">
         <h1 class="title" style="color: white">Sångboken</h1>
         <div class="buttons">
             <button class="button button-clear" ng-click="!(lyricsMode = {}) || closeLyrics()" style="color: white">Stäng</button>
         </div>
         <div class="buttons" side="left">
-            <button class="button button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter" ng-click="(lyricsMode[lyricsMode.song ? 'song' : 'chapter'] = false) || (lyricsMode.chapter ? resetLyricsScroll() : scrollLyrics())"></button>
+            <button class="button button-large button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter" ng-click="backLyrics(lyricsMode)" style="padding-left: 1.5ex; padding-right: 2.5ex;"></button>
         </div>
     </ion-header-bar>
     <ion-content delegate-handle="lyrics">
         <div ng-if="lyricsMode.chapter" style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px">
             {{ lyricsMode.song ? lyricsIndexes[lyricsMode.chapter - 1][lyricsMode.song - 1] + ' - ' + lyrics[lyricsMode.chapter - 1].songs[lyricsMode.song - 1].title : lyrics[lyricsMode.chapter - 1].chapter }}
         </div>
-        <div class="card list" ng-if="!lyricsMode.song">
+
+        <!-- Sökruta -->
+        <form ng-submit="searchLyrics(lyricsMode)" ng-if="!lyricsMode.chapter">
+            <label class="item item-input" style="margin: 15px; border-radius: 5px">
+                <input type="text" placeholder="Sök i sångboken" ng-model="lyricsMode.filter" />
+                <!--button class="button button-outline button-small button-ctfys" style="margin-right: 8px" on-tap="refilter()"><i class="icon ion-chevron-right"></i></button-->
+            </label>
+        </form>
+        <div class="card list" ng-if="!lyricsMode.song && !lyricsMode.searchResults">
             <div class="item item-text-wrap" ng-if="!lyricsMode.chapter" ng-repeat="chapter in lyrics" ng-click="!(lyricsMode.chapter = $index + 1) || scrollLyrics()">
                 <table>
                     <tr>
@@ -33,6 +41,20 @@
                         </td>
                         <td>
                             {{ song.title }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card list" ng-if="lyricsMode.searchResults && !lyricsMode.chapter">
+            <div class="item item-text-wrap" ng-repeat="result in lyricsMode.searchResults" ng-click="!(lyricsMode.chapter = result.chapter) || !(lyricsMode.song = result.song) || scrollLyrics(true)">
+                <table>
+                    <tr>
+                        <td style="font-family: monospace; width: 6ex">
+                            {{ lyricsIndexes[result.chapter - 1][result.song - 1] }}
+                        </td>
+                        <td>
+                            {{ lyrics[result.chapter - 1].songs[result.song - 1].title }}
                         </td>
                     </tr>
                 </table>
