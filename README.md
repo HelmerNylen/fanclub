@@ -5,6 +5,7 @@ Schemaapp för Teknisk Fysik F-15 Fanclub på KTH.
 
 - [Google Play](https://play.google.com/store/apps/details?id=com.HelmerNylen.fanclubschema)
 - [App Store](https://itunes.apple.com/us/app/fanclubs-schema/id1095423388)
+- [Senaste build](https://github.com/HelmerNylen/fanclub/raw/master/Schema.apk) för Android - fler nya funktioner och buggar
 
 ## För användare
 #### Appen kraschar >:(
