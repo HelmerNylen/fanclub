@@ -50,6 +50,9 @@
 			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.mixEvents" ng-change="updateMixEvents()">
 				Inkludera sektionshändelser i det vanliga schemat
 			</ion-checkbox>
+            <ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.notFanclub.enabled" ng-change="updateNotFanclub()">
+                Annan årskurs än Fanclub {{ settings.notFanclub.enabled ? ' (' + settings.notFanclub.startYear + ')' : '' }}
+            </ion-checkbox>
             <label class="item item-input item-select item-text-wrap" style="border: 0">
                 <div class="input-label">
                     Visa lunchföreläsningar etc. från KTH-kalendern

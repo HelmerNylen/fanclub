@@ -2,10 +2,10 @@
     <ion-header-bar align-title="center" style="background-color: #ff642b">
         <h1 class="title" style="color: white">Sångboken</h1>
         <div class="buttons">
-            <button class="button button-clear" ng-click="!(lyricsMode = {}) || closeLyrics()" style="color: white">Stäng</button>
+            <button class="button button-clear" ng-click="closeLyrics()" style="color: white">Stäng</button>
         </div>
         <div class="buttons" side="left">
-            <button class="button button-large button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter" ng-click="backLyrics(lyricsMode)" style="padding-left: 1.5ex; padding-right: 2.5ex;"></button>
+            <button class="button button-large button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter" ng-click="backLyrics()" style="padding-left: 1.5ex; padding-right: 2.5ex;"></button>
         </div>
     </ion-header-bar>
     <ion-content delegate-handle="lyrics">
@@ -20,8 +20,10 @@
                 <!--button class="button button-outline button-small button-ctfys" style="margin-right: 8px" on-tap="refilter()"><i class="icon ion-chevron-right"></i></button-->
             </label>
         </form>
+
+        <!-- Meny -->
         <div class="card list" ng-if="!lyricsMode.song && !lyricsMode.searchResults">
-            <div class="item item-text-wrap" ng-if="!lyricsMode.chapter" ng-repeat="chapter in lyrics" ng-click="!(lyricsMode.chapter = $index + 1) || scrollLyrics()">
+            <div class="item item-text-wrap" ng-if="!lyricsMode.chapter" ng-repeat="chapter in lyrics" ng-click="lyricsSetChapter($index + 1) || scrollLyrics()">
                 <table>
                     <tr>
                         <td style="font-family: monospace; width: 6ex">
@@ -33,7 +35,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="item item-text-wrap" ng-if="lyricsMode.chapter && !lyricsMode.song" ng-repeat="song in lyrics[lyricsMode.chapter - 1].songs" ng-click="!(lyricsMode.song = $index + 1) || scrollLyrics(true)">
+            <div class="item item-text-wrap" ng-if="lyricsMode.chapter && !lyricsMode.song" ng-repeat="song in lyrics[lyricsMode.chapter - 1].songs" ng-click="lyricsSetSong($index + 1) || scrollLyrics(true)">
                 <table>
                     <tr>
                         <td style="font-family: monospace; width: 6ex">
@@ -46,8 +48,10 @@
                 </table>
             </div>
         </div>
-        <div class="card list" ng-if="lyricsMode.searchResults && !lyricsMode.chapter">
-            <div class="item item-text-wrap" ng-repeat="result in lyricsMode.searchResults" ng-click="!(lyricsMode.chapter = result.chapter) || !(lyricsMode.song = result.song) || scrollLyrics(true)">
+
+        <!-- Sökträffar -->
+        <div class="card list" ng-if="lyricsMode.searchResults && !lyricsMode.chapter && lyricsMode.searchResults.length > 0">
+            <div class="item item-text-wrap" ng-repeat="result in lyricsMode.searchResults" ng-click="lyricsSetChapter(result.chapter) || lyricsSetSong(result.song) || scrollLyrics(true)">
                 <table>
                     <tr>
                         <td style="font-family: monospace; width: 6ex">
@@ -60,12 +64,18 @@
                 </table>
             </div>
         </div>
+        <div ng-if="lyricsMode.searchResults && lyricsMode.searchResults.length == 0" style="text-align: center; color: #666">
+            Hittade inte några sånger :(
+        </div>
+
+        <!-- Sångtext etc. -->
         <div ng-if="lyricsMode.chapter && lyricsMode.song" ng-repeat="song in [lyrics[lyricsMode.chapter - 1].songs[lyricsMode.song - 1]]" style="padding: 15px; margin-left: 1ex; margin-right: 1ex; color: #444;">
             <p ng-if="song.melody" ng-bind-html="parseLyrics(song.melody)" style="text-align: center; font-style: italic;"></p>
             <p ng-bind-html="parseLyrics(song.text)" style="font-size: 14px; font-family: monospace"></p>
             <p ng-if="song.author" ng-bind-html="parseLyrics(song.author)" style="text-align: right"></p>
         </div>
         <br />
+        <span ng-if="HEY" style="font-size: 0">{{ lyricsMode = getLM() }}</span>
         <div style="text-align: center; color: #444; font-size: 12px; margin-bottom: 1em;" ng-if="!lyricsMode.chapter">
             f.kth.se/sangbok
         </div>

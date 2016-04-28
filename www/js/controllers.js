@@ -566,6 +566,56 @@ angular.module('starter.controllers', [])
 	$scope.updateMixEvents = function () {
 		DataService.setMixEvents($scope.settings.mixEvents);
 	};
+	$scope.settings.notFanclub = DataService.getNotFanclub();
+	$scope.updateNotFanclub = function () {
+	    if ($scope.settings.notFanclub.enabled == true)
+	        $ionicPopup.prompt({
+	            title: "Ange startår",
+	            okType: "button-ctfys",
+	            inputPlaceholder: "ex. 2014",
+	            cancelText: "Avbryt",
+	            cancelType: "button-stable",
+	            defaultText: $scope.settings.notFanclub.startYear,
+	            maxLength: 4 //vi utgår från att appen inte används om ~8000 år
+	        }).then(function (value) {
+	            if (value == undefined)
+	                $scope.settings.notFanclub.enabled = false;
+	            else if (value > new Date().getFullYear())
+	                $ionicPopup.alert({
+	                    title: "Kan inte byta årskurs",
+	                    template: "Den årskursen börjar inte än på ett tag.",
+	                    okType: "button-ctfys"
+	                }).then(function () {
+	                    $scope.settings.notFanclub.enabled = false;
+	                });
+	            else if (value < new Date().getFullYear() - 5)
+	                $ionicPopup.alert({
+	                    title: "Kan inte byta årskurs",
+	                    template: value < 1932 ? "Du gick Teknisk Fysik innan det var coolt. Eller överhuvudtaget fanns." : "Den årskursen har redan gått ut.",
+	                    okType: "button-ctfys"
+	                }).then(function () {
+	                    $scope.settings.notFanclub.enabled = false;
+	                });
+	            else {
+	                $scope.settings.notFanclub.startYear = value;
+	                DataService.setNotFanclub($scope.settings.notFanclub);
+	                $scope.update();
+	            }
+	        });
+	    else
+	        $ionicPopup.confirm({
+	            title: 'Bekräfta',
+	            template: 'Ersätter nuvarande kurser med de Fanclub läser.',
+	            cancelText: 'Avbryt',
+	            okText: 'OK',
+	            okType: 'button-ctfys'
+	        }).then(function (yes) {
+	            if (yes) {
+	                DataService.setNotFanclub($scope.settings.notFanclub);
+	                $scope.update();
+	            }
+	        });
+	};
 	
 	var makeColor = function (hue, saturation, value) {
 		return ConvenientService.RGBtohex(ConvenientService.HSVtoRGB([hue, saturation, value]));
@@ -1012,7 +1062,8 @@ angular.module('starter.controllers', [])
  	};
 
  	$scope.lyrics = null;
- 	$scope.lyricsMode = {};
+ 	$scope.lyricsIndexes = null;
+ 	$scope.lyricsMode = null;
  	$scope.parseLyrics = function (text) {
  	    return text.replace(/</gm, "&lt;").replace(/>/gm, "&gt;").replace(/\n/igm, '<br />');
  	};
@@ -1032,36 +1083,36 @@ angular.module('starter.controllers', [])
          $scope.lyricsModal = modal;
      });
 
-    $scope.searchLyrics = function (lm) {
-        var res = [];
-        var strs = lm.filter.toLowerCase().trim().split(" ");
-
-        for (var i = 0; i < $scope.lyrics.length; i++)
-            for (var j = 0; j < $scope.lyrics[i].songs.length; j++) {
-                skip = false;
-                for (var k = 0; k < strs.length; k++) {
-                    if (!($scope.lyrics[i].songs[j].title.toLowerCase().indexOf(strs[k]) != -1
-                        || $scope.lyrics[i].songs[j].text.toLowerCase().indexOf(strs[k]) != -1
-                        || ($scope.lyrics[i].songs[j].author || "").toLowerCase().indexOf(strs[k]) != -1
-                        || ($scope.lyrics[i].songs[j].melody || "").toLowerCase().indexOf(strs[k]) != -1))
-                        skip = true;
-
-                }
-                if (!skip)
-                    res.push({ chapter: i + 1, song: j + 1 });
-            }
-
-        if (lm.filter.trim().length == 0)
-            lm.searchResults = false;
+    $scope.searchLyrics = function () {
+        if ($scope.lyricsMode.filter.trim().length == 0)
+            $scope.lyricsMode.searchResults = false;
         else {
-            lm.searchResults = res;
+            var res = [];
+            var strs = $scope.lyricsMode.filter.toLowerCase().trim().split(" ");
+
+            for (var i = 0; i < $scope.lyrics.length; i++)
+                for (var j = 0; j < $scope.lyrics[i].songs.length; j++) {
+                    var skip = false;
+                    for (var k = 0; k < strs.length; k++) {
+                        if (!($scope.lyrics[i].songs[j].title.toLowerCase().indexOf(strs[k]) != -1
+                            || $scope.lyrics[i].songs[j].text.toLowerCase().indexOf(strs[k]) != -1
+                            || ($scope.lyrics[i].songs[j].author || "").toLowerCase().indexOf(strs[k]) != -1
+                            || ($scope.lyrics[i].songs[j].melody || "").toLowerCase().indexOf(strs[k]) != -1))
+                            skip = true;
+
+                    }
+                    if (!skip)
+                        res.push({ chapter: i + 1, song: j + 1 });
+                }
+            $scope.lyricsMode.searchResults = res;
         }
     };
  	$scope.openLyrics = function () {
  	    $scope.lyrics = Lyrics.chapters;
  	    $scope.lyricsIndexes = Lyrics.indexes;
+ 	    $scope.lyricsMode = { chapter: false, song: false, filter: "", searchResults: false };
  	    try {
- 	        $ionicPlatform.onHardwareBackButton($scope.backLyrics);
+ 	        $ionicPlatform.onHardwareBackButton($scope.applyBackLyrics);
  	    } catch (e) {
  	        console.log(e);
  	    }
@@ -1069,30 +1120,42 @@ angular.module('starter.controllers', [])
  	};
  	$scope.closeLyrics = function () {
  	    try {
- 	        $ionicPlatform.offHardwareBackButton($scope.backLyrics);
+ 	        $ionicPlatform.offHardwareBackButton($scope.applyBackLyrics);
  	    } catch (e) {
  	        console.log(e);
  	    }
  		$scope.lyricsModal.hide();
  	};
- 	$scope.backLyrics = function (lm) {
- 	    lm = lm || $scope.lyricsMode;
- 	    $scope.lyricsMode = lm;
+ 	$scope.lyricsSetChapter = function (c) {
+ 	    $scope.lyricsMode.chapter = c;
+ 	    return false;
+ 	};
+ 	$scope.lyricsSetSong = function (s) {
+        $scope.lyricsMode.song = s;
+ 	    return false;
+ 	};
+ 	$scope.backLyrics = function () {
+ 	    if ($scope.lyricsMode.searchResults)
+ 	        $scope.lyricsMode.song = ($scope.lyricsMode.chapter = false);
+ 	    else if (!$scope.lyricsMode.chapter) {
+ 	        $scope.closeLyrics();
+ 	        return;
+ 	    }
 
- 	    if (lm.searchResults)
- 	        lm.song = (lm.chapter = false);
-
- 	    if (lm.song)
- 	        lm.song = false;
+ 	    if ($scope.lyricsMode.song)
+ 	        $scope.lyricsMode.song = false;
  	    else
- 	        lm.chapter = false;
+ 	        $scope.lyricsMode.chapter = false;
 
- 	    if (lm.chapter)
+ 	    if ($scope.lyricsMode.chapter)
  	        $scope.resetLyricsScroll();
  	    else
  	        $scope.scrollLyrics();
 
  	    //($scope.lyricsMode[$scope.lyricsMode.song ? 'song' : 'chapter'] = false) || ($scope.lyricsMode.chapter ? $scope.resetLyricsScroll() : $scope.scrollLyrics());
+ 	};
+ 	$scope.applyBackLyrics = function () {
+ 	    $scope.$apply($scope.backLyrics);
  	};
 	
 	

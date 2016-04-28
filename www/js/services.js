@@ -297,12 +297,14 @@ angular.module('starter.services', [])
 	//var menusEnabled = StorageService.getOrDefault("menusEnabled", true);
 	var delimiterEnabled = StorageService.getOrDefault("delimiterEnabled", false);
 	var mixEvents = StorageService.getOrDefault("mixEvents", true);
+	var notFanclub = StorageService.getOrDefault("notFanclub", { enabled: false, startYear: 2015 });
 	
 	var eventServiceCallback = null;
 
 	//beräkna vilken årskurs fanclub går
-    var studyYear = Math.ceil((now - new Date("2015-07-01")) / (1000 * 3600 * 24 * 365));
+    var studyYear = Math.ceil((now - new Date((notFanclub.enabled ? notFanclub.startYear : 2015) + "-07-01")) / (1000 * 3600 * 24 * 365));
     if (studyYear > 5) studyYear = 5;
+    if (studyYear < 1) studyYear = 1;
 
     var startDate = now.getMonth() >= 6 ? new Date(now.getFullYear(), 6) : new Date(now.getFullYear() - 1, 6);
     var endDate = new Date(startDate.getFullYear() + 1, startDate.getMonth());
@@ -511,7 +513,7 @@ angular.module('starter.services', [])
 	//get a list of courses from the KTH kopps api
     var updateSchemas = function () {
 		try {
-			$http.get(ApiEndpoint.url + URLs.plan(studyYear)).then(
+			$http.get(ApiEndpoint.url + URLs.plan(studyYear, notFanclub.enabled ? notFanclub.startYear : 2015)).then(
 				function successCallback(response) {
 					try {
 						//hämtar ett xml-dokument över vilka kurser som finns för fanclub, deras kurskod, kursomgång och starttermin
@@ -809,6 +811,13 @@ angular.module('starter.services', [])
 		setMixEvents: function (me) {
 			mixEvents = me;
 			StorageService.set("mixEvents", me);
+		},
+		getNotFanclub: function () {
+		    return notFanclub;
+		},
+		setNotFanclub: function (nf) {
+		    notFanclub = nf;
+		    StorageService.set("notFanclub", nf);
 		},
 		resort: function () {
 		    sorted = sortByDate(courses, extra);

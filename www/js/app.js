@@ -72,8 +72,8 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 //funktioner som bygger urler, används i kombination med endpointsen ovan.
 //ex. FoodEndpoint.q + weekMenuQ() för restaurang Q:s anrop
 .constant('URLs', {
-    plan: function (year) {
-        return 'api/kopps/v1/programme/CTFYS/academic-year-plan/2015:2/' + year;
+    plan: function (year, startYear) {
+        return 'api/kopps/v1/programme/CTFYS/academic-year-plan/' + startYear + ':2/' + year;
     },
 
     schema: function (courseCode, startTerm, roundId, start, end) {
