@@ -170,7 +170,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
       })
 
       .state('app.feed', {
-          url: '/feed/:startTime/:endTime',
+          url: '/feed/:startTime/:endTime/:filter',
           views: {
               'menuContent': {
                   templateUrl: 'templates/regular/feed.html',
@@ -230,5 +230,5 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     var end = new Date(start.getFullYear() + 1, start.getMonth());
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/app/feed/' + format(new Date().toDateString()) + '/' + format(end));
+    $urlRouterProvider.otherwise('/app/feed/' + format(new Date().toDateString()) + '/' + format(end) + "/");
 });

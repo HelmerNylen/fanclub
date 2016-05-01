@@ -14,7 +14,7 @@
 		<span ng-if="modalCourse.isExtra"><br />Egentillagd kurs</span>
 	</div>
 	<div class="list card">
-		<div class="item item-text-wrap" style="border: 0">
+		<div class="item item-text-wrap" style="border: 0" ng-click="gotoCourse(modalCourse.courseCode)">
 			Denna kurs har {{ eventCount == 0 ? "inga" : eventCount }} kommande {{ eventCount == 1 ? "händelse" : "händelser" }} detta läsår.
 		</div>
 		<ion-checkbox class="item-text-wrap checkbox-assertive item-checkbox-right" ng-model="settings.hidden" style="border: 0">

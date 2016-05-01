@@ -429,8 +429,8 @@ angular.module('starter.controllers', [])
     $scope.days = null;
 	
 	$scope.filter = {};
-	$scope.filter.filter = "";
-	$scope.showFilter = false;
+	$scope.filter.filter = $stateParams.filter || "";
+	$scope.showFilter = $scope.filter.filter.length > 0;
 	$scope.toggleFilter = function () {
 		$scope.showFilter = !$scope.showFilter;
 		if ($scope.showFilter)
@@ -519,7 +519,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för settings.html
-.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, DataService, ConvenientService, StorageService) {
+.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, $ionicHistory, DataService, ConvenientService, StorageService) {
 	$scope.resetData = function() {
 		$ionicPopup.confirm({
 			title: 'Bekräfta',
@@ -580,6 +580,14 @@ angular.module('starter.controllers', [])
 	        }).then(function (value) {
 	            if (value == undefined)
 	                $scope.settings.notFanclub.enabled = false;
+	            else if (/\D/ig.test(value))
+	                $ionicPopup.alert({
+	                    title: "Kan inte byta årskurs",
+	                    template: "Ogiltig årskurs.",
+	                    okType: "button-ctfys"
+	                }).then(function () {
+	                    $scope.settings.notFanclub.enabled = false;
+	                });
 	            else if (value > new Date().getFullYear())
 	                $ionicPopup.alert({
 	                    title: "Kan inte byta årskurs",
@@ -691,6 +699,26 @@ angular.module('starter.controllers', [])
 			DataService.resort();
 		}
 		$scope.viewCourseModal.hide();
+	};
+
+	$scope.gotoCourse = function (courseCode) {
+	    $scope.closeCourse();
+
+	    //vi tar ett span från läsårets början (räknar juli som start) och ett år framåt
+	    var format = function (date) {
+	        var d = new Date(date);
+
+	        return d.getFullYear() + "-" + (d.getMonth() < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
+	    };
+
+	    var start = new Date().getMonth() >= 6 ? new Date(new Date().getFullYear(), 6) : new Date(new Date().getFullYear() - 1, 6);
+	    var end = new Date(start.getFullYear() + 1, start.getMonth());
+
+	    $ionicHistory.nextViewOptions({
+            historyRoot: true
+	    });
+
+	    $state.go('app.feed', {startTime: format(new Date().toDateString()), endTime: format(end), filter: courseCode}, { reload: true, location: "replace" });
 	};
 	
 	$scope.removeCourse = function () {
@@ -1135,8 +1163,13 @@ angular.module('starter.controllers', [])
  	    return false;
  	};
  	$scope.backLyrics = function () {
- 	    if ($scope.lyricsMode.searchResults)
- 	        $scope.lyricsMode.song = ($scope.lyricsMode.chapter = false);
+ 	    if ($scope.lyricsMode.searchResults) {
+ 	        if (!$scope.lyricsMode.song && !$scope.lyricsMode.chapter) {
+ 	            $scope.lyricsMode.filter = "";
+ 	            $scope.lyricsMode.searchResults = false;
+ 	        } else
+ 	            $scope.lyricsMode.song = ($scope.lyricsMode.chapter = false);
+ 	    }
  	    else if (!$scope.lyricsMode.chapter) {
  	        $scope.closeLyrics();
  	        return;
