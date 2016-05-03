@@ -342,8 +342,12 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
             var elementInfo = elementXml.getElementsByClassName("eventInfo")[0];
             for (var prop in { date: 0, location: 0, subject: 0 }) {
                 var tag = elementInfo.getElementsByClassName(prop)[0];
-                event[prop] = tag.textContent.substring(tag.textContent.indexOf(": ") + 2);
+				if (tag)
+					event[prop] = tag.textContent.substring(tag.textContent.indexOf(": ") + 2);
+				else
+					event[prop] = "";
             }
+			event.locations = event.location ? [{name: event.location}] : [];
 			
 			try {
 				var date = event.date.match(/\d\d\d\d-\d\d-\d\d/)[0].replace(/-/g, "/");
@@ -403,6 +407,8 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
     return {
         getEvents: function () {
+			if (!events)
+				return null;
             interestingMode = StorageService.getOrDefault("KthCalendarInterestingMode", 1);
             var res = [];
             for (var i = 0; i < events.length; i++)

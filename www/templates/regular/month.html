@@ -22,7 +22,7 @@
 					<div class="fadedbadge" style="margin-right: 4px">{{ day.date.getDate() }}</div>
 					<br/>
 					<div ng-repeat="event in day.events"
-						style="background-color: {{ event.course.color }}; width: 100%; margin-left: 0; margin-right: 0; margin-top: 1px; height: 3px;">
+						style="background-color: {{ event.course.color || '#1954a6' }}; width: 100%; margin-left: 0; margin-right: 0; margin-top: 1px; height: 3px;">
 						&nbsp;
 					</div>
 				</div>

@@ -36,30 +36,30 @@
                 {{ format(day.date) }}
             </div>
 			<div ng-repeat="part in ['am', 'pm']">
-				<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day[part] track by $index" on-tap="event.isSectionEvent ? openSectionEvent(event.original) : openEvent(event)" style="border: 0; border-top-left-radius: 0; border-top-right-radius: 0">
+				<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day[part] track by $index" on-tap="event.isSectionEvent || event.isOfficialEvent ? openSectionEvent(event.original || event) : openEvent(event)" style="border: 0; border-top-left-radius: 0; border-top-right-radius: 0">
 					<table style="width: 100%; height: 100%;">
 						<tr>
-							<td ng-style="{'background-color': event.course.color}" style="width: 4px">
+							<td ng-style="{'background-color': event.isOfficialEvent ? '#1954a6' : event.course.color}" style="width: 4px">
 								&nbsp;
 							</td>
 							<td>
 								<div class="row">
-									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}-{{ getTime(event.end) }}</div>
+									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}{{ event.end ? '-' + getTime(event.end) : '' }}</div>
 									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent">{{ sectionEventDuration(event.original) }}</div>
 									<div class="col item-text-wrap">
-										<div class="custombadge" ng-if="!event.isSectionEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
+										<div class="custombadge" ng-if="!event.isSectionEvent && !event.isOfficialEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
 										<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 24px">
 											<i class="icon ion-social-freebsd-devil"></i>
 										</div>
-										{{ event.course.name }}
+										{{ event.course.name || event.title }}
 									</div>
 								</div>
-								<div class="row" ng-if="location(event.locations) || hasNote(event)">
+								<div class="row" ng-if="(event.locations && location(event.locations)) || hasNote(event)">
 									<div class="col col-25">
 										<i class="icon ion-edit" ng-if="hasNote(event)"></i>
 									</div>
 									<div class="col item-text-wrap">
-										<b ng-if="event.locations.length != 0">{{ location(event.locations) }}</b>
+										<b ng-if="event.locations && event.locations.length != 0">{{ location(event.locations) }}</b>
 									</div>
 								</div>
 							</td>

@@ -37,7 +37,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     url: 'http://' + window.location.host + '/xkcd/'
 })
 .constant('GitEndpoint', {
-    url: 'http://' + window.location.host + '/git/',
+    url: 'http://' + window.location.host + '/git/'
 })
 
 /*/

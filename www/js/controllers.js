@@ -239,7 +239,7 @@ angular.module('starter.controllers', [])
 			}
 			
 			for (var i = 0; i < 7; i++) {
-				var events = DataService.getMixEvents() ? EventService.allByDate(days[i].date) : EventService.kthByDate(days[i].date);
+				var events = EventService.getByDate(days[i].date, true, DataService.getMixEvents(), false);
 				for (var j = 0; j < events.length; j++) {
 					var start, end;
 					
@@ -372,7 +372,7 @@ angular.module('starter.controllers', [])
 					week.days.push({
 						date: new Date(current),
 						today: current.toDateString() == new Date().toDateString(),
-						events: DataService.getMixEvents() ? EventService.allByDate(current.toDateString()) : EventService.kthByDate(current.toDateString())
+						events: EventService.getByDate(current.toDateString(), true, DataService.getMixEvents(), DataService.getMixEvents())
 					});
 					current.setDate(current.getDate() + 1);
 				}
@@ -490,7 +490,7 @@ angular.module('starter.controllers', [])
 	        var events, day;
 
 	        while (date < $scope.end) {
-	            events = mix ? EventService.allByDate(date.toDateString()) : EventService.kthByDate(date.toDateString());
+	            events = EventService.getByDate(date.toDateString(), true, mix, mix);
 
 	            if (events.length > 0) {
 	                day = { am: [], pm: [], date: new Date(date) };
@@ -519,7 +519,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för settings.html
-.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, $ionicHistory, DataService, ConvenientService, StorageService) {
+.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, $ionicHistory, DataService, ConvenientService, StorageService, EventService) {
 	$scope.resetData = function() {
 		$ionicPopup.confirm({
 			title: 'Bekräfta',
@@ -557,6 +557,7 @@ angular.module('starter.controllers', [])
 	$scope.settings.interestingMode = $scope.modeLabels[StorageService.getOrDefault("KthCalendarInterestingMode", 1)];
 	$scope.updateInterestingMode = function () {
 	    StorageService.set("KthCalendarInterestingMode", $scope.modeLabels.indexOf($scope.settings.interestingMode));
+		EventService.refresh();
 	};
 	$scope.settings.delimiterEnabled = DataService.getDelimiterEnabled();
 	$scope.updateDelimiterEnabled = function () {

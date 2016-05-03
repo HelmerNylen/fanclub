@@ -73,7 +73,7 @@
 	</div>
 	<br/>
 	<div style="text-align: center; padding-bottom: 1em;" ng-if="sectionModalEvent">
-		<button class="button button-dark button-outline icon-left ion-earth" on-tap="openInBrowser(sectionModalEvent.htmlLink)">&Ouml;ppna i webbl&auml;sare</button>
+		<button class="button button-dark button-outline icon-left ion-earth" on-tap="openInBrowser(sectionModalEvent.htmlLink || sectionModalEvent.url)">&Ouml;ppna i webbl&auml;sare</button>
 	</div>
   </ion-content>
 </ion-modal-view>

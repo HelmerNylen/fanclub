@@ -839,7 +839,7 @@ angular.module('starter.services', [])
 })
 
 
-.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService) {
+.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService, KthCalendarService) {
 	var ready = false;
 	var callbacks = [];
 	
@@ -857,11 +857,18 @@ angular.module('starter.services', [])
 			merge();
 		});
 	
+	var official = KthCalendarService.getEvents();
+	if (!official)
+		KthCalendarService.registerCallback(function () {
+			official = KthCalendarService.getEvents();
+			merge();
+		});
+	
 	var all = [];
 	var index = {};
 		
 	var merge = function () {
-		if (!kth || !section)
+		if (!kth || !section || !official)
 			return;
 		
 		var latestDate = null;
@@ -876,42 +883,47 @@ angular.module('starter.services', [])
 		all = [];
 		index = {};
 		
-        var kthIndex = 0;
-        var sectionIndex = 0;
-        var currentSorted;
-        var currentSection;
+        var kthIndex = 0, sectionIndex = 0, officialIndex = 0;
+        var currentSorted, currentSection, currentOfficial;
 
-        while (kthIndex < kth.length && sectionIndex < section.length) {
-            currentSorted = kth[kthIndex];
-            currentSection = SectionService.convert(section[sectionIndex]);
-
-            if (new Date(currentSorted.start).getTime() < new Date(currentSection.start).getTime()) {
-                add(currentSorted);
-                kthIndex++;
-            } else {
-                add(currentSection);
-                sectionIndex++;
-            }
+        while (kthIndex < kth.length || sectionIndex < section.length || officialIndex < official.length) {
+            currentSorted = kthIndex < kth.length ? kth[kthIndex] : null;
+            currentSection = sectionIndex < section.length ? SectionService.convert(section[sectionIndex]) : null;
+			currentOfficial = officialIndex < official.length ? official[officialIndex] : null;
+			
+			var earliest = currentSorted || currentSection || currentOfficial;
+			
+			if (currentOfficial && new Date(currentOfficial.start).getTime() < new Date(earliest.start).getTime())
+				earliest = currentOfficial;
+			if (currentSection && new Date(currentSection.start).getTime() < new Date(earliest.start).getTime())
+				earliest = currentSection;
+			if (currentSorted && new Date(currentSorted.start).getTime() < new Date(earliest.start).getTime())
+				earliest = currentSorted;
+			
+			add(earliest);
+			if (earliest == currentOfficial) officialIndex++;
+			else if (earliest == currentSection) sectionIndex++;
+			else kthIndex++;
         }
 
-        if (kthIndex == kth.length)
+        /*if (kthIndex == kth.length)
             for (; sectionIndex < section.length; sectionIndex++)
                 add(SectionService.convert(section[sectionIndex]));
         else
             for (; kthIndex < kth.length; kthIndex++)
-                add(kth[kthIndex]);
+                add(kth[kthIndex]);*/
 
         ready = true;
 		for (var i = 0; i < callbacks.length; i++)
 			callbacks[i]();
 	};
 	
-	var eventsByDate = function (dateString, getkth, getsection) {
+	var eventsByDate = function (dateString, getkth, getsection, getofficial) {
 		var ind = index[dateString];
 		if (ind) {
 			var res = [];
 			while (ind < all.length && new Date(all[ind].start).toDateString() == dateString) {
-				if ((!all[ind].isSectionEvent && getkth) || (all[ind].isSectionEvent && getsection))
+				if ((!all[ind].isSectionEvent && !all[ind].isOfficialEvent && getkth) || (all[ind].isSectionEvent && getsection) || (all[ind].isOfficialEvent && getofficial))
 					res.push(all[ind]);
 				ind++;
 			}
@@ -925,13 +937,16 @@ angular.module('starter.services', [])
 	
 	return {
 		allByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, true, true) : null;
+			return ready ? eventsByDate(dateString, true, true, true) : null;
 		},
 		kthByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, true, false) : null;
+			return ready ? eventsByDate(dateString, true, false, false) : null;
 		},
 		sectionByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, false, true) : null;
+			return ready ? eventsByDate(dateString, false, true, false) : null;
+		},
+		getByDate: function (dateString, getKth, getSection, getOfficial) {
+			return ready ? eventsByDate(dateString, getKth, getSection, getOfficial) : null;
 		},
 		isReady: function () {
 			return ready;
@@ -941,6 +956,14 @@ angular.module('starter.services', [])
 		},
 		all: function () {
 			return ready ? all : null;
+		},
+		refresh: function () {
+			ready = false;
+			
+			kth = DataService.getSortedEvents();
+			section = SectionService.getEvents();
+			official = KthCalendarService.getEvents();
+			merge();
 		}
 	};
 })
