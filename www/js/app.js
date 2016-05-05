@@ -39,6 +39,9 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 .constant('GitEndpoint', {
     url: 'http://' + window.location.host + '/git/'
 })
+.constant('ProgramEndpoint', {
+    url: 'http://' + window.location.host + '/program/'
+})
 
 /*/
 
@@ -64,6 +67,9 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 })
 .constant('GitEndpoint', {
     url: 'https://raw.githubusercontent.com/'
+})
+.constant('ProgramEndpoint', {
+    url: 'https://www.kth.se/'
 })
 
 
@@ -127,6 +133,10 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 
     gitData: function (file) {
         return "HelmerNylen/fanclub/master/" + file;
+    },
+
+    programCalendar: function () {
+        return "social/program/ctfys/calendar/?search_period=current_term&start_date=&end_date=&output_format=compact";
     }
 })
 

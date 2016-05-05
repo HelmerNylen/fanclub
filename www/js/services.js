@@ -839,7 +839,170 @@ angular.module('starter.services', [])
 })
 
 
-.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService, KthCalendarService) {
+.factory('ProgramService', function ($http, ProgramEndpoint, URLs, StorageService) {
+    var events = StorageService.getOrDefault("ProgramEvents", null);
+    var lastUpdate = StorageService.getOrDefault("ProgramLastUpdate", null);
+    var fail = false;
+    var callbacks = [];
+
+    //ger ett xmlträd från en sträng
+    var parseXml = function (xmlStr) {
+        return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
+    };
+
+    var extractEvents = function (xml) {
+        var res = [];
+
+        var heads = xml.documentElement.getElementsByClassName("event_head");
+        var details = xml.documentElement.getElementsByClassName("event_details");
+
+        if (heads.length != details.length)
+            throw "Length mismatch when getting program calendar - check the website";
+
+        for (var i = 0; i < heads.length; i++) {
+            var h = heads[i], d = details[i];
+            var event = {
+                url: "",
+                start: "",
+                end: "",
+                title: "",
+                type: "",
+                type_name: {
+                    sv: "", en: ""
+                },
+                locations: [],
+                group: "",
+                info: "",
+                course: {
+                    color: '#1954a6',
+                    courseCode: "Programinfo",
+                    name: ""
+                },
+                isProgramEvent: true
+            };
+            var title = h.getElementsByClassName("titlecolumn")[0].children[0];
+            var url = title.getAttribute("href");
+            if (url.indexOf("http://") == -1)
+                url = "http://www.kth.se" + url;
+            event.url = url;
+            event.title = title.textContent.trim();
+            
+            var time = h.getElementsByClassName("time")[0].textContent.trim();
+            event.start = getDateString(time, true);
+            event.end = getDateString(time, false);
+
+            event.type_name.sv = d.getElementsByClassName("type")[0].textContent.trim();
+            event.type = getAppropriateType(event.type_name.sv);
+
+            event.info = d.getElementsByClassName("external_note")[0].textContent.trim();
+            if (event.info.indexOf("Anmärkning: ") == 0)
+                event.info = event.info.replace("Anmärkning: ", "");
+            event.course.name = event.info;
+
+            if (d.getElementsByClassName("location-info").length != 0) {
+                var locations = d.getElementsByClassName("location-info")[0].getElementsByTagName("a");
+                for (var j = 0; j < locations.length; j++) {
+                    var location = {
+                        name: locations[j].textContent.trim(),
+                        url: locations[j].getAttribute("href")
+                    };
+                    if (location.url.indexOf("http://") == -1)
+                        location.url = "http://www.kth.se" + location.url;
+                    event.locations.push(location);
+                }
+            }
+            
+            res.push(event);
+        }
+
+        return res;
+    };
+
+    var getDateString = function (str, getStart) {
+        var split = str.split(" ");
+        var year = new Date().getFullYear();
+        var month = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"].indexOf(split[2].toLowerCase());
+        if (month == -1)
+            throw "Odefinierad månad: " + split[2];
+        var date = split[1];
+        var subsplit = split[3].split(/(-|:)/g);
+        var hour, minute;
+
+        if (getStart) {
+            hour = subsplit[0];
+            minute = subsplit[2];
+        } else {
+            hour = subsplit[4];
+            minute = subsplit[6];
+        }
+        var res = new Date(year, month, date, hour, minute).toLocaleString();
+        if (res.indexOf("-") != -1)
+            res = res.replace(/-/g, "/"); //varför, apple? varför?
+        return res;
+    };
+
+    var getAppropriateType = function (str) {
+        return {
+            "information": "Frl",
+            "övrigt": "Ovr"
+        }[str.toLowerCase()] || "Ovr";
+    };
+
+    var onDone = function () {
+        if (!fail) {
+            StorageService.set("ProgramEvents", events);
+            StorageService.set("ProgramLastUpdate", new Date().toDateString());
+
+            for (var i = 0; i < callbacks.length; i++)
+                callbacks[i]();
+        }
+    };
+
+    var update = function () {
+        $http.get(ProgramEndpoint.url + URLs.programCalendar()).then(
+			function successCallback(response) {
+			    try {
+			        var partial = response.data.substring(response.data.indexOf('<table class="compact-event-list">'));
+			        partial = partial.substring(0, partial.indexOf('</table>') + '</table>'.length);
+
+			        var xml = parseXml(partial);
+			        events = extractEvents(xml);
+			    } catch (e) {
+			        console.log(e);
+			        fail = true;
+			    }
+			    onDone();
+			},
+			function errorCallback(response) {
+			    console.log("Error when getting program calendar " + response.status + ": " + response.statusText + ", " + response.data);
+			    fail = true;
+			    onDone();
+			});
+    };
+
+    if (new Date().toDateString() != lastUpdate)
+        update();
+    else {
+        console.log("Using cached program calendar events");
+        if (events == null)
+            events = [];
+
+        for (var i = 0; i < callbacks.length; i++)
+            callbacks[i]();
+    }
+
+    return {
+        getEvents: function () {
+            return events;
+        },
+        registerCallback: function (cb) {
+            callbacks.push(cb);
+        }
+    }
+})
+
+
+.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService, KthCalendarService, ProgramService) {
 	var ready = false;
 	var callbacks = [];
 	
@@ -863,12 +1026,19 @@ angular.module('starter.services', [])
 			official = KthCalendarService.getEvents();
 			merge();
 		});
+
+	var program = ProgramService.getEvents();
+	if (!program)
+	    ProgramService.registerCallback(function () {
+	        program = ProgramService.getEvents();
+	        merge();
+	    });
 	
 	var all = [];
 	var index = {};
 		
 	var merge = function () {
-		if (!kth || !section || !official)
+		if (!kth || !section || !official || !program)
 			return;
 		
 		var latestDate = null;
@@ -883,18 +1053,21 @@ angular.module('starter.services', [])
 		all = [];
 		index = {};
 		
-        var kthIndex = 0, sectionIndex = 0, officialIndex = 0;
-        var currentSorted, currentSection, currentOfficial;
+        var kthIndex = 0, sectionIndex = 0, officialIndex = 0, programIndex = 0;
+        var currentSorted, currentSection, currentOfficial, currentProgram;
 
-        while (kthIndex < kth.length || sectionIndex < section.length || officialIndex < official.length) {
+        while (kthIndex < kth.length || sectionIndex < section.length || officialIndex < official.length || programIndex < program.length) {
             currentSorted = kthIndex < kth.length ? kth[kthIndex] : null;
             currentSection = sectionIndex < section.length ? SectionService.convert(section[sectionIndex]) : null;
-			currentOfficial = officialIndex < official.length ? official[officialIndex] : null;
+            currentOfficial = officialIndex < official.length ? official[officialIndex] : null;
+            currentProgram = programIndex < program.length ? program[programIndex] : null;
 			
-			var earliest = currentSorted || currentSection || currentOfficial;
+			var earliest = currentSorted || currentSection || currentOfficial || currentProgram;
 			
 			if (currentOfficial && new Date(currentOfficial.start).getTime() < new Date(earliest.start).getTime())
-				earliest = currentOfficial;
+			    earliest = currentOfficial;
+            if (currentProgram && new Date(currentProgram.start).getTime() < new Date(earliest.start).getTime())
+                earliest = currentProgram;
 			if (currentSection && new Date(currentSection.start).getTime() < new Date(earliest.start).getTime())
 				earliest = currentSection;
 			if (currentSorted && new Date(currentSorted.start).getTime() < new Date(earliest.start).getTime())
@@ -903,7 +1076,8 @@ angular.module('starter.services', [])
 			add(earliest);
 			if (earliest == currentOfficial) officialIndex++;
 			else if (earliest == currentSection) sectionIndex++;
-			else kthIndex++;
+			else if (earliest == currentProgram) programIndex++;
+            else kthIndex++;
         }
 
         /*if (kthIndex == kth.length)
@@ -918,12 +1092,12 @@ angular.module('starter.services', [])
 			callbacks[i]();
 	};
 	
-	var eventsByDate = function (dateString, getkth, getsection, getofficial) {
+	var eventsByDate = function (dateString, getkth, getsection, getofficial, getprogram) {
 		var ind = index[dateString];
 		if (ind) {
 			var res = [];
 			while (ind < all.length && new Date(all[ind].start).toDateString() == dateString) {
-				if ((!all[ind].isSectionEvent && !all[ind].isOfficialEvent && getkth) || (all[ind].isSectionEvent && getsection) || (all[ind].isOfficialEvent && getofficial))
+			    if ((!all[ind].isSectionEvent && !all[ind].isOfficialEvent && !all[ind].isProgramEvent && getkth) || (all[ind].isSectionEvent && getsection) || (all[ind].isOfficialEvent && getofficial) || (all[ind].isProgramEvent && getprogram))
 					res.push(all[ind]);
 				ind++;
 			}
@@ -937,16 +1111,16 @@ angular.module('starter.services', [])
 	
 	return {
 		allByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, true, true, true) : null;
+			return ready ? eventsByDate(dateString, true, true, true, true) : null;
 		},
 		kthByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, true, false, false) : null;
+			return ready ? eventsByDate(dateString, true, false, false, false) : null;
 		},
 		sectionByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, false, true, false) : null;
+			return ready ? eventsByDate(dateString, false, true, false, false) : null;
 		},
-		getByDate: function (dateString, getKth, getSection, getOfficial) {
-			return ready ? eventsByDate(dateString, getKth, getSection, getOfficial) : null;
+		getByDate: function (dateString, getKth, getSection, getOfficial, getProgram) {
+			return ready ? eventsByDate(dateString, getKth, getSection, getOfficial, getProgram) : null;
 		},
 		isReady: function () {
 			return ready;

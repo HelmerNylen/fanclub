@@ -239,7 +239,7 @@ angular.module('starter.controllers', [])
 			}
 			
 			for (var i = 0; i < 7; i++) {
-				var events = EventService.getByDate(days[i].date, true, DataService.getMixEvents(), false);
+				var events = EventService.getByDate(days[i].date, true, DataService.getMixEvents(), false, true);
 				for (var j = 0; j < events.length; j++) {
 					var start, end;
 					
@@ -372,7 +372,7 @@ angular.module('starter.controllers', [])
 					week.days.push({
 						date: new Date(current),
 						today: current.toDateString() == new Date().toDateString(),
-						events: EventService.getByDate(current.toDateString(), true, DataService.getMixEvents(), DataService.getMixEvents())
+						events: EventService.getByDate(current.toDateString(), true, DataService.getMixEvents(), DataService.getMixEvents(), true)
 					});
 					current.setDate(current.getDate() + 1);
 				}
@@ -490,7 +490,7 @@ angular.module('starter.controllers', [])
 	        var events, day;
 
 	        while (date < $scope.end) {
-	            events = EventService.getByDate(date.toDateString(), true, mix, mix);
+	            events = EventService.getByDate(date.toDateString(), true, mix, mix, true);
 
 	            if (events.length > 0) {
 	                day = { am: [], pm: [], date: new Date(date) };

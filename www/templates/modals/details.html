@@ -26,7 +26,7 @@
 		</div>
 		<div class="row">
 			<b class="col col-33">
-				Kurs
+				{{ course.courseCode.length == 6 ? 'Kurs' : 'Typ' }}
 			</b>
 			<div class="col" style="text-align: right">
 				{{ course.name }} ({{ course.courseCode }})
