@@ -306,6 +306,32 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
     };
 
+    //för att apple tydligen inte klarar att skriva dessa själva
+    var getElementByClassName = function (element, className) {
+        var children = element.childNodes;
+        for (var i = 0; i < children.length; i++) {
+            try {
+                if (children[i].getAttribute("class").indexOf(className) != -1)
+                    return children[i];
+            }
+            catch (e) {}
+        }
+        for (var i = 0; i < children.length; i++) {
+            try {
+                var r = getElementByClassName(children[i], className);
+                if (r) return r;
+            } catch (e) { }
+        }
+        return null;
+    };
+    var firstChild = function (element) {
+        var children = element.childNodes;
+        for (var i = 0; i < children.length; i++)
+            if (children[i].nodeName != "#text")
+                return children[i];
+        return null;
+    };
+
     var parseRss = function (xml) {
         var items = xml.documentElement.getElementsByTagName("item");
         var res = [];
@@ -325,7 +351,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
             if (serialized.indexOf("parsererror") != -1) {
                 elementXml = parseXml("<p>" + items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, "<br/>") + "</p>").documentElement;
 
-                var short = serializer.serializeToString(elementXml.children[0]).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim();
+                var short = serializer.serializeToString(firstChild(elementXml)).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim();
                 var long = "";
                 for (var j = 1; j < elementXml.children.length; j++)
                     long += serializer.serializeToString(elementXml.children[j]).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim() + (j != elementXml.children.length - 1 ? " " : "");
@@ -339,9 +365,9 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
                 event.longInfo = desc;
             }
 
-            var elementInfo = elementXml.getElementsByClassName("eventInfo")[0];
+            var elementInfo = getElementByClassName(elementXml, "eventInfo");
             for (var prop in { date: 0, location: 0, subject: 0 }) {
-                var tag = elementInfo.getElementsByClassName(prop)[0];
+                var tag = getElementByClassName(elementInfo, prop);
 				if (tag)
 					event[prop] = tag.textContent.substring(tag.textContent.indexOf(": ") + 2);
 				else
@@ -349,11 +375,19 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
             }
 			event.locations = event.location ? [{name: event.location}] : [];
 			
-			try {
-				var date = event.date.match(/\d\d\d\d-\d\d-\d\d/)[0].replace(/-/g, "/");
-				event.start = new Date(date + " " + event.date.match(/kl \d\d.\d\d/)[0].substring(3).replace(/\./g, ":") + ":00");
-				if (event.date.match(/- \d\d.\d\d/))
-					event.end = new Date(date + " " + event.date.match(/- \d\d.\d\d/)[0].substring(2).replace(/\./g, ":") + ":00");
+            try {
+                if (event.date.match(/\d\d\d\d-\d\d-\d\d/g).length == 2) {
+                    var match = event.date.match(/\d\d\d\d-\d\d-\d\d/g);
+                    event.start = new Date(match[0].replace(/-/g, "/"));
+                    event.end = new Date(match[1].replace(/-/g, "/"));
+                    event.end.setDate(event.end.getDate() + 1)
+                }
+                else {
+                    var date = event.date.match(/\d\d\d\d-\d\d-\d\d/)[0].replace(/-/g, "/");
+                    event.start = new Date(date + " " + event.date.match(/kl \d\d.\d\d/)[0].substring(3).replace(/\./g, ":") + ":00");
+                    if (event.date.match(/- \d\d.\d\d/))
+                        event.end = new Date(date + " " + event.date.match(/- \d\d.\d\d/)[0].substring(2).replace(/\./g, ":") + ":00");
+                }
 
 				res.push(event);
 			} catch (e) {

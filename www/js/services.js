@@ -850,11 +850,50 @@ angular.module('starter.services', [])
         return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
     };
 
+    //ger en array bland nodens direkta barn
+    var getElementsByClassName = function (element, className) {
+        var res = [];
+        var children = element.childNodes;
+        for (var i = 0; i < children.length; i++) {
+            try {
+                if (children[i].getAttribute("class").indexOf(className) != -1)
+                    res.push(children[i]);
+            }
+            catch (e) { }
+        }
+        return res;
+    };
+    //ger första träffen bland alla descendants
+    var getElementByClassName = function (element, className) {
+        var children = element.childNodes;
+        for (var i = 0; i < children.length; i++) {
+            try {
+                if (children[i].getAttribute("class") == className)
+                    return children[i];
+            }
+            catch (e) { }
+        }
+        for (var i = 0; i < children.length; i++) {
+            try {
+                var r = getElementByClassName(children[i], className);
+                if (r) return r;
+            } catch (e) { }
+        }
+        return null;
+    };
+    var firstChild = function (element) {
+        var children = element.childNodes;
+        for (var i = 0; i < children.length; i++)
+            if (children[i].nodeName != "#text")
+                return children[i];
+        return null;
+    };
+
     var extractEvents = function (xml) {
         var res = [];
 
-        var heads = xml.documentElement.getElementsByClassName("event_head");
-        var details = xml.documentElement.getElementsByClassName("event_details");
+        var heads = getElementsByClassName(firstChild(xml.documentElement), "event_head");
+        var details = getElementsByClassName(firstChild(xml.documentElement), "event_details");
 
         if (heads.length != details.length)
             throw "Length mismatch when getting program calendar - check the website";
@@ -880,27 +919,29 @@ angular.module('starter.services', [])
                 },
                 isProgramEvent: true
             };
-            var title = h.getElementsByClassName("titlecolumn")[0].children[0];
+            var title = firstChild(getElementsByClassName(h, "titlecolumn")[0]);
             var url = title.getAttribute("href");
             if (url.indexOf("http://") == -1)
                 url = "http://www.kth.se" + url;
             event.url = url;
             event.title = title.textContent.trim();
             
-            var time = h.getElementsByClassName("time")[0].textContent.trim();
+            var time = getElementsByClassName(h, "time")[0].textContent.trim();
             event.start = getDateString(time, true);
             event.end = getDateString(time, false);
 
-            event.type_name.sv = d.getElementsByClassName("type")[0].textContent.trim();
+            event.type_name.sv = getElementByClassName(d, "type").textContent.trim();
             event.type = getAppropriateType(event.type_name.sv);
 
-            event.info = d.getElementsByClassName("external_note")[0].textContent.trim();
+            event.info = getElementByClassName(d, "external_note").textContent.trim();
             if (event.info.indexOf("Anmärkning: ") == 0)
                 event.info = event.info.replace("Anmärkning: ", "");
+            else if (event.info.indexOf("Note: ") == 0)
+                event.info = event.info.replace("Note: ", "");
             event.course.name = event.info;
 
-            if (d.getElementsByClassName("location-info").length != 0) {
-                var locations = d.getElementsByClassName("location-info")[0].getElementsByTagName("a");
+            if (getElementsByClassName(getElementByClassName(d, "type_and_place"), "location-info").length != 0) {
+                var locations = getElementByClassName(getElementByClassName(d, "type_and_place"), "location-info").getElementsByTagName("a");
                 for (var j = 0; j < locations.length; j++) {
                     var location = {
                         name: locations[j].textContent.trim(),
@@ -923,6 +964,8 @@ angular.module('starter.services', [])
         var year = new Date().getFullYear();
         var month = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"].indexOf(split[2].toLowerCase());
         if (month == -1)
+            month = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"].indexOf(split[2].toLowerCase());
+        if (month == -1)
             throw "Odefinierad månad: " + split[2];
         var date = split[1];
         var subsplit = split[3].split(/(-|:)/g);
@@ -935,10 +978,7 @@ angular.module('starter.services', [])
             hour = subsplit[4];
             minute = subsplit[6];
         }
-        var res = new Date(year, month, date, hour, minute).toLocaleString();
-        if (res.indexOf("-") != -1)
-            res = res.replace(/-/g, "/"); //varför, apple? varför?
-        return res;
+        return year + "/" + (month + 1) + "/" + date + " " + hour + ":" + minute + ":00";
     };
 
     var getAppropriateType = function (str) {

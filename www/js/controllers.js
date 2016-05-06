@@ -852,7 +852,9 @@ angular.module('starter.controllers', [])
 	    StorageService.set("sectionLastUpdated", null);
 	    StorageService.set("foodLastUpdate", null);
 	    StorageService.set("rssLastUpdate", null);
-	    StorageService.set("gitLastUpdate", null);
+	    StorageService.set("gitLastUpdate", null); 
+	    StorageService.set("KthCalendarLastUpdate", null);
+	    StorageService.set("ProgramLastUpdate", null);
 	    window.location.reload(true);
 	};
 	
