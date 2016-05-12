@@ -5,7 +5,7 @@
       <button class="button button-clear" ng-click="closeDetails()" ng-style="{ color: eventcolor }">Stäng</button>
     </div>
   </ion-header-bar>
-  <ion-content>
+  <ion-content on-swipe-right="closeDetails()">
 	<div style="padding: 5%; font-size: 16px" ng-if="modalEvent">
 		<div ng-bind-html="modalEvent.info" style="text-align: center; font-size: 14px"></div>
 		<div class="row">

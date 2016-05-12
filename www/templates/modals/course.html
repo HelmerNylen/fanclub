@@ -5,7 +5,7 @@
       <button class="button button-clear" ng-click="closeCourse()" ng-style="{ color: contrastingColor }">Stäng</button>
     </div>
   </ion-header-bar>
-  <ion-content>
+  <ion-content on-swipe-right="closeCourse()">
 	<div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px">
 		{{ modalCourse.name }}
 	</div>

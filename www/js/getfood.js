@@ -1,7 +1,7 @@
 angular.module('starter.getfood', ['starter.services'])
 
 //har hand om inläsningen av menyer från restauranghemsidorna
-.factory('FoodService', function ($http, $state, FoodEndpoint, URLs, StorageService) {
+.factory('FoodService', function ($http, $state, FoodEndpoint, URLs, StorageService, DebuggerService) {
 	var menus = {};
 	var day = new Date().getDay() - 1;
 	var restaurantsLeft = -1;
@@ -27,7 +27,7 @@ angular.module('starter.getfood', ['starter.services'])
 	};
 	
 	var updateMenus = function () {
-		console.log("Updating menus");
+		DebuggerService.log("Updating menus");
 		try {
 			//Restaurang Q
 			$http.get(FoodEndpoint.q + URLs.weekMenuQ()
@@ -43,14 +43,14 @@ angular.module('starter.getfood', ['starter.services'])
 							menu.push(row.children[i].innerHTML.trim());
 					}
 					catch (e) {
-						console.log("Försökte parsea Q:s meny men det sket sig: " + e);
+						DebuggerService.log("Error parsing Q's menu: " + e, "red");
 					}
 					menus.q = menu;
 					restaurantsLeft--;
 					onDone();
 				},
 				function errorCallback(response) {
-					console.log("Error when getting Q's menu " + response.status + ": " + response.statusText + ", " + response.data);
+					DebuggerService.log("Error getting Q's menu: " + JSON.stringify(response), "red");
 					restaurantsLeft--;
 					onDone();
 				});
@@ -112,14 +112,14 @@ angular.module('starter.getfood', ['starter.services'])
 						}
 					}
 					catch (e) {
-						console.log("Försökte parsea nymbles meny men det sket sig: " + e);
+						DebuggerService.log("Error parsing Nymble's menu: " + e, "red");
 					}
 					menus.nymble = menu;
 					restaurantsLeft--;
 					onDone();
 				},
 				function errorCallback(response) {
-					console.log("Error when getting Nymble's menu " + response.status + ": " + response.statusText + ", " + response.data);
+					DebuggerService.log("Error getting Nymble's menu: " + JSON.stringify(response), "red");
 					restaurantsLeft--;
 					onDone();
 				});
@@ -148,14 +148,14 @@ angular.module('starter.getfood', ['starter.services'])
 						}
 					}
 					catch (e) {
-						console.log("Försökte parsea brazilias meny men det sket sig: " + e);
+						DebuggerService.log("Error parsing Brazilia's menu: " + e, "red");
 					}
 					menus.brazilia = menu;
 					restaurantsLeft--;
 					onDone();
 				},
 				function errorCallback(response) {
-					console.log("Error when getting Brazilia's menu " + response.status + ": " + response.statusText + ", " + response.data);
+					DebuggerService.log("Error getting Brazilia's menu: " + JSON.stringify(response), "red");
 					restaurantsLeft--;
 					onDone();
 				});
@@ -173,19 +173,20 @@ angular.module('starter.getfood', ['starter.services'])
                             menu.push((xml.documentElement.children[0].tagName == "parsererror" ? xml.documentElement.children[1] : xml.documentElement.children[0]).children[0].children[1].children[day].children[0].children[1].innerHTML.trim());
                         }
                         catch (e) {
-                            console.log("Försökte parsea Syster O Brors meny men det sket sig: " + e);
+							DebuggerService.log("Error parsing Syster O Bror's menu: " + e, "red");
                         }
                         menus.syster = menu;
                         restaurantsLeft--;
                         onDone();
                     },
                     function errorCallback(response) {
-                        console.log("Error when getting Syster O Bror's menu " + response.status + ": " + response.statusText + ", " + response.data);
+						DebuggerService.log("Error getting Syster O Bror's menu: " + JSON.stringify(response), "red");
                         restaurantsLeft--;
                         onDone();
                     });
 		} catch (e) {
-			console.log(e);
+			DebuggerService.log(e, "red");
+			DebuggerService.log("Error occurred when updating menus");
 		}
 	};
 	
@@ -198,7 +199,7 @@ angular.module('starter.getfood', ['starter.services'])
 		},
 		update: function() {
 			if (foodLastUpdate == new Date().toDateString()){
-				console.log("Getting menus from cache");
+				DebuggerService.log("Getting menus from cache", "green");
 				menus = StorageService.getOrDefault("foodMenus");
 			    for (var i = 0; i < callbacks.length; i++)
 				    callbacks[i]();

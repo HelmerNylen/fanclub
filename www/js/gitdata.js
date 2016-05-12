@@ -1,12 +1,12 @@
 ﻿angular.module('starter.gitdata', ['starter.services'])
 
-.factory('GitService', function ($http, $state, StorageService, URLs, GitEndpoint, FoodEndpoint) {
+.factory('GitService', function ($http, $state, StorageService, URLs, GitEndpoint, FoodEndpoint, DebuggerService) {
     var lastUpdate = StorageService.getOrDefault("gitLastUpdate", null);
     var content = StorageService.getOrDefault("gitContent", {});
     var callbacks = [];
 
     var update = function () {
-        console.log("getting git data");
+        DebuggerService.log("Getting live data");
         try {
             $http.get(GitEndpoint.url + URLs.gitData("live-content/live.json")
                 ).then(
@@ -19,7 +19,7 @@
                         callbacks[i]();
                 },
                 function errorCallback(response) {
-                    console.log("Error when getting git data: " + response.status + ": " + response.statusText + ", " + response.data);
+					DebuggerService.log("Error when getting live content from GitHub: " + JSON.stringify(response), "red");
                     for (var i = 0; i < callbacks.length; i++)
                         callbacks[i]();
                 });

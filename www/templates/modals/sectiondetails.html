@@ -5,7 +5,7 @@
       <button class="button button-clear" ng-click="closeSectionDetails()" style="color: white">Stäng</button>
     </div>
   </ion-header-bar>
-  <ion-content>
+  <ion-content on-swipe-right="closeSectionDetails()">
 	<div style="padding: 5%; font-size: 16px" ng-if="sectionModalEvent">
 		<div style="text-align: center; font-size: 14px">
 			{{ sectionModalEvent.summary || sectionModalEvent.title }}

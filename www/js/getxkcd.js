@@ -1,6 +1,6 @@
 angular.module('starter.getxkcd', ['starter.services'])
 
-.factory('xkcdService', function($http, $state, StorageService, URLs, XkcdEndpoint) {
+.factory('xkcdService', function($http, $state, StorageService, URLs, XkcdEndpoint, DebuggerService) {
     var title = "", img = "", alt = "", cLink = "", num = "";
     var randmax = 1600; //skrivs över
 	
@@ -12,7 +12,7 @@ angular.module('starter.getxkcd', ['starter.services'])
 	var updatexkcd = function (callbackFunc,nr) {
 		//nr=-1 => random comic
 		//nr!=-1 => latest comic
-		console.log("Updating xkcd");
+		DebuggerService.log("Updating xkcd");
 		var number="";
 		if (nr == -1) {
 			number=(Math.floor(Math.random() * randmax) + 1).toString();
@@ -42,12 +42,11 @@ angular.module('starter.getxkcd', ['starter.services'])
 					onDone(callbackFunc);
 				},
 				function errorCallback(response) {
-					console.log("Error when getting xkcd: " + response.status + ": " + response.statusText + ", " + response.data);
+			    DebuggerService.log("Error when getting xkcd: " + JSON.stringify(response), "red");
 					title = "Kunde inte hämta xkcd";
 					num = "-41";
 					img="img/error_code.png";
 					alt="It has a section on motherboard beep codes that lists, for each beep pattern, a song that syncs up well with it.";
-					console.log(title);
 					onDone(callbackFunc);
 
 				});

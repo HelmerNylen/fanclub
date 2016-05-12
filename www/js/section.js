@@ -1,7 +1,7 @@
 angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 //service som hämtar sektionshändelser från googlekalendern
-.factory('SectionService', function ($http, $state, CalendarEndpoint, URLs, DataService, StorageService, APIkey) {
+.factory('SectionService', function ($http, $state, DebuggerService, CalendarEndpoint, URLs, DataService, StorageService, APIkey) {
 	//taget från http://stackoverflow.com/a/7244288
 	//gör en giltig timestamp av ett Date
 	var RFC3339 = function (d) {
@@ -41,7 +41,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 	
 	//anropar apit
 	var update = function () {
-		console.log("Calling calendar api");
+		DebuggerService.log("Calling calendar api");
 		$http.get(CalendarEndpoint.url + URLs.sectionCalendar(calendarId, apikey, options)).then(
 			function successCallback(response) {
 			    try {
@@ -50,7 +50,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        StorageService.set("sectionResponse", sectionResponse);
 			        events = sectionResponse.items;
 			        if (!events) {
-			            console.log("fick inga sektionshändelser trots korrekt response", response);
+			            DebuggerService.log("Recieved no section events despite valid response: " + JSON.stringify(response), "red");
 			            events = [];
 			        }
 			        else {
@@ -58,13 +58,13 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			            StorageService.set("sectionLastUpdated", lastUpdated);
 			        }
 			    } catch (e) {
-			        console.log(e);
+			        DebuggerService.log(e, "red");
 			    }
 				
 				onDone();
 			},
 			function errorCallback(response) {
-				console.log("Error when getting section calendar " + response.status + ": " + response.statusText + ", " + response.data);
+				DebuggerService.log("Error when getting section calendar: " + JSON.stringify(response), "red");
 				sectionResponse = response.data;
 				onDone();
 			});
@@ -74,7 +74,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 	if (new Date().toDateString() != lastUpdated)
 		update();
 	else {
-		console.log("Reading section events from cache");
+		DebuggerService.log("Reading section events from cache", "green");
 		sectionResponse = StorageService.getOrDefault("sectionResponse");
 		events = sectionResponse.items;
 		if (eventServiceCallback)
@@ -125,7 +125,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 //service som hämtar rss-flöden för fysiksektionen och ths
 //egentligen finns inte så mycket intressant där men ska det vara en komplett app så ska det
-.factory('RssService', function ($http, $state, RssEndpoint, StorageService) {
+.factory('RssService', function ($http, $state, RssEndpoint, StorageService, DebuggerService) {
     var section = StorageService.getOrDefault("rssF", []);
     var union = StorageService.getOrDefault("rssTHS", []);
     var kth = StorageService.getOrDefault("rssKTH", []);
@@ -150,7 +150,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 					title: items[i].getElementsByTagName("title")[0].textContent,
 					link: items[i].getElementsByTagName("link")[0].textContent,
 					description: items[i].getElementsByTagName("description")[0].textContent,
-					date: new Date(items[i].getElementsByTagName("pubDate")[0].textContent),
+					date: getDateString(items[i].getElementsByTagName("pubDate")[0].textContent),
 					creator: "KTH",
 					category: "",
 					content: items[i].getElementsByTagName("description")[0].textContent //samma som description
@@ -159,7 +159,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 				res.push({
 					title: items[i].getElementsByTagName("title")[0].textContent,
 					link: items[i].getElementsByTagName("link")[0].textContent,
-					date: new Date(items[i].getElementsByTagName("pubDate")[0].textContent),
+					date: getDateString(items[i].getElementsByTagName("pubDate")[0].textContent),
 					creator: items[i].getElementsByTagName("creator")[0].textContent,
 					category: items[i].getElementsByTagName("category")[0].textContent,
 					description: items[i].getElementsByTagName("description")[0].textContent,
@@ -167,6 +167,21 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 				});
 
         return res;
+    };
+
+    var getDateString = function (str) {
+        var split = str.split(" ");
+        var year = split[3];
+        var month = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"].indexOf(split[2].toLowerCase());
+        if (month == -1)
+            month = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"].indexOf(split[2].toLowerCase());
+        if (month == -1)
+            throw "Odefinierad månad: " + split[2];
+        var date = split[1];
+        var subsplit = split[4].split(":");
+        var hour = subsplit[0], minute = subsplit[1];
+		
+        return new Date(year + "/" + (month + 1) + "/" + date + " " + hour + ":" + minute + ":00");
     };
 
 	//körs när alla utgående anrop är klara
@@ -188,7 +203,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 	//hämta alla rss-flöden
     var update = function () {
         requests = 3;
-        console.log("getting rss feeds");
+        DebuggerService.log("Getting RSS feeds");
 
         $http.get(RssEndpoint.f + "feed/").then(
 			function successCallback(response) {
@@ -196,7 +211,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        section = parseRss(xml);
 			    } catch (e) {
-			        console.log(e);
+			        DebuggerService.log(e, "red");
 			        fail = true;
 			    }
 
@@ -204,7 +219,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    onDone();
 			},
 			function errorCallback(response) {
-			    console.log("Error when getting section rss feed " + response.status + ": " + response.statusText + ", " + response.data);
+			    DebuggerService.log("Error when getting section rss feed: " + JSON.stringify(response), "red");
 			    fail = true;
 
 			    requests--;
@@ -217,7 +232,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        union = parseRss(xml);
 			    } catch (e) {
-			        console.log(e);
+			        DebuggerService.log(e, "red");
 			        fail = true;
 			    }
 
@@ -225,7 +240,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    onDone();
 			},
 			function errorCallback(response) {
-			    console.log("Error when getting union rss feed " + response.status + ": " + response.statusText + ", " + response.data);
+			    DebuggerService.log("Error when getting THS rss feed: " + JSON.stringify(response), "red");
 			    fail = true;
 
 			    requests--;
@@ -238,7 +253,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        kth = parseRss(xml, true);
 			    } catch (e) {
-			        console.log(e);
+			        DebuggerService.log(e, "red");
 			        fail = true;
 			    }
 
@@ -246,7 +261,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    onDone();
 			},
 			function errorCallback(response) {
-			    console.log("Error when getting kth rss feed " + response.status + ": " + response.statusText + ", " + response.data);
+			    DebuggerService.log("Error when getting KTH feed: " + JSON.stringify(response), "red");
 			    fail = true;
 
 			    requests--;
@@ -258,7 +273,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     if (new Date().toDateString() != lastUpdate)
         update();
     else {
-        console.log("using cached rss feeds");
+        DebuggerService.log("Using cached RSS feeds", "green");
     }
 
 
@@ -276,7 +291,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 })
 
 //service som hämtar KTH:s officiella händelser, typ lunchkonserter
-.factory('KthCalendarService', function ($http, $state, RssEndpoint, StorageService) {
+.factory('KthCalendarService', function ($http, $state, RssEndpoint, StorageService, DebuggerService) {
     var events = StorageService.getOrDefault("KthCalendarEvents", null);
     var lastUpdate = StorageService.getOrDefault("KthCalendarLastUpdate", null);
     var interestingMode = StorageService.getOrDefault("KthCalendarInterestingMode", 1);
@@ -292,7 +307,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
                     return ev.subject.toLowerCase().indexOf("musik") != -1 || ev.longInfo.toLowerCase().indexOf("lunch") != -1 || ev.title.toLowerCase().indexOf("lunch") != -1;
                 }
                 catch (e) {
-                    console.log(e);
+                    DebuggerService.log(e, "red");
                     return false;
                 }
             case 2:
@@ -391,7 +406,8 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 				res.push(event);
 			} catch (e) {
-				console.log(e);
+				DebuggerService.log(e, "red");
+				DebuggerService.log("Error occurred while parsing event in official KTH calendar");
 			}
         }
 
@@ -416,13 +432,13 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        events = parseRss(xml);
 			    } catch (e) {
-			        console.log(e);
+			        DebuggerService.log(e, "red");
 			        fail = true;
 			    }
 			    onDone();
 			},
 			function errorCallback(response) {
-			    console.log("Error when getting kth rss feed " + response.status + ": " + response.statusText + ", " + response.data);
+			    DebuggerService.log("Error when getting official KTH calendar feed: " + JSON.stringify(response), "red");
 			    fail = true;
 			    onDone();
 			});
@@ -431,7 +447,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     if (new Date().toDateString() != lastUpdate)
         update();
     else {
-        console.log("Using cached kth calendar events");
+        DebuggerService.log("Using cached KTH calendar events", "green");
 		if (events == null)
 			events = [];
 

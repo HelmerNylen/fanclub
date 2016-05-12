@@ -8,7 +8,7 @@
             <button class="button button-large button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter" ng-click="backLyrics()" style="padding-left: 1.5ex; padding-right: 2.5ex;"></button>
         </div>
     </ion-header-bar>
-    <ion-content delegate-handle="lyrics">
+    <ion-content delegate-handle="lyrics" on-swipe-right="backLyrics()">
         <div ng-if="lyricsMode.chapter" style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px">
             {{ lyricsMode.song ? lyricsIndexes[lyricsMode.chapter - 1][lyricsMode.song - 1] + ' - ' + lyrics[lyricsMode.chapter - 1].songs[lyricsMode.song - 1].title : lyrics[lyricsMode.chapter - 1].chapter }}
         </div>
@@ -17,7 +17,6 @@
         <form ng-submit="searchLyrics(lyricsMode)" ng-if="!lyricsMode.chapter">
             <label class="item item-input" style="margin: 15px; border-radius: 5px">
                 <input type="text" placeholder="Sök i sångboken" ng-model="lyricsMode.filter" />
-                <!--button class="button button-outline button-small button-ctfys" style="margin-right: 8px" on-tap="refilter()"><i class="icon ion-chevron-right"></i></button-->
             </label>
         </form>
 

@@ -1,6 +1,6 @@
 angular.module('starter.notes', ['starter.services'])
 
-.factory('NoteService', function(StorageService) {
+.factory('NoteService', function(StorageService, DebuggerService) {
     var notes = StorageService.getOrDefault("notes", []);
 
     var find = function (event) {
@@ -21,17 +21,20 @@ angular.module('starter.notes', ['starter.services'])
 	
     return {
         setNote: function (note, event) {
-            console.log("setting note", note);
+            DebuggerService.log("Setting note: " + note);
             var index = find(event);
             if (index == -1) {
                 var noteobj = { note: note };
-                if (event.id)
+                if (event.id) {
                     noteobj.id = event.id;
-                else if (event.url)
+					notes.push(noteobj);
+				}
+                else if (event.url) {
                     noteobj.url = event.url;
+					notes.push(noteobj);
+				}
                 else
-                    console.log("event could not be identified: ", event);
-                notes.push(noteobj);
+                    DebuggerService.log("event could not be identified: " + JSON.stringify(event), "red");
             }
             else
                 notes[index].note = note;
@@ -43,7 +46,7 @@ angular.module('starter.notes', ['starter.services'])
             return index != -1 ? notes[index].note : null;
         },
         clearNote: function (event) {
-            console.log("deleting note");
+            DebuggerService.log("Deleting note");
 
             var index = find(event);
             if (index != -1)

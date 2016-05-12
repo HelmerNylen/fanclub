@@ -19,8 +19,42 @@ angular.module('starter.services', [])
     };
 })
 
+.factory('DebuggerService', function () {
+	var log = [];
+	var maxLength = 200;
+	var callbacks = [];
+	
+    return {
+		log: function (e, color) {
+			console.log(e);
+			
+			if (!color)
+				color = "white";
+			
+			log.push({entry: e, color: color});
+			if (log.length > maxLength)
+				log = log.splice(maxLength - 1);
+			
+			for (var i = 0; i < callbacks.length; i++)
+				callbacks[i]();
+		},
+		getLog: function () {
+			return log;
+		},
+		clear: function () {
+			log = [];
+			
+			for (var i = 0; i < callbacks.length; i++)
+				callbacks[i]();
+		},
+		registerCallback: function (cb) {
+			callbacks.push(cb);
+		}
+    };
+})
+
 //date and time shortcuts, among other things
-.factory('ConvenientService', function () {
+.factory('ConvenientService', function (DebuggerService) {
     var weekdays = ["S\u00f6ndag", "M\u00e5ndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "L\u00f6rdag", "S\u00f6ndag"];
     var months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"];
     var today = new Date().toDateString();
@@ -149,6 +183,7 @@ angular.module('starter.services', [])
 		//öppnar ett webbläsarfönster med den angivna urlen
 		//try/catch då detta funkar olika i testmiljön och på telefonen
 		openURL: function (url) {
+			DebuggerService.log("Opening " + url, "yellow");
 			try {
 				cordova.InAppBrowser.open(url, "_system");
 			} catch (e1) {
@@ -282,7 +317,7 @@ angular.module('starter.services', [])
 })
 
 //hämtar KTH-händelser och data om olika kurser, samt lite inställningar
-.factory('DataService', function ($http, $state, $rootScope, StorageService, ConvenientService, ApiEndpoint, URLs) {
+.factory('DataService', function ($http, $state, $rootScope, StorageService, DebuggerService, ConvenientService, ApiEndpoint, URLs) {
     //try {
 	var now = new Date();
     var courses = null;
@@ -323,8 +358,10 @@ angular.module('starter.services', [])
     var onDone = function (noUpdate) {
 		//för att se till att onDone bara körs en gång räknar vi alla anrop
         if (updatesLeft == 0) {
-			if (!noUpdate)
+			if (!noUpdate) {
 				StorageService.set("lastUpdate", new Date().toDateString());
+				DebuggerService.log("Successful update", "green");
+			}
             StorageService.set("courses", courses);
 			StorageService.set("extra", extra);
             sorted = sortByDate(courses, extra);
@@ -361,7 +398,7 @@ angular.module('starter.services', [])
 				},
 				function errorCallback(response) {
 					//om vi inte får något svar försöker vi hämta allt från cachen
-					console.log("Error when getting schema " + response.status + ": " + response.statusText + ", " + response.data);
+					DebuggerService.log("Error response when getting course schema: " + JSON.stringify(response), "red");
 					updatesLeft--;
 					var res = StorageService.getOrDefault("courses", null);
 					if (res)
@@ -370,7 +407,7 @@ angular.module('starter.services', [])
 						for (var i = 0; i < ex.length; i++)
 							res.push(ex[i]);
 						
-						console.log("Using stored events.");
+						DebuggerService.log("Using stored events.");
 						for (var i = 0; i < res.length; i++)
 							if (res[i].courseCode == cr.courseCode && res[i].roundId == cr.roundId && res[i].startTerm == cr.startTerm)
 								cr.entries = res[i].entries;
@@ -385,6 +422,7 @@ angular.module('starter.services', [])
 					else
 					{
 						//har vi inget i cachen meddelar vi användaren
+						DebuggerService.log("Adding visible error");
 						errors.push({
 							code: "Aprikos",
 							message: "Kunde inte hämta schemahändelser från Schema. Kontrollera att du är ansluten till internet.\n" + 
@@ -408,7 +446,8 @@ angular.module('starter.services', [])
 				for (var i = 0; i < _extra.length; i++)
 					getCourseSchema(_extra[i]);
 		} catch (e) {
-			console.log(e);
+			DebuggerService.log(e, "red");
+			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
 				message: "Fel vid serveranrop.",
@@ -443,20 +482,20 @@ angular.module('starter.services', [])
 							course.entries[i].course.name = (course.entries[i].course.name || course.name);
 							course.entries[i].course.color = (course.entries[i].course.color || course.color);
 						}
-					} else console.log("entries saknas:", course);
+					}
 
 					updatesLeft--;
 					onDone();
 				},
 				function errorCallback(response) {
 					//fick vi ingen kursinfo försöker vi hämta den från cachen
-					console.log("Error when getting course info " + response.status + ": " + response.statusText + ", " + response.data);
+					DebuggerService.log("Error response when getting course information: " + JSON.stringify(response), "red");
 					updatesLeft--;
 					var res = StorageService.getOrDefault("courses", null);
 					var throwError = false;
 					if (res)
 					{
-						console.log("Using stored course info for " + course.courseCode + ".");
+						DebuggerService.log("Using stored course info for " + course.courseCode);
 						course.name = null;
 						course.color = null;
 						for (var i = 0; i < res.length; i++)
@@ -482,6 +521,7 @@ angular.module('starter.services', [])
 						throwError = true;
 					if (throwError)
 					{
+						DebuggerService.log("Adding visible error");
 						errors.push({
 							code: "Ananas",
 							message: "Kunde inte hämta kursnamn från Kopps. Kontrollera att du är ansluten till internet.\n" + 
@@ -497,7 +537,8 @@ angular.module('starter.services', [])
 					onDone(true);
 				});
 		} catch (e) {
-			console.log(e);
+			DebuggerService.log(e, "red");
+			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
 				message: "Fel vid serveranrop.",
@@ -518,7 +559,6 @@ angular.module('starter.services', [])
 					try {
 						//hämtar ett xml-dokument över vilka kurser som finns för fanclub, deras kurskod, kursomgång och starttermin
 						var nodes = parseXml(response.data).getElementsByTagName("courseRound");
-						console.log("found " + nodes.length + " courses");
 						var res = [];
 						for (var i = 0; i < nodes.length; i++)
 							res.push({
@@ -539,16 +579,16 @@ angular.module('starter.services', [])
 						//StorageService.set("courses", courses);
 					}
 					catch (e) {
-						console.log("Error when parsing xml: " + e.message);
+						DebuggerService.log("Error when parsing xml: " + e.message, "red");
 					}
 				},
 				function errorCallback(response) {
 					//om vi inte får svar försöker vi i alla fall hämta scheman och info utifrån de kurser vi har i cachen, om vi har det
-					console.log("Error when getting plan " + response.status + ": " + response.statusText + ", " + response.data);
+					DebuggerService.log("Error response when getting list of courses: " + JSON.stringify(response), "red");
 					var res = StorageService.getOrDefault("courses", null);
 					if (res)
 					{
-						console.log("Using stored courses.");
+						DebuggerService.log("Using stored courses.");
 						courses = res;
 						updatesLeft = courses.length * 2 + extra.length;
 						getCourseSchemas(courses, extra);
@@ -557,6 +597,7 @@ angular.module('starter.services', [])
 					}
 					else
 					{
+						DebuggerService.log("Adding visible error");
 						//har vi inget cachat meddelar vi användaren
 						errors.push({
 							code: "Apelsin",
@@ -576,7 +617,8 @@ angular.module('starter.services', [])
 					}
 				});
 		} catch (e) {
-			console.log(e);
+			DebuggerService.log(e, "red");
+			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
 				message: "Fel vid serveranrop.",
@@ -638,8 +680,6 @@ angular.module('starter.services', [])
 			for (var i = 0; i < _extra.length; i++)
 				all.push(_extra[i]);
 		
-		//console.log(_extra);
-		
 		var res = [];
         var total = 0;
 		var discarded = 0;
@@ -651,7 +691,7 @@ angular.module('starter.services', [])
 					insertInto(res, all[i].entries[j]);
 				total++;
 			}
-        console.log("sorted " + total + " events\nres length: " + res.length + "\ndiscarded: " + discarded);
+        DebuggerService.log("Sorted " + total + " events. " + res.length + " are used, " + discarded + " were discarded", "green");
 		
         return res;
     };
@@ -689,9 +729,8 @@ angular.module('starter.services', [])
         updateSchemas();
     }
     else {
-        console.log("updated " + lastUpdate + ", skipping this one");
+        DebuggerService.log("Updated " + lastUpdate + ", skipping this one");
         courses = courses_temp;
-		//console.log("Extra:", extra);
         sorted = sortByDate(courses, extra);
 
 		if (eventServiceCallback)
@@ -703,9 +742,8 @@ angular.module('starter.services', [])
     //uppdatera datan när användaren öppnar appen om det är en ny dag
     document.addEventListener("resume", onResume, false);
     function onResume() {
-        console.log("resume:", new Date().toDateString(), lastUpdate);
         if (new Date().toDateString() != lastUpdate && new Date().toDateString() != StorageService.getOrDefault("lastUpdate", null)) {
-            console.log("reloading")
+            DebuggerService.log("Reloading due to day change");
             window.location.reload(true);
         }
     }
@@ -839,7 +877,7 @@ angular.module('starter.services', [])
 })
 
 
-.factory('ProgramService', function ($http, ProgramEndpoint, URLs, StorageService) {
+.factory('ProgramService', function ($http, ProgramEndpoint, URLs, StorageService, DebuggerService) {
     var events = StorageService.getOrDefault("ProgramEvents", null);
     var lastUpdate = StorageService.getOrDefault("ProgramLastUpdate", null);
     var fail = false;
@@ -1008,13 +1046,14 @@ angular.module('starter.services', [])
 			        var xml = parseXml(partial);
 			        events = extractEvents(xml);
 			    } catch (e) {
-			        console.log(e);
+			        DebuggerService.log(e, "red");
+					DebuggerService.log("Error occurred in program event service")
 			        fail = true;
 			    }
 			    onDone();
 			},
 			function errorCallback(response) {
-			    console.log("Error when getting program calendar " + response.status + ": " + response.statusText + ", " + response.data);
+			    DebuggerService.log("Error when getting program calendar: " + JSON-stringify(response), "red");
 			    fail = true;
 			    onDone();
 			});
@@ -1023,7 +1062,7 @@ angular.module('starter.services', [])
     if (new Date().toDateString() != lastUpdate)
         update();
     else {
-        console.log("Using cached program calendar events");
+        DebuggerService.log("Using cached program calendar events", "green");
         if (events == null)
             events = [];
 
@@ -1119,13 +1158,6 @@ angular.module('starter.services', [])
 			else if (earliest == currentProgram) programIndex++;
             else kthIndex++;
         }
-
-        /*if (kthIndex == kth.length)
-            for (; sectionIndex < section.length; sectionIndex++)
-                add(SectionService.convert(section[sectionIndex]));
-        else
-            for (; kthIndex < kth.length; kthIndex++)
-                add(kth[kthIndex]);*/
 
         ready = true;
 		for (var i = 0; i < callbacks.length; i++)

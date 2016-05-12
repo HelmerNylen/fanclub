@@ -56,7 +56,7 @@
 								</div>
 								<div class="row" ng-if="(event.locations && location(event.locations)) || hasNote(event)">
 									<div class="col col-25">
-										<i class="icon ion-edit" ng-if="hasNote(event)"></i>
+										<i class="icon ion-clipboard" ng-if="hasNote(event)"></i>
 									</div>
 									<div class="col item-text-wrap">
 										<b ng-if="event.locations && event.locations.length != 0">{{ location(event.locations) }}</b>

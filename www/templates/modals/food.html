@@ -5,7 +5,7 @@
 		  <button class="button button-clear" ng-click="closeFood()">Stäng</button>
 		</div>
 	  </ion-header-bar>
-    <ion-content style="background-color: #fbfbfb" ng-controller="FoodCtrl">
+    <ion-content style="background-color: #fbfbfb" ng-controller="FoodCtrl" on-swipe-right="closeFood()">
 		<div ng-if="menus && !unavailible">
 			<div class="list card" ng-repeat="restaurant in restaurants" on-tap="openInBrowser(restaurant.url)">
 				<div class="item item-divider item-icon-right">

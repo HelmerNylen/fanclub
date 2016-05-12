@@ -5,7 +5,7 @@
             <button class="button button-clear" ng-click="closeRss()">St&auml;ng</button>
         </div>
     </ion-header-bar>
-    <ion-content delegate-handle="rss">
+    <ion-content delegate-handle="rss" on-swipe-right="closeRss()">
         <div class="list">
             <div class="item section-news" ng-repeat="item in currentRss" on-tap="openInBrowser(item.link)">
                 <div class="item-text-wrap news-title">

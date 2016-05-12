@@ -5,7 +5,7 @@
             <button class="button button-clear" ng-click="closeNote()">Stäng</button>
         </div>
     </ion-header-bar>
-    <ion-content>
+    <ion-content on-swipe-right="closeNote()">
         <form>
             <div style="padding: 10px">
                 <textarea placeholder="Anteckning" rows="10" style="width: 100%; resize: none;" ng-model="note.note"></textarea></div>

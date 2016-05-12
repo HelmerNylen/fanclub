@@ -1,0 +1,30 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-ctfys">
+        <h1 class="title">Om</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeAbout()">St&auml;ng</button>
+        </div>
+    </ion-header-bar>
+    <ion-content style="background-color: #f3f3f3" on-swipe-right="closeAbout()">
+		<div class="row" style="text-align: center; font-size: 24px">
+			<div class="col" ng-click="openInBrowser('https://play.google.com/store/apps/details?id=com.HelmerNylen.fanclubschema')"><i class="icon ion-android-playstore"></i></div>
+			<div class="col" ng-click="openInBrowser('https://itunes.apple.com/us/app/fanclubs-schema/id1095423388')"><i class="icon ion-social-apple"></i></div>
+			<div class="col" ng-click="openInBrowser('https://github.com/HelmerNylen/fanclub')"><i class="icon ion-social-github"></i></div>
+		</div>
+		<div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px" ng-style="{ color: !debuggerEnabled ? '#999' : 'inherit'}" ng-click="!debuggerEnabled ? enableDebugger() : ''">
+			Debugger
+		</div>
+		<div ng-if="debuggerEnabled" style="width: 100%">
+			<ion-scroll style="margin: 1em; height: 20em; border: 1px solid #444; padding: 1ex; background-color: black; color: white;">
+				<div ng-repeat="entry in log" style="font-family: monospace;">
+					&gt; <span style="color: {{ entry.color }}">{{ entry.entry }}</span>
+				</div>
+			</ion-scroll>
+			
+			<div class="button-bar" style="padding: 0 1ex;">
+				<button class="button button-ctfys" ng-click="getFromStorage()">Cache</button>
+				<button class="button button-assertive" ng-click="clearLog()">Rensa</button>
+			</div>
+		</div>
+    </ion-content>
+</ion-modal-view>

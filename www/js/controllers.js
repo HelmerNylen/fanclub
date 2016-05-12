@@ -1,7 +1,7 @@
 angular.module('starter.controllers', [])
 
 //controller som är synlig i hela appen
-.controller('AppCtrl', function ($scope, $ionicModal, $timeout, DataService, ConvenientService, NoteService) {
+.controller('AppCtrl', function ($scope, $ionicModal, $timeout, DebuggerService, DataService, ConvenientService, NoteService) {
 
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
@@ -66,7 +66,8 @@ angular.module('starter.controllers', [])
 
 	//öppnar KTH-popupen och sätter värden som används
     $scope.openEvent = function (event) {
-		console.log(event);
+		DebuggerService.log("Opening KTH event modal", "yellow")
+		DebuggerService.log(JSON.stringify(event));
 		$scope.modalEvent = event;
 		$scope.course = event.course;
 		$scope.courseBGcolor = $scope.course.color;
@@ -81,7 +82,8 @@ angular.module('starter.controllers', [])
     };
 	
 	$scope.openSectionEvent = function (event) {
-		console.log(event);
+		DebuggerService.log("Opening section event modal", "yellow")
+		DebuggerService.log(JSON.stringify(event));
 		$scope.sectionModalEvent = event;
 		$scope.hasBegun = new Date() >= new Date(event.isOfficialEvent ? event.start : event.start.dateTime || event.start.date);
 		$scope.note.note = NoteService.getNote(event) || "";
@@ -519,7 +521,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för settings.html
-.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, $ionicHistory, DataService, ConvenientService, StorageService, EventService) {
+.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, $ionicHistory, DataService, ConvenientService, StorageService, EventService, DebuggerService) {
 	$scope.resetData = function() {
 		$ionicPopup.confirm({
 			title: 'Bekräfta',
@@ -643,6 +645,54 @@ angular.module('starter.controllers', [])
     }).then(function (modal) {
         $scope.addCourseModal = modal;
     });
+	
+	$ionicModal.fromTemplateUrl('templates/modals/about.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.aboutModal = modal;
+    });
+	
+	$scope.openAbout = function () {
+		$scope.aboutModal.show();
+	};
+	$scope.closeAbout = function () {
+		$scope.aboutModal.hide();
+	};
+	$scope.debuggerEnabled = false;
+	$scope.log = [];
+	$scope.enableDebugger = function () {
+		$ionicPopup.prompt({
+			title: "Aktivera debugger",
+			okType: "button-ctfys",
+			inputPlaceholder: "Kod",
+			cancelText: "Avbryt",
+			cancelType: "button-stable"
+		}).then(function (value) {
+			$scope.debuggerEnabled = value && value.toLowerCase() == "gauss";
+			if ($scope.debuggerEnabled) {
+				DebuggerService.registerCallback($scope.updateDebugger);
+				DebuggerService.log("Enabled debugger", "#ff642b");
+			}
+		});
+	};
+	$scope.updateDebugger = function () {
+		$scope.log = DebuggerService.getLog();
+	};
+	$scope.getFromStorage = function () {
+		$ionicPopup.prompt({
+			title: "Cache",
+			okType: "button-ctfys",
+			inputPlaceholder: "Nyckel",
+			cancelText: "Avbryt",
+			cancelType: "button-stable"
+		}).then(function (value) {
+			if (value) {
+				DebuggerService.log('Getting "' + value + '"', "#ff642b");
+				DebuggerService.log(StorageService.getOrDefault(value, "Not in storage"));
+			}
+		});
+	};
+	$scope.clearLog = DebuggerService.clear;
 	
 	//sätter en massa värden och visar course.html
 	$scope.openCourse = function (course) {
@@ -871,8 +921,6 @@ angular.module('starter.controllers', [])
 		if ($scope.extra)
 			for (var i = 0; i < $scope.extra.length; i++)
 				$scope.allCourses.push($scope.extra[i]);
-		console.log($scope.allCourses);
-		console.log($scope.extra);
 		
 		var lu = DataService.getLastUpdate();
 		$scope.lastUpdated = lu ? ConvenientService.dateFormat(lu) : "Aldrig";
@@ -882,6 +930,7 @@ angular.module('starter.controllers', [])
     $scope.$on('$destroy', function () {
         $scope.viewCourseModal.remove();
         $scope.addCourseModal.remove();
+		$scope.aboutModal.remove();
     });
 })
 
@@ -1027,7 +1076,6 @@ angular.module('starter.controllers', [])
 		    var today = new Date(ConvenientService.today);
 			
 			events = merge(events, kthEvents);
-			console.log("merged");
 			
 		    for (var i = 0; i < events.length; i++) {
 		        var push = false;
@@ -1075,7 +1123,7 @@ angular.module('starter.controllers', [])
 	});
 })
 
-.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, $ionicPlatform, URLs, xkcdService, StorageService, ConvenientService, GitService, Lyrics) {
+.controller('ToolsCtrl', function ($scope, $ionicModal, $ionicScrollDelegate, $ionicPlatform, DebuggerService, URLs, xkcdService, StorageService, ConvenientService, GitService, Lyrics) {
  	$scope.openURL = ConvenientService.openURL;
 	
 	
@@ -1145,7 +1193,7 @@ angular.module('starter.controllers', [])
  	    try {
  	        $ionicPlatform.onHardwareBackButton($scope.applyBackLyrics);
  	    } catch (e) {
- 	        console.log(e);
+ 	        DebuggerService.log(e, "red");
  	    }
  	    $scope.lyricsModal.show();
  	};
@@ -1153,7 +1201,7 @@ angular.module('starter.controllers', [])
  	    try {
  	        $ionicPlatform.offHardwareBackButton($scope.applyBackLyrics);
  	    } catch (e) {
- 	        console.log(e);
+ 	        DebuggerService.log(e, "red");
  	    }
  		$scope.lyricsModal.hide();
  	};
@@ -1232,7 +1280,7 @@ angular.module('starter.controllers', [])
 		$scope.xkcdAlt = xkcdService.getAlt();
 		$scope.xkcdUrl = xkcdService.getUrl();
 		$scope.xkcdNum = xkcdService.getNumber();
-		console.log("link is: "+$scope.xkcdUrl);
+		DebuggerService.log("xkcd link is: " + $scope.xkcdUrl, "green");
 	}
 	
 	
@@ -1249,11 +1297,10 @@ angular.module('starter.controllers', [])
 	
 	$scope.closeMap = function () {
 		$scope.mapModal.hide();
-		console.log($ionicScrollDelegate.getScrollPosition().zoom)
 	};
 	
 	$scope.releaseGauss = function (){
-		console.log("gauss är triggad");
+		DebuggerService.log("Gauss är triggad", "green");
 		if($ionicScrollDelegate.$getByHandle('kartan').getScrollPosition().zoom>99){
 			$scope.gaussModal.show();
 		}
@@ -1310,7 +1357,7 @@ angular.module('starter.controllers', [])
 	    try {
 	        $ionicPlatform.offHardwareBackButton($scope.backLyrics);
 	    } catch (e) {
-	        console.log(e);
+	        DebuggerService.log(e, "red");
 	    }
 	});
 	GitService.registerCallback(refresh);
