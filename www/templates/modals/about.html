@@ -1,4 +1,4 @@
-<ion-modal-view>
+﻿<ion-modal-view>
     <ion-header-bar class="bar-ctfys">
         <h1 class="title">Om</h1>
         <div class="buttons">
@@ -6,11 +6,25 @@
         </div>
     </ion-header-bar>
     <ion-content style="background-color: #f3f3f3" on-swipe-right="closeAbout()">
+        <div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px">
+            Senast uppdaterat
+        </div>
+        <div style="padding: 1em">
+            <div ng-repeat="item in updates" class="row">
+                <div class="col">{{ item.name }}</div>
+                <div class="col" style="text-align: right">{{ item.date }}</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px">
+            Länkar
+        </div>
 		<div class="row" style="text-align: center; font-size: 24px">
 			<div class="col" ng-click="openInBrowser('https://play.google.com/store/apps/details?id=com.HelmerNylen.fanclubschema')"><i class="icon ion-android-playstore"></i></div>
 			<div class="col" ng-click="openInBrowser('https://itunes.apple.com/us/app/fanclubs-schema/id1095423388')"><i class="icon ion-social-apple"></i></div>
 			<div class="col" ng-click="openInBrowser('https://github.com/HelmerNylen/fanclub')"><i class="icon ion-social-github"></i></div>
 		</div>
+
 		<div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px" ng-style="{ color: !debuggerEnabled ? '#999' : 'inherit'}" ng-click="!debuggerEnabled ? enableDebugger() : ''">
 			Debugger
 		</div>
@@ -26,5 +40,8 @@
 				<button class="button button-assertive" ng-click="clearLog()">Rensa</button>
 			</div>
 		</div>
+        <div ng-if="!debuggerEnabled" style="width: 100%; text-align: center; color: #999">
+            Låst
+        </div>
     </ion-content>
 </ion-modal-view>

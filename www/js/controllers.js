@@ -653,6 +653,14 @@ angular.module('starter.controllers', [])
     });
 	
 	$scope.openAbout = function () {
+	    $scope.updates = [
+            { name: "Kurser och händelser", date: DataService.getLastUpdate() ? ConvenientService.dateFormat(DataService.getLastUpdate()) : "Aldrig" },
+            { name: "Programhändelser", date: StorageService.getOrDefault("ProgramLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
+            { name: "Sektionshändelser", date: StorageService.getOrDefault("sectionLastUpdated", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
+            { name: "Matsedlar", date: StorageService.getOrDefault("foodLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
+            { name: "GitHub-data", date: StorageService.getOrDefault("gitLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
+            { name: "Nyhetsflöden", date: StorageService.getOrDefault("rssLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
+	    ];
 		$scope.aboutModal.show();
 	};
 	$scope.closeAbout = function () {
@@ -671,7 +679,7 @@ angular.module('starter.controllers', [])
 			$scope.debuggerEnabled = value && value.toLowerCase() == "gauss";
 			if ($scope.debuggerEnabled) {
 				DebuggerService.registerCallback($scope.updateDebugger);
-				DebuggerService.log("Enabled debugger", "#ff642b");
+				DebuggerService.log("Enabled debugger", 3);
 			}
 		});
 	};
@@ -687,7 +695,7 @@ angular.module('starter.controllers', [])
 			cancelType: "button-stable"
 		}).then(function (value) {
 			if (value) {
-				DebuggerService.log('Getting "' + value + '"', "#ff642b");
+				DebuggerService.log('Getting "' + value + '"', 3);
 				DebuggerService.log(StorageService.getOrDefault(value, "Not in storage"));
 			}
 		});
@@ -1193,7 +1201,7 @@ angular.module('starter.controllers', [])
  	    try {
  	        $ionicPlatform.onHardwareBackButton($scope.applyBackLyrics);
  	    } catch (e) {
- 	        DebuggerService.log(e, "red");
+ 	        DebuggerService.log(e, 1);
  	    }
  	    $scope.lyricsModal.show();
  	};
@@ -1201,7 +1209,7 @@ angular.module('starter.controllers', [])
  	    try {
  	        $ionicPlatform.offHardwareBackButton($scope.applyBackLyrics);
  	    } catch (e) {
- 	        DebuggerService.log(e, "red");
+ 	        DebuggerService.log(e, 1);
  	    }
  		$scope.lyricsModal.hide();
  	};
@@ -1280,7 +1288,7 @@ angular.module('starter.controllers', [])
 		$scope.xkcdAlt = xkcdService.getAlt();
 		$scope.xkcdUrl = xkcdService.getUrl();
 		$scope.xkcdNum = xkcdService.getNumber();
-		DebuggerService.log("xkcd link is: " + $scope.xkcdUrl, "green");
+		DebuggerService.log("xkcd link is: " + $scope.xkcdUrl, 4);
 	}
 	
 	
@@ -1300,7 +1308,7 @@ angular.module('starter.controllers', [])
 	};
 	
 	$scope.releaseGauss = function (){
-		DebuggerService.log("Gauss är triggad", "green");
+		DebuggerService.log("Gauss är triggad", 4);
 		if($ionicScrollDelegate.$getByHandle('kartan').getScrollPosition().zoom>99){
 			$scope.gaussModal.show();
 		}
@@ -1357,7 +1365,7 @@ angular.module('starter.controllers', [])
 	    try {
 	        $ionicPlatform.offHardwareBackButton($scope.backLyrics);
 	    } catch (e) {
-	        DebuggerService.log(e, "red");
+	        DebuggerService.log(e, 1);
 	    }
 	});
 	GitService.registerCallback(refresh);

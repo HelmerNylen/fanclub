@@ -50,7 +50,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        StorageService.set("sectionResponse", sectionResponse);
 			        events = sectionResponse.items;
 			        if (!events) {
-			            DebuggerService.log("Recieved no section events despite valid response: " + JSON.stringify(response), "red");
+			            DebuggerService.log("Recieved no section events despite valid response: " + JSON.stringify(response), 1);
 			            events = [];
 			        }
 			        else {
@@ -58,13 +58,13 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			            StorageService.set("sectionLastUpdated", lastUpdated);
 			        }
 			    } catch (e) {
-			        DebuggerService.log(e, "red");
+			        DebuggerService.log(e, 1);
 			    }
 				
 				onDone();
 			},
 			function errorCallback(response) {
-				DebuggerService.log("Error when getting section calendar: " + JSON.stringify(response), "red");
+				DebuggerService.log("Error when getting section calendar: " + JSON.stringify(response), 1);
 				sectionResponse = response.data;
 				onDone();
 			});
@@ -74,7 +74,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 	if (new Date().toDateString() != lastUpdated)
 		update();
 	else {
-		DebuggerService.log("Reading section events from cache", "green");
+		DebuggerService.log("Reading section events from cache", 4);
 		sectionResponse = StorageService.getOrDefault("sectionResponse");
 		events = sectionResponse.items;
 		if (eventServiceCallback)
@@ -211,7 +211,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        section = parseRss(xml);
 			    } catch (e) {
-			        DebuggerService.log(e, "red");
+			        DebuggerService.log(e, 1);
 			        fail = true;
 			    }
 
@@ -219,7 +219,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    onDone();
 			},
 			function errorCallback(response) {
-			    DebuggerService.log("Error when getting section rss feed: " + JSON.stringify(response), "red");
+			    DebuggerService.log("Error when getting section rss feed: " + JSON.stringify(response), 1);
 			    fail = true;
 
 			    requests--;
@@ -232,7 +232,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        union = parseRss(xml);
 			    } catch (e) {
-			        DebuggerService.log(e, "red");
+			        DebuggerService.log(e, 1);
 			        fail = true;
 			    }
 
@@ -240,7 +240,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    onDone();
 			},
 			function errorCallback(response) {
-			    DebuggerService.log("Error when getting THS rss feed: " + JSON.stringify(response), "red");
+			    DebuggerService.log("Error when getting THS rss feed: " + JSON.stringify(response), 1);
 			    fail = true;
 
 			    requests--;
@@ -253,7 +253,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        kth = parseRss(xml, true);
 			    } catch (e) {
-			        DebuggerService.log(e, "red");
+			        DebuggerService.log(e, 1);
 			        fail = true;
 			    }
 
@@ -261,7 +261,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    onDone();
 			},
 			function errorCallback(response) {
-			    DebuggerService.log("Error when getting KTH feed: " + JSON.stringify(response), "red");
+			    DebuggerService.log("Error when getting KTH feed: " + JSON.stringify(response), 1);
 			    fail = true;
 
 			    requests--;
@@ -273,7 +273,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     if (new Date().toDateString() != lastUpdate)
         update();
     else {
-        DebuggerService.log("Using cached RSS feeds", "green");
+        DebuggerService.log("Using cached RSS feeds", 4);
     }
 
 
@@ -307,7 +307,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
                     return ev.subject.toLowerCase().indexOf("musik") != -1 || ev.longInfo.toLowerCase().indexOf("lunch") != -1 || ev.title.toLowerCase().indexOf("lunch") != -1;
                 }
                 catch (e) {
-                    DebuggerService.log(e, "red");
+                    DebuggerService.log(e, 1);
                     return false;
                 }
             case 2:
@@ -406,7 +406,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 				res.push(event);
 			} catch (e) {
-				DebuggerService.log(e, "red");
+				DebuggerService.log(e, 1);
 				DebuggerService.log("Error occurred while parsing event in official KTH calendar");
 			}
         }
@@ -432,13 +432,13 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        events = parseRss(xml);
 			    } catch (e) {
-			        DebuggerService.log(e, "red");
+			        DebuggerService.log(e, 1);
 			        fail = true;
 			    }
 			    onDone();
 			},
 			function errorCallback(response) {
-			    DebuggerService.log("Error when getting official KTH calendar feed: " + JSON.stringify(response), "red");
+			    DebuggerService.log("Error when getting official KTH calendar feed: " + JSON.stringify(response), 1);
 			    fail = true;
 			    onDone();
 			});
@@ -447,7 +447,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
     if (new Date().toDateString() != lastUpdate)
         update();
     else {
-        DebuggerService.log("Using cached KTH calendar events", "green");
+        DebuggerService.log("Using cached KTH calendar events", 4);
 		if (events == null)
 			events = [];
 

@@ -25,13 +25,13 @@ angular.module('starter.services', [])
 	var callbacks = [];
 	
     return {
-		log: function (e, color) {
+		log: function (e, colorCode) {
 			console.log(e);
 			
-			if (!color)
-				color = "white";
+			if (colorCode == undefined)
+				colorCode = 0;
 			
-			log.push({entry: e, color: color});
+			log.push({entry: e, color: typeof(colorCode) == "string" ? colorCode : ["white", "red", "yellow", "#ff642b", "green"][colorCode]});
 			if (log.length > maxLength)
 				log = log.splice(maxLength - 1);
 			
@@ -183,7 +183,7 @@ angular.module('starter.services', [])
 		//öppnar ett webbläsarfönster med den angivna urlen
 		//try/catch då detta funkar olika i testmiljön och på telefonen
 		openURL: function (url) {
-			DebuggerService.log("Opening " + url, "yellow");
+			DebuggerService.log("Opening " + url, 2);
 			try {
 				cordova.InAppBrowser.open(url, "_system");
 			} catch (e1) {
@@ -360,7 +360,7 @@ angular.module('starter.services', [])
         if (updatesLeft == 0) {
 			if (!noUpdate) {
 				StorageService.set("lastUpdate", new Date().toDateString());
-				DebuggerService.log("Successful update", "green");
+				DebuggerService.log("Successful update", 4);
 			}
             StorageService.set("courses", courses);
 			StorageService.set("extra", extra);
@@ -398,7 +398,7 @@ angular.module('starter.services', [])
 				},
 				function errorCallback(response) {
 					//om vi inte får något svar försöker vi hämta allt från cachen
-					DebuggerService.log("Error response when getting course schema: " + JSON.stringify(response), "red");
+					DebuggerService.log("Error response when getting course schema: " + JSON.stringify(response), 1);
 					updatesLeft--;
 					var res = StorageService.getOrDefault("courses", null);
 					if (res)
@@ -446,7 +446,7 @@ angular.module('starter.services', [])
 				for (var i = 0; i < _extra.length; i++)
 					getCourseSchema(_extra[i]);
 		} catch (e) {
-			DebuggerService.log(e, "red");
+			DebuggerService.log(e, 1);
 			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
@@ -489,7 +489,7 @@ angular.module('starter.services', [])
 				},
 				function errorCallback(response) {
 					//fick vi ingen kursinfo försöker vi hämta den från cachen
-					DebuggerService.log("Error response when getting course information: " + JSON.stringify(response), "red");
+					DebuggerService.log("Error response when getting course information: " + JSON.stringify(response), 1);
 					updatesLeft--;
 					var res = StorageService.getOrDefault("courses", null);
 					var throwError = false;
@@ -537,7 +537,7 @@ angular.module('starter.services', [])
 					onDone(true);
 				});
 		} catch (e) {
-			DebuggerService.log(e, "red");
+			DebuggerService.log(e, 1);
 			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
@@ -579,12 +579,12 @@ angular.module('starter.services', [])
 						//StorageService.set("courses", courses);
 					}
 					catch (e) {
-						DebuggerService.log("Error when parsing xml: " + e.message, "red");
+						DebuggerService.log("Error when parsing xml: " + e.message, 1);
 					}
 				},
 				function errorCallback(response) {
 					//om vi inte får svar försöker vi i alla fall hämta scheman och info utifrån de kurser vi har i cachen, om vi har det
-					DebuggerService.log("Error response when getting list of courses: " + JSON.stringify(response), "red");
+					DebuggerService.log("Error response when getting list of courses: " + JSON.stringify(response), 1);
 					var res = StorageService.getOrDefault("courses", null);
 					if (res)
 					{
@@ -617,7 +617,7 @@ angular.module('starter.services', [])
 					}
 				});
 		} catch (e) {
-			DebuggerService.log(e, "red");
+			DebuggerService.log(e, 1);
 			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
@@ -691,7 +691,7 @@ angular.module('starter.services', [])
 					insertInto(res, all[i].entries[j]);
 				total++;
 			}
-        DebuggerService.log("Sorted " + total + " events. " + res.length + " are used, " + discarded + " were discarded", "green");
+        DebuggerService.log("Sorted " + total + " events. " + res.length + " are used, " + discarded + " were discarded", 4);
 		
         return res;
     };
@@ -1046,14 +1046,14 @@ angular.module('starter.services', [])
 			        var xml = parseXml(partial);
 			        events = extractEvents(xml);
 			    } catch (e) {
-			        DebuggerService.log(e, "red");
+			        DebuggerService.log(e, 1);
 					DebuggerService.log("Error occurred in program event service")
 			        fail = true;
 			    }
 			    onDone();
 			},
 			function errorCallback(response) {
-			    DebuggerService.log("Error when getting program calendar: " + JSON-stringify(response), "red");
+			    DebuggerService.log("Error when getting program calendar: " + JSON.stringify(response), 1);
 			    fail = true;
 			    onDone();
 			});
@@ -1062,7 +1062,7 @@ angular.module('starter.services', [])
     if (new Date().toDateString() != lastUpdate)
         update();
     else {
-        DebuggerService.log("Using cached program calendar events", "green");
+        DebuggerService.log("Using cached program calendar events", 4);
         if (events == null)
             events = [];
 
