@@ -368,8 +368,9 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
                 var short = serializer.serializeToString(firstChild(elementXml)).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim();
                 var long = "";
-                for (var j = 1; j < elementXml.children.length; j++)
-                    long += serializer.serializeToString(elementXml.children[j]).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim() + (j != elementXml.children.length - 1 ? " " : "");
+                var c = elementXml.children || elementXml.childNodes;
+                for (var j = 1; j < c.length; j++)
+                    long += serializer.serializeToString(c[j]).replace(/<div(.+)<\/div>/i, "").replace(/<\/*[a-z]+\/*>/ig, " ").trim() + (j != c.length - 1 ? " " : "");
 
                 event.info = short;
                 event.longInfo = short + " " + long;
@@ -407,7 +408,8 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 				res.push(event);
 			} catch (e) {
 				DebuggerService.log(e, 1);
-				DebuggerService.log("Error occurred while parsing event in official KTH calendar");
+				DebuggerService.log("Error occurred while parsing event in official KTH calendar:");
+				DebuggerService.log(event.date);
 			}
         }
 
@@ -433,6 +435,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        events = parseRss(xml);
 			    } catch (e) {
 			        DebuggerService.log(e, 1);
+			        DebuggerService.log("Error when parsing XML or RSS from official KTH calendar feed");
 			        fail = true;
 			    }
 			    onDone();

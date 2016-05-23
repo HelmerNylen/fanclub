@@ -25,6 +25,32 @@ angular.module('starter.getfood', ['starter.services'])
 	var parseXml = function (xmlStr) {
 		return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
 	};
+
+
+    //XML är verkligen inte apples starka sida
+	var pleaseIOs = function (xmlnode) {
+	    return xmlnode.children || xmlnode.childNodes;
+	};
+
+	var nthNotText = function (arr, n) {
+	    for (var i = 0; i < arr.length; i++)
+	        if (arr[i].nodeName != "#text" && --n == -1)
+	            return arr[i];
+	    return undefined;
+	};
+
+	var ffsGetTheContent = function (node) {
+	    return node.innerHTML || node.textContent;
+	};
+
+	var nonTextCount = function (arr) {
+	    var count = 0;
+	    for (var i = 0; i < arr.length; i++)
+	        if (arr[i].nodeName != "#text")
+	            count++;
+
+	    return count;
+	};
 	
 	var updateMenus = function () {
 		DebuggerService.log("Updating menus");
@@ -38,9 +64,9 @@ angular.module('starter.getfood', ['starter.services'])
 					var menu = [];
 					try {
 						var xml = parseXml(partial);
-						var row = xml.documentElement.children[0].children[day + 1];
+						var row = nthNotText(pleaseIOs(nthNotText(pleaseIOs(xml.documentElement), 0)), day + 1);
 						for (var i = 1; i <= 3; i++)
-							menu.push(row.children[i].innerHTML.trim());
+							menu.push(ffsGetTheContent(nthNotText(pleaseIOs(row), i)).trim());
 					}
 					catch (e) {
 						DebuggerService.log("Error parsing Q's menu: " + e, "red");
@@ -139,8 +165,8 @@ angular.module('starter.getfood', ['starter.services'])
 						//var row = xml.getElementsByTagName("tbody")[day];
 						var row = xml.getElementsByTagName("tbody")[0];
 						
-						for (var i = 0; i < row.children.length; i++) {
-							var str = row.children[i].children[0].childNodes[0].nodeValue;
+						for (var i = 0; i < nonTextCount(pleaseIOs(row)); i++) {
+							var str = nthNotText(pleaseIOs(nthNotText(pleaseIOs(row), i)), 0).childNodes[0].nodeValue;
 							str = str.trim();
 							if (str[str.length - 1] == "." && (str.match(/\./g) || []).length == 1)
 								str = str.substring(0, str.length - 1);
@@ -170,7 +196,12 @@ angular.module('starter.getfood', ['starter.services'])
                         var menu = [];
                         try {
                             var xml = parseXml(partial);
-                            menu.push((xml.documentElement.children[0].tagName == "parsererror" ? xml.documentElement.children[1] : xml.documentElement.children[0]).children[0].children[1].children[day].children[0].children[1].innerHTML.trim());
+                            var d = xml.documentElement;
+                            var child = function (node, n) {
+                                return nthNotText(pleaseIOs(node), n);
+                            };
+                            //fråga inte ens
+                            menu.push(ffsGetTheContent(child(child(child(child(child((child(d, 0).tagName == "parsererror" ? child(d, 1) : child(d, 0)), 0), 1), day), 0), 1)).trim());
                         }
                         catch (e) {
 							DebuggerService.log("Error parsing Syster O Bror's menu: " + e, "red");
