@@ -58,7 +58,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     url: 'https://www.googleapis.com/calendar/v3/'
 })
 .constant('RssEndpoint', {
-    f: 'http://f.kth.se/',
+    f: 'https://f.kth.se/',
     ths: 'http://ths.kth.se/',
     kth: 'http://www.kth.se/'
 })

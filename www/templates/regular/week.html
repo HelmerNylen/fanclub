@@ -31,7 +31,7 @@
                         <br />
                         {{ day.dateString }}
                     </div>
-                    <div ng-repeat="box in day.eventBoxes" ng-if="box.allDay" on-tap="openSectionEvent(box.event.original)"
+                    <div ng-repeat="box in day.eventBoxes" ng-if="box.allDay" on-tap="openSectionEvent(box.event.original || box.event)"
                             style="width: 100%; background-color: white; font-size: 12px; border: 2px solid {{ day.index == today ? '#ddd' : '#fbfbfb' }};">
                         <div style="position: relative; width: 100%; padding: 0 2px; border-left: 2px solid {{ color(box.event) }}; height: 20px" class="allDayEvent">
                             <div style="position: absolute; white-space: nowrap; height: 100%; overflow: hidden; text-overflow: ellipsis">
@@ -71,7 +71,7 @@
                     <div ng-repeat="hour in hours" style="width: 100%; height: {{ unit }}vh; border-top: 1px solid #bbb" ng-style="{ 'border-bottom': $index == hours.length - 1 ? '1px solid #bbb' : 'initial'}">
                         &nbsp;
                     </div>
-                    <div ng-repeat="box in day.eventBoxes" ng-if="!box.allDay" on-tap="box.event.isSectionEvent ? openSectionEvent(box.event.original) : openEvent(box.event)"
+                    <div ng-repeat="box in day.eventBoxes" ng-if="!box.allDay" on-tap="box.event.isSectionEvent || box.event.isCustomEvent ? openSectionEvent(box.event.original || box.event) : openEvent(box.event)"
                          style="position: absolute; top: {{ ((box.timeTop - earliest) / (1000 * 3600)) * unit }}vh; height: {{ (box.timeHeight / (1000 * 3600)) * unit}}vh; width: {{ 100 / box.simultaneous }}%; left: {{ box.index * 100 / box.simultaneous }}%;
                          font-size: 12px; border-radius: 0; padding: 1px; border: 0px solid {{ day.index == today ? '#ddd' : '#fbfbfb' }};">
                         <div style="width: 100%; height: 100%; background-color: {{ 'white' || color(box.event) }}">

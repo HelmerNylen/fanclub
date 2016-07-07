@@ -28,7 +28,7 @@
 		</div>
 		
 		<!-- Sökmeddelande-->
-		<div ng-if="days && !days.length" style="text-align: center; color: #666">Hittade inte några händelser :(</div>
+		<div ng-if="days && !days.length" style="text-align: center; color: #666; margin: 1em 0;">Hittade inte några händelser :(</div>
 		
 		<!-- Händelsekort -->
         <div class="list card" ng-if="days" ng-repeat="day in days">
@@ -36,7 +36,7 @@
                 {{ format(day.date) }}
             </div>
 			<div ng-repeat="part in ['am', 'pm']">
-				<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day[part] track by $index" on-tap="event.isSectionEvent || event.isOfficialEvent ? openSectionEvent(event.original || event) : openEvent(event)" style="border: 0; border-top-left-radius: 0; border-top-right-radius: 0">
+				<ion-item class="row-no-padding" ng-if="day" ng-repeat="event in day[part] track by $index" on-tap="event.isSectionEvent || event.isOfficialEvent || event.isCustomEvent ? openSectionEvent(event.original || event) : openEvent(event)" style="border: 0; border-top-left-radius: 0; border-top-right-radius: 0">
 					<table style="width: 100%; height: 100%;">
 						<tr>
 							<td ng-style="{'background-color': event.isOfficialEvent ? '#1954a6' : event.course.color}" style="width: 4px">
@@ -44,10 +44,10 @@
 							</td>
 							<td>
 								<div class="row">
-									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent">{{ getTime(event.start) }}{{ event.end ? '-' + getTime(event.end) : '' }}</div>
-									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent">{{ sectionEventDuration(event.original) }}</div>
+									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="!event.isSectionEvent && !event.isCustomEvent">{{ getTime(event.start) }}{{ event.end ? '-' + getTime(event.end) : '' }}</div>
+									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent || event.isCustomEvent">{{ sectionEventDuration(event.original || event) }}</div>
 									<div class="col item-text-wrap">
-										<div class="custombadge" ng-if="!event.isSectionEvent && !event.isOfficialEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
+										<div class="custombadge" ng-if="!event.isSectionEvent && !event.isOfficialEvent && !event.isCustomEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
 										<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 24px">
 											<i class="icon ion-social-freebsd-devil"></i>
 										</div>
@@ -75,5 +75,7 @@
             <br /><br /><br />
             <ion-spinner class="spinner-ctfys" icon="dots"></ion-spinner>
         </div>
+		
+		<ion-infinite-scroll distance="10em" ng-if="moreEventsAvailible && days" on-infinite="loadMore()"></ion-infinite-scroll>
     </ion-content>
 </ion-view>

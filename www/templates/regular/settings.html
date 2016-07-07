@@ -41,18 +41,13 @@
 			<div class="item item-divider item-text-wrap">
 				App
 			</div>
-			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.extendedDiscard" ng-change="updateExtendedDiscard()">
-				Filtrera bort händelser för andra grupper med samma kurskod
-			</ion-checkbox>
-			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.delimiterEnabled" ng-change="updateDelimiterEnabled()">
-				Rita streck mellan för- och eftermiddag i händelseflödet
-			</ion-checkbox>
-			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.mixEvents" ng-change="updateMixEvents()">
-				Inkludera sektionshändelser i det vanliga schemat
-			</ion-checkbox>
-            <ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.notFanclub.enabled" ng-change="updateNotFanclub()">
-                Annan årskurs än Fanclub {{ settings.notFanclub.enabled ? ' (' + settings.notFanclub.startYear + ')' : '' }}
-            </ion-checkbox>
+            <label class="item item-input item-select item-text-wrap" style="border: 0">
+                <div class="input-label">
+                    Årskurs
+                </div>
+                <select ng-model="settings.startYear" ng-options="name for (name, year) in years" ng-change="updateNotFanclub()">
+                </select>
+            </label>
             <label class="item item-input item-select item-text-wrap" style="border: 0">
                 <div class="input-label">
                     Visa lunchföreläsningar etc. från KTH-kalendern
@@ -60,6 +55,15 @@
                 <select ng-model="settings.interestingMode" ng-options="l for l in modeLabels" ng-change="updateInterestingMode()">
                 </select>
             </label>
+			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.mixEvents" ng-change="updateMixEvents()">
+				Inkludera sektionshändelser i det vanliga schemat
+			</ion-checkbox>
+			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.extendedDiscard" ng-change="updateExtendedDiscard()">
+				Filtrera bort händelser för andra grupper med samma kurskod
+			</ion-checkbox>
+			<ion-checkbox class="item-text-wrap checkbox-ctfys item-checkbox-right" style="border: 0" ng-model="settings.delimiterEnabled" ng-change="updateDelimiterEnabled()">
+				Rita streck mellan för- och eftermiddag i händelseflödet
+			</ion-checkbox>
             <div class="item item-icon-right item-text-wrap" style="border: 0; margin-right: 2px" on-tap="update()">
                 Uppdatera händelser och menyer
                 <i class="icon ion-loop balanced"></i>

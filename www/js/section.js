@@ -88,6 +88,13 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
         return d.getHours() + ":" + (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes());
     };
 	
+	var duration = function (start, end, allday) {
+		if (allday) {
+			var days = Math.round((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 3600 * 24));
+			return (days == 1 ? "Hela dagen" : days + " dagar");
+		} else return getTime(start) + "-" + getTime(end);
+	};
+	
     return {
 		getEvents: function () {
 			return events;
@@ -112,11 +119,9 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 		},
 		//ger en snygg sträng som beskriver hur länge en händelse pågår
 		duration: function (event) {
-			if (event.start.date && event.end.date) {
-				var days = Math.round((new Date(event.end.date).getTime() - new Date(event.start.date).getTime()) / (1000 * 3600 * 24));
-				return (days == 1 ? "Hela dagen" : days + " dagar");
-			} else return getTime(event.start.dateTime || event.start.date) + "-" + getTime(event.end.dateTime || event.end.date);
+			return event.start.date && event.end.date ? duration(event.start.date, event.end.date, true) : duration(event.start.dateTime. event.end.dateTime, false);
 		},
+		_duration: duration,
 		setEventServiceCallback: function (cb) {
 			eventServiceCallback = cb;
 		}

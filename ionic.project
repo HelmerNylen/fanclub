@@ -36,7 +36,7 @@
 	},
 	{
 		"path": "/rss/f",
-		"proxyUrl": "http://f.kth.se/"
+		"proxyUrl": "https://f.kth.se/"
 	},
 	{
 		"path": "/rss/ths",

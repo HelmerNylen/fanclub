@@ -98,7 +98,7 @@ angular.module('starter.controllers', [])
 		return ConvenientService.timeFormat(new Date(event.end).getTime() - new Date(event.start).getTime());
 	};
 	$scope.sectionDuration = function (event) {
-		if (event.isOfficialEvent) {
+		if (event.isOfficialEvent || event.isCustomEvent) {
 			if (event.end)
 				return ConvenientService.timeFormat(new Date(event.end).getTime() - new Date(event.start).getTime());
 			else return false;
@@ -240,14 +240,23 @@ angular.module('starter.controllers', [])
                 });
 			}
 			
+			var hasOverlap = false;
+			
 			for (var i = 0; i < 7; i++) {
-				var events = EventService.getByDate(days[i].date, true, DataService.getMixEvents(), false, true);
+				var events = EventService.getByDate(days[i].date, true, DataService.getMixEvents(), false, true, true);
+				
 				for (var j = 0; j < events.length; j++) {
 					var start, end;
 					
 					if (events[j].isAllDayEvent) {
-						start = new Date(events[j].original.start.date.substring(0, 4), events[j].original.start.date.substring(5, 7) - 1, events[j].original.start.date.substring(8));
-						end = new Date(start.getTime() + new Date(events[j].end).getTime() - new Date(events[j].start).getTime() - 1);
+						if (events[j].isCustomEvent) {
+							start = new Date(events[j].start.substring(0, 4), events[j].start.substring(5, 7) - 1, events[j].start.substring(8));
+							end = new Date(start.getTime() + new Date(events[j].end).getTime() - new Date(events[j].start).getTime() - 1);
+						}
+						else {
+							start = new Date(events[j].original.start.date.substring(0, 4), events[j].original.start.date.substring(5, 7) - 1, events[j].original.start.date.substring(8));
+							end = new Date(start.getTime() + new Date(events[j].end).getTime() - new Date(events[j].start).getTime() - 1);
+						}
 					} else {
 						start = new Date(events[j].start);
 						end = new Date(events[j].end);
@@ -257,7 +266,7 @@ angular.module('starter.controllers', [])
 					
 					//om det är en heldagshändelse splittar den i en eventbox för varje dag, där alla pekar på samma originalhändelse
 					//heldagshändelser krockar inte utan staplas alltid på varandra, så vi hårdkodar att de är ensamma och först
-					if (events[j].isSectionEvent && events[j].original.start.date) {
+					if ((events[j].isSectionEvent && events[j].original.start.date) || (events[j].isCustomEvent && events[j].isAllDayEvent)) {
 						var dur = Math.round((new Date(events[j].end).getTime() - new Date(events[j].start).getTime()) / (1000 * 3600 * 24));
 						for (var k = 0; k < dur && start.getDay() + k - 1 < 7; k++) {
 							days[(start.getDay() + 6 + k) % 7].eventBoxes.push({
@@ -286,11 +295,20 @@ angular.module('starter.controllers', [])
 							}
 						
 						//stoppa händelsen i en låda på rätt dag
+						var endtime;
+						if (end.toDateString() != start.toDateString()) {
+							hasOverlap = true;
+							endtime = new Date(start);
+							endtime.setHours(23); endtime.setMinutes(59);
+							endtime = endtime.getTime();
+						} else
+							endtime = end.getTime();
+						
 						days[(start.getDay() + 6) % 7].eventBoxes.push({
 							event: events[j],
 							//tiderna mäts i millisekunder
 							timeTop: (start.getHours() * 60 + start.getMinutes()) * 60 * 1000,
-							timeHeight: (end.getTime() - start.getTime()),
+							timeHeight: (endtime - start.getTime()),
 							simultaneous: sim.length + 1,
 							index: simindex,
 							allDay: false
@@ -311,6 +329,8 @@ angular.module('starter.controllers', [])
 			//beräkna hur många tidsstreck vi ska visa, visar alltid minst 8:00-17:00 hur som helst
             $scope.earliest = Math.min(ConvenientService.earliestTimeOfDay(allEvents), 1000 * 3600 * 8);
             $scope.latest = Math.max(ConvenientService.latestTimeOfDay(allEvents), 1000 * 3600 * 17);
+			if (hasOverlap)
+				$scope.latest = 1000 * 3600 * 24 - 1;
 			var hours = [];
 			for (var i = $scope.earliest; i <= $scope.latest; i += 1000 * 3600)
 			    hours.push(i);
@@ -392,20 +412,39 @@ angular.module('starter.controllers', [])
 })
 
 //controller för feed.html
-.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService, EventService, GitService, NoteService) {
+.controller('FeedViewCtrl', function ($scope, $state, $stateParams, $ionicScrollDelegate, DataService, ConvenientService, StorageService, SectionService, EventService, GitService, NoteService, DebuggerService) {
     //try {
 	$scope.format = ConvenientService.verboseDateFormat;
     $scope.getTime = function (dateString) {
         var d = new Date(dateString);
         return d.getHours() + ":" + (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes());
     };
-	$scope.sectionEventDuration = SectionService.duration;
+	$scope.sectionEventDuration = function (event) {
+		if (event.isCustomEvent)
+			return SectionService._duration(event.start, event.end, event.isAllDayEvent);
+		else
+			return SectionService.duration(event);
+	};
 
 	//parsa start- och slutdatum från parametrarna i urlen
     $scope.start = new Date($stateParams.startTime);
     $scope.start.setHours(0);
     $scope.end = new Date($stateParams.endTime);
     $scope.end.setHours(0);
+	
+	$scope.incrementSoftEnd = function (weeks) {
+		weeks = weeks || 1;
+		$scope.softEnd = new Date($scope.softEnd.getTime() + 1000 * 3600 * 24 * 7 * weeks); //ladda några veckor framåt
+		$scope.softEnd.setHours(0);
+	};
+	$scope.resetSoftEnd = function () {
+		$scope.softEnd = new Date($scope.start.getTime());
+		while ($scope.softEnd.getDay() != 0)
+			$scope.softEnd = new Date($scope.softEnd.getTime() + 1000 * 3600 * 24);
+		$scope.incrementSoftEnd(4);
+		$scope.moreEventsAvailible = true;
+	};
+	$scope.resetSoftEnd();
 	
 	//ger en sträng med alla platser händelsen utspelar sig på
     $scope.location = function (eventLocations) {
@@ -433,6 +472,8 @@ angular.module('starter.controllers', [])
 	$scope.filter = {};
 	$scope.filter.filter = $stateParams.filter || "";
 	$scope.showFilter = $scope.filter.filter.length > 0;
+	if ($scope.showFilter)
+		$scope.softEnd = $scope.end;
 	$scope.toggleFilter = function () {
 		$scope.showFilter = !$scope.showFilter;
 		if ($scope.showFilter)
@@ -443,6 +484,10 @@ angular.module('starter.controllers', [])
 		}
 	};
 	$scope.refilter = function () {
+		if ($scope.filter.filter == "")
+			$scope.resetSoftEnd();
+		else
+			$scope.softEnd = $scope.end;
 		$state.go($state.current, {}, { reload: true });
 	};
 	
@@ -491,8 +536,8 @@ angular.module('starter.controllers', [])
 	        var date = new Date($scope.start);
 	        var events, day;
 
-	        while (date < $scope.end) {
-	            events = EventService.getByDate(date.toDateString(), true, mix, mix, true);
+	        while (date < $scope.end && date < $scope.softEnd) {
+	            events = EventService.getByDate(date.toDateString(), true, mix, mix, true, true);
 
 	            if (events.length > 0) {
 	                day = { am: [], pm: [], date: new Date(date) };
@@ -514,6 +559,21 @@ angular.module('starter.controllers', [])
 	        $scope.days = days;
 	    }
     };
+	
+	$scope.currentlyLoading = false;
+	$scope.loadMore = function () {
+		if (!$scope.currentlyLoading) {
+			$scope.currentlyLoading = true;
+			if ($scope.softEnd < $scope.end)
+				$scope.incrementSoftEnd();
+			else
+				$scope.moreEventsAvailible = false;
+			DebuggerService.log("Events until " + $scope.softEnd);
+			$scope.refresh();
+			$scope.$broadcast('scroll.infiniteScrollComplete');
+			$scope.currentlyLoading = false;
+		}
+	};
     
 	$scope.$on('$ionicView.enter', $scope.refresh);
 	EventService.registerCallback($scope.refresh);
@@ -521,7 +581,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för settings.html
-.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, $ionicHistory, DataService, ConvenientService, StorageService, EventService, DebuggerService) {
+.controller('SettingsCtrl', function ($scope, $state, $ionicPopup, $ionicModal, $rootScope, $ionicHistory, DataService, ConvenientService, StorageService, EventService, DebuggerService, GitService) {
 	$scope.resetData = function() {
 		$ionicPopup.confirm({
 			title: 'Bekräfta',
@@ -569,63 +629,45 @@ angular.module('starter.controllers', [])
 	$scope.updateMixEvents = function () {
 		DataService.setMixEvents($scope.settings.mixEvents);
 	};
-	$scope.settings.notFanclub = DataService.getNotFanclub();
+	
+	try {
+		$scope.years = GitService.getContent().settings.years;
+	} catch (e) {
+		$scope.years = {"Fanclub": 2015};
+	}
+	$scope.settings.startYear = 2015;
+	if (DataService.getNotFanclub().enabled)
+		$scope.settings.startYear = DataService.getNotFanclub().startYear;
+	
+	
 	$scope.updateNotFanclub = function () {
-	    if ($scope.settings.notFanclub.enabled == true)
-	        $ionicPopup.prompt({
-	            title: "Ange startår",
-	            okType: "button-ctfys",
-	            inputPlaceholder: "ex. 2014",
-	            cancelText: "Avbryt",
-	            cancelType: "button-stable",
-	            defaultText: $scope.settings.notFanclub.startYear,
-	            maxLength: 4 //vi utgår från att appen inte används om ~8000 år
-	        }).then(function (value) {
-	            if (value == undefined)
-	                $scope.settings.notFanclub.enabled = false;
-	            else if (/\D/ig.test(value))
-	                $ionicPopup.alert({
-	                    title: "Kan inte byta årskurs",
-	                    template: "Ogiltig årskurs.",
-	                    okType: "button-ctfys"
-	                }).then(function () {
-	                    $scope.settings.notFanclub.enabled = false;
-	                });
-	            else if (value > new Date().getFullYear())
-	                $ionicPopup.alert({
-	                    title: "Kan inte byta årskurs",
-	                    template: "Den årskursen börjar inte än på ett tag.",
-	                    okType: "button-ctfys"
-	                }).then(function () {
-	                    $scope.settings.notFanclub.enabled = false;
-	                });
-	            else if (value < new Date().getFullYear() - 5)
-	                $ionicPopup.alert({
-	                    title: "Kan inte byta årskurs",
-	                    template: value < 1932 ? "Du gick Teknisk Fysik innan det var coolt. Eller överhuvudtaget fanns." : "Den årskursen har redan gått ut.",
-	                    okType: "button-ctfys"
-	                }).then(function () {
-	                    $scope.settings.notFanclub.enabled = false;
-	                });
-	            else {
-	                $scope.settings.notFanclub.startYear = value;
-	                DataService.setNotFanclub($scope.settings.notFanclub);
-	                $scope.update();
-	            }
-	        });
-	    else
-	        $ionicPopup.confirm({
-	            title: 'Bekräfta',
-	            template: 'Ersätter nuvarande kurser med de Fanclub läser.',
-	            cancelText: 'Avbryt',
-	            okText: 'OK',
-	            okType: 'button-ctfys'
-	        }).then(function (yes) {
-	            if (yes) {
-	                DataService.setNotFanclub($scope.settings.notFanclub);
-	                $scope.update();
-	            }
-	        });
+		var name = "";
+		for (var yearname in $scope.years)
+			if ($scope.years[yearname] == $scope.settings.startYear) {
+				name = yearname;
+				break;
+			}
+		
+		$ionicPopup.confirm({
+			title: 'Bekräfta',
+			template: 'Hämtar kurser för ' + name,
+			cancelText: 'Avbryt',
+			okText: 'OK',
+			okType: 'button-ctfys'
+		}).then(function (yes) {
+			if (yes) {
+				DataService.setNotFanclub({
+					enabled: $scope.settings.startYear != 2015,
+					startYear: $scope.settings.startYear
+				});
+				$scope.update();
+			}
+			else {
+				$scope.settings.startYear = 2015;
+				if (DataService.getNotFanclub().enabled)
+					$scope.settings.startYear = DataService.getNotFanclub().startYear;
+			}
+		});
 	};
 	
 	var makeColor = function (hue, saturation, value) {
@@ -751,7 +793,11 @@ angular.module('starter.controllers', [])
 		if ($scope.initialHidden ^ $scope.settings.hidden) {
 			var index = $scope.hiddenIndex($scope.modalCourse);
 			if (index == -1)
-				$scope.hidden.push($scope.modalCourse);
+				$scope.hidden.push({
+					courseCode: $scope.modalCourse.courseCode,
+					startTerm: $scope.modalCourse.startTerm,
+					roundId: $scope.modalCourse.roundId
+				});
 			else
 				$scope.hidden.splice(index, 1);
 			DataService.setHidden($scope.hidden);

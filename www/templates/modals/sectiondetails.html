@@ -66,14 +66,14 @@
             </div>
         </div>
         <div class="row">
-            <div style="padding: 2%;">
+            <div style="padding: 2%; font-style: italic">
                 <span ng-repeat="line in split(note.note) track by $index">{{ line }} <br /></span>
             </div>
         </div>
 	</div>
 	<br/>
 	<div style="text-align: center; padding-bottom: 1em;" ng-if="sectionModalEvent">
-		<button class="button button-dark button-outline icon-left ion-earth" on-tap="openInBrowser(sectionModalEvent.htmlLink || sectionModalEvent.url)">&Ouml;ppna i webbl&auml;sare</button>
+		<button class="button button-dark button-outline icon-left ion-earth" ng-if="sectionModalEvent.htmlLink || sectionModalEvent.url" on-tap="openInBrowser(sectionModalEvent.htmlLink || sectionModalEvent.url)">&Ouml;ppna i webbl&auml;sare</button>
 	</div>
   </ion-content>
 </ion-modal-view>

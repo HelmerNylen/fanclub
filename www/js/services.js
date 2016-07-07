@@ -669,6 +669,13 @@ angular.module('starter.services', [])
 				if (course.courseCode.toLowerCase() == "sg1130") {
 					return event.url.toLowerCase().indexOf("ctfys") == -1;
 				}
+				if (course.courseCode.toLowerCase() == "sf1901") {
+					return false;// !(event.url.toLowerCase().indexOf("ht-2016-tcomk-7") == -1
+					//&& event.url.toLowerCase().indexOf("ht-2016-634") == -1
+					//&& event.url.toLowerCase().indexOf("ht-2016-635") == -1
+					//&& event.url.toLowerCase().indexOf("ht-2016-636") == -1
+					//&& event.url.toLowerCase().indexOf("ht-2016-637") == -1);
+				}
 			}
 			return false;
 		};
@@ -1081,7 +1088,7 @@ angular.module('starter.services', [])
 })
 
 
-.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService, KthCalendarService, ProgramService) {
+.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService, KthCalendarService, ProgramService, GitService) {
 	var ready = false;
 	var callbacks = [];
 	
@@ -1113,12 +1120,23 @@ angular.module('starter.services', [])
 	        merge();
 	    });
 	
+	var gitcontent = GitService.getContent().events;
+	if (!gitcontent)
+		GitService.registerCallback(function () {
+			gitcontent = GitService.getContent().events;
+			merge();
+		});
+	
+	
 	var all = [];
 	var index = {};
 		
 	var merge = function () {
-		if (!kth || !section || !official || !program)
+		if (!kth || !section || !official || !program) //gitcontent medvetet utelämnad så att appen inte fryser om man råkar ta bort händelserna från live
 			return;
+		
+		var git = gitcontent ? generateGitEvents(gitcontent) : [];
+		gitcontent = null;
 		
 		var latestDate = null;
 		var add = function (event) {
@@ -1132,16 +1150,17 @@ angular.module('starter.services', [])
 		all = [];
 		index = {};
 		
-        var kthIndex = 0, sectionIndex = 0, officialIndex = 0, programIndex = 0;
-        var currentSorted, currentSection, currentOfficial, currentProgram;
+        var kthIndex = 0, sectionIndex = 0, officialIndex = 0, programIndex = 0, gitIndex = 0;
+        var currentSorted, currentSection, currentOfficial, currentProgram, currentGit;
 
-        while (kthIndex < kth.length || sectionIndex < section.length || officialIndex < official.length || programIndex < program.length) {
+        while (kthIndex < kth.length || sectionIndex < section.length || officialIndex < official.length || programIndex < program.length || gitIndex < git.length) {
             currentSorted = kthIndex < kth.length ? kth[kthIndex] : null;
             currentSection = sectionIndex < section.length ? SectionService.convert(section[sectionIndex]) : null;
             currentOfficial = officialIndex < official.length ? official[officialIndex] : null;
             currentProgram = programIndex < program.length ? program[programIndex] : null;
+			currentGit = gitIndex < git.length ? git[gitIndex] : null;
 			
-			var earliest = currentSorted || currentSection || currentOfficial || currentProgram;
+			var earliest = currentSorted || currentSection || currentOfficial || currentProgram || currentGit;
 			
 			if (currentOfficial && new Date(currentOfficial.start).getTime() < new Date(earliest.start).getTime())
 			    earliest = currentOfficial;
@@ -1151,11 +1170,14 @@ angular.module('starter.services', [])
 				earliest = currentSection;
 			if (currentSorted && new Date(currentSorted.start).getTime() < new Date(earliest.start).getTime())
 				earliest = currentSorted;
+			if (currentGit && new Date(currentGit.start).getTime() < new Date(earliest.start).getTime())
+				earliest = currentGit;
 			
 			add(earliest);
 			if (earliest == currentOfficial) officialIndex++;
 			else if (earliest == currentSection) sectionIndex++;
 			else if (earliest == currentProgram) programIndex++;
+			else if (earliest == currentGit) gitIndex++;
             else kthIndex++;
         }
 
@@ -1164,7 +1186,7 @@ angular.module('starter.services', [])
 			callbacks[i]();
 	};
 	
-	var eventsByDate = function (dateString, getkth, getsection, getofficial, getprogram) {
+	var eventsByDate = function (dateString, getkth, getsection, getofficial, getprogram, getcustom) {
 		var ind = index[dateString];
 		if (ind) {
 			var res = [];
@@ -1178,21 +1200,40 @@ angular.module('starter.services', [])
 		else return [];
 	};
 	
+	var generateGitEvents = function (gc) {
+		var res = [];
+		var e;
+		var year = DataService.getNotFanclub();
+		year = year.enabled ? year.startYear % 100 : 15;
+		for (var i = 0; i < gc.length; i++) {
+			e = gc[i];
+			if (e.years.indexOf(-1) == -1 && e.years.indexOf(year) == -1)
+				continue;
+			e.course = { name: (e.subject || "").trim(), color: "#ff642b" };
+			e.locations = [{ name: e.location }];
+			e.isCustomEvent = true;
+			e.type = "custom";
+			res.push(e);
+		}
+		
+		return res;
+	};
+	
 	merge();
 	
 	
 	return {
 		allByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, true, true, true, true) : null;
+			return ready ? eventsByDate(dateString, true, true, true, true, true) : null;
 		},
 		kthByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, true, false, false, false) : null;
+			return ready ? eventsByDate(dateString, true, false, false, false, false) : null;
 		},
 		sectionByDate: function (dateString) {
-			return ready ? eventsByDate(dateString, false, true, false, false) : null;
+			return ready ? eventsByDate(dateString, false, true, false, false, false) : null;
 		},
-		getByDate: function (dateString, getKth, getSection, getOfficial, getProgram) {
-			return ready ? eventsByDate(dateString, getKth, getSection, getOfficial, getProgram) : null;
+		getByDate: function (dateString, getKth, getSection, getOfficial, getProgram, getCustom) {
+			return ready ? eventsByDate(dateString, getKth, getSection, getOfficial, getProgram, getCustom) : null;
 		},
 		isReady: function () {
 			return ready;
