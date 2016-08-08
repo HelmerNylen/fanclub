@@ -633,7 +633,12 @@ angular.module('starter.controllers', [])
 	try {
 		$scope.years = GitService.getContent().settings.years;
 	} catch (e) {
+		DebuggerService.log("Error when reading years");
+		DebuggerService.log(e);
+		DebuggerService.log(GitService.getContent());
 		$scope.years = {"Fanclub": 2015};
+		if (new Date().getMonth() >= 6)
+			$scope.years["nØllan"] = new Date().getFullYear();
 	}
 	$scope.settings.startYear = 2015;
 	if (DataService.getNotFanclub().enabled)

@@ -39,7 +39,7 @@
 	}
 	Räkna upp customevent_X för varje event som läggs till
 	Ta inte bort events-arrayen, även om den blir tom
-	Subject visas i feedet samt som titel på modalen
+	Subject visas i feedet samt som titel på modalen, bör vara kort
 	Title visas på detaljsidan ovanför beskrivningen, centrerat
 	Alla fält anses obligatoriska förutom creator
 	
@@ -81,38 +81,7 @@
 
     return {
         getContent: function () {
-            //return content;
-			
-			// *** Testdata ***
-			return {
-			  "lastupdated": "2016-04-29",
-			  "tools": {
-				"modals": {
-				  "school": [
-					{
-					  "title": "Mekanikövningar",
-					  "icon": "ion-university",
-					  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mekanikövningar</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Anteckningar gjorda av <a href=\"{{ vars.backmanURL }}\" target=\"_blank\">Jonathan Backman</a>.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen', 'Kraftekvationen fortsättning', 'Arbete och energi', 'Momentekvationen']\" ng-click=\"openURL(vars.backmanURL + vars.backmanPDF + ($index+1) + '.pdf')\">Övning {{ $index + 1 }} - {{ subject }}</div></div></ion-content></ion-modal-view>",
-					  "vars": {
-						"backmanURL": "http://www.jonathanbackman.com/",
-						"backmanPDF": "wp-content/uploads/2016/01/Övning"
-					  }
-					}
-				  ],
-				  "other": [ ]
-				}
-			  },
-			  "events": [ ],
-			  "settings": {
-				  "years": {
-					  "nØllan": 2016,
-					  "Fanclub": 2015,
-					  "Folkvett": 2014,
-					  "Frågvis": 2013,
-					  "Fumla": 2012
-				  }
-			  }
-			};
+            return content;
         },
         registerCallback: function (cb) {
             callbacks.push(cb);

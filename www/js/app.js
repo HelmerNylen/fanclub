@@ -51,7 +51,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
 .constant('FoodEndpoint', {
     q: 'http://www.hors.se/',
     nymble: 'http://ths.kth.se/',
-    brazilia: 'https://gastrogate.com/',
+    brazilia: 'https://brazilia.gastrogate.com/',
     syster: 'http://www.systerobror.se/'
 })
 .constant('CalendarEndpoint', {
@@ -113,7 +113,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
     },
 
     weekMenuBrazilia: function () {
-        return "restaurang/brazilia/page/3/";
+        return "lunch/";
     },
 
     weekMenuSyster: function () {

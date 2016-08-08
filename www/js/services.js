@@ -317,7 +317,7 @@ angular.module('starter.services', [])
 })
 
 //hämtar KTH-händelser och data om olika kurser, samt lite inställningar
-.factory('DataService', function ($http, $state, $rootScope, StorageService, DebuggerService, ConvenientService, ApiEndpoint, URLs) {
+.factory('DataService', function ($http, $state, $rootScope, StorageService, DebuggerService, ConvenientService, GitService, ApiEndpoint, URLs) {
     //try {
 	var now = new Date();
     var courses = null;
@@ -656,6 +656,17 @@ angular.module('starter.services', [])
 
 	//sorterar ihop händelser från alla kurser till en enda array
     var sortByDate = function (_courses, _extra) {
+		var discardArray;
+		try {
+			discardArray = GitService.getContent().discard["" + (notFanclub.enabled ? notFanclub.startYear : 2015)];
+			DebuggerService.log(discardArray);
+		} catch (e) {
+			DebuggerService.log("Error when reading discard object");
+			DebuggerService.log(e);
+			DebuggerService.log(GitService.getContent());
+			discardArray = null;
+		}
+		
 		//funktion för att välja bort händelser, exempelvis kurser användaren valt att gömma
         var discard = function (event) {
 			var course = event.course;
@@ -664,9 +675,85 @@ angular.module('starter.services', [])
 				if (hidden[i].courseCode == course.courseCode && hidden[i].roundId == course.roundId && hidden[i].startTerm == course.startTerm)
 					return true;
 					
-			if (extendedDiscard) {
+			if (extendedDiscard && discardArray) {
 				//Specialkod för att ta bort mekaniklektioner vi inte går på, kan slås av i inställningarna
-				if (course.courseCode.toLowerCase() == "sg1130") {
+				//hämtas numera live från github
+				
+				//objekt för jämförelse, regexar och liknande kanske bör byggas en gång innan, stället för separat för varje event
+				for (var i = 0; i < discardArray.length; i++) {
+					var rule = discardArray[i];
+					var conditionsFulfilled = true;
+					for (var property in rule) {
+						var propertyValue;
+						if (property == "code")
+							propertyValue = event.course.courseCode;
+						else if (property == "locations")
+							propertyValue = event.locations.map((l) => l.name);
+						else if (property == "locations_url")
+							propertyValue = event.locations.map((l) => l.url);
+						else if (property == "type_name_swe")
+							propertyValue = event.type_name.sv;
+						else {
+							try {
+								propertyValue = event[property];
+							} catch (e) {
+								DebuggerService.log("Discard property error")
+								DebuggerService.log(e);
+								return false;
+							}
+						}
+						
+						var comparison = {
+							//grundläggande
+							"==": (a, b) => a == b,
+							"===": (a, b) => a === b,
+							"!=": (a, b) => a != b,
+							"!==": (a, b) => a !== b,
+							">": (a, b) => a > b,
+							"<": (a, b) => a < b,
+							//strings
+							"case insensitive equals": (a, b) => a.toLowerCase() == b.toLowerCase(),
+							"case insensitive inequals": (a, b) => a.toLowerCase() != b.toLowerCase(),
+							"matches": (a, b) => !!(a.match(new RegExp(b, "ig"))),
+							"case sensitive matches": (a, b) => !!(a.match(new RegExp(b, "g"))),
+							//datum
+							"earlier than": (a, b) => new Date(a) < new Date(b),
+							"later than": (a, b) => new Date(a) > new Date(b),
+							"same date": (a, b) => new Date(a).toDateString() == new Date(b).toDateString(),
+							"different date": (a, b) => new Date(a).toDateString() != new Date(b).toDateString(),
+							//för arrayer
+							"contains": (a, b) => a.indexOf(b) != -1,
+							"lacks": (a, b) => a.indexOf(b) == -1,
+							"no match": (a, b) => !(a.some((x) => x.match(new RegExp(b, "ig")))),
+							"no case sensitive match": (a, b) => !(a.some((x) => x.match(new RegExp(b, "g")))),
+							"any match": (a, b) => a.some((x) => x.match(new RegExp(b, "ig"))),
+							"any case sensitive match": (a, b) => a.some((x) => x.match(new RegExp(b, "g"))),
+							"all match": (a, b) => a.every((x) => x.match(new RegExp(b, "ig"))),
+							"all case sensitive match": (a, b) => a.every((x) => x.match(new RegExp(b, "g")))
+						}[rule[property][0]];
+						
+						if (comparison) {
+							try {
+								var checkValue = rule[property][1];
+								
+								//console.log(event, rule, property, propertyValue, checkValue, "Match:", comparison(propertyValue, checkValue))
+								
+								if (!comparison(propertyValue, checkValue)) {
+									conditionsFulfilled = false;
+									break;
+								}
+							} catch (e) {
+								DebuggerService.log("Discard comparison error")
+								DebuggerService.log(e);
+								return false;
+							}
+						} else return false;
+					}
+					if (conditionsFulfilled)
+						return true;
+				}
+				
+				/*if (course.courseCode.toLowerCase() == "sg1130") {
 					return event.url.toLowerCase().indexOf("ctfys") == -1;
 				}
 				if (course.courseCode.toLowerCase() == "sf1901") {
@@ -675,7 +762,7 @@ angular.module('starter.services', [])
 					//&& event.url.toLowerCase().indexOf("ht-2016-635") == -1
 					//&& event.url.toLowerCase().indexOf("ht-2016-636") == -1
 					//&& event.url.toLowerCase().indexOf("ht-2016-637") == -1);
-				}
+				}*/
 			}
 			return false;
 		};
@@ -936,7 +1023,7 @@ angular.module('starter.services', [])
 
     var extractEvents = function (xml) {
         var res = [];
-
+		
         var heads = getElementsByClassName(firstChild(xml.documentElement), "event_head");
         var details = getElementsByClassName(firstChild(xml.documentElement), "event_details");
 
@@ -977,13 +1064,17 @@ angular.module('starter.services', [])
 
             event.type_name.sv = getElementByClassName(d, "type").textContent.trim();
             event.type = getAppropriateType(event.type_name.sv);
-
-            event.info = getElementByClassName(d, "external_note").textContent.trim();
-            if (event.info.indexOf("Anmärkning: ") == 0)
-                event.info = event.info.replace("Anmärkning: ", "");
-            else if (event.info.indexOf("Note: ") == 0)
-                event.info = event.info.replace("Note: ", "");
-            event.course.name = event.info;
+			
+			var extNote = getElementByClassName(d, "external_note");
+            if (extNote) {
+				event.info = extNote.textContent.trim();
+				if (event.info.indexOf("Anmärkning: ") == 0)
+					event.info = event.info.replace("Anmärkning: ", "");
+				else if (event.info.indexOf("Note: ") == 0)
+					event.info = event.info.replace("Note: ", "");
+				event.course.name = event.info;
+			} else 
+				continue; //skippa eventet om det inte har någon information - antagligen inget man vill ha i schemat ändå
 
             if (getElementsByClassName(getElementByClassName(d, "type_and_place"), "location-info").length != 0) {
                 var locations = getElementByClassName(getElementByClassName(d, "type_and_place"), "location-info").getElementsByTagName("a");
@@ -996,6 +1087,12 @@ angular.module('starter.services', [])
                         location.url = "http://www.kth.se" + location.url;
                     event.locations.push(location);
                 }
+				
+				if (event.locations.length == 0)
+					event.locations.push({
+						name: getElementByClassName(getElementByClassName(d, "type_and_place"), "location-info").textContent.replace(/Plats:/ig, "").replace(/Location:/ig, "").trim(),
+						url: ""
+					});
             }
             
             res.push(event);
@@ -1120,7 +1217,7 @@ angular.module('starter.services', [])
 	        merge();
 	    });
 	
-	var gitcontent = GitService.getContent().events;
+	var gitcontent = (GitService.getContent() || {}).events;
 	if (!gitcontent)
 		GitService.registerCallback(function () {
 			gitcontent = GitService.getContent().events;
