@@ -8,7 +8,7 @@
 		  "icon": "ion-social-tux",
 		  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mottagningen 2016</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Mottagningens schema i appen med reservation för felaktigheter och ändringar. För korrekt schema, se fadderiets hemsida.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"site in vars.sites\" ng-click=\"openURL(site.url)\">{{site.name}}</div></div><i src=\"{{vars.schema}}\" /><i src=\"{{vars.matschema}}\" /></ion-content></ion-modal-view>",
 		  "vars": {
-			"sites": [{name: "Fadderiets hemsida", url: "http://f.kth.se/fadderiet"}, {name: "Fadderiets facebooksida", url: "https://www.facebook.com/mottagningen"}, {name: "HM Ferrie K Trendåsnan", url: "https://www.facebook.com/hmferriek.trendasnan"}]
+			"sites": [{"name": "Fadderiets hemsida", "url": "http://f.kth.se/fadderiet"}, {"name": "Fadderiets facebooksida", "url": "https://www.facebook.com/mottagningen"}, {"name": "HM Ferrie K Trendåsnan", "url": "https://www.facebook.com/hmferriek.trendasnan"}]
 		  }
 		},
 		{
@@ -869,7 +869,7 @@
 		"start": "2016/08/30 18:00:00",
 		"end": "2016/08/30 22:00:00",
 		"years": [-1]
-	},
+	}
   ],
   "settings": {
 	  "years": {
