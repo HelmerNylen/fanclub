@@ -494,6 +494,11 @@ angular.module('starter.controllers', [])
 	$scope.hasNote = function (event) {
 		return NoteService.getNote(event.original || event) != null;
 	};
+
+	var hyphens = (GitService.getContent() || {}).hyphens || {};
+	$scope.softHyphenate = function (str) {
+	    return hyphens[str] || str;
+	};
 	
 	//returnerar true/false beroende på om en händelse anses matcha det givna filtret
 	var matchesFilter = function (event, filter) {
@@ -1031,7 +1036,7 @@ angular.module('starter.controllers', [])
 })
 
 //controller för section.html
-.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, SectionService, ConvenientService, RssService, KthCalendarService, NoteService) {
+.controller('SectionCtrl', function ($scope, $ionicPopover, $ionicModal, $ionicScrollDelegate, DataService, SectionService, ConvenientService, RssService, KthCalendarService, NoteService, GitService) {
 	$scope.date = function (day) {
 		if (day[0].isOfficialEvent)
 			return ConvenientService.verboseDateFormat(day[0].start);
@@ -1053,12 +1058,24 @@ angular.module('starter.controllers', [])
 			return SectionService.duration(e);
 	};
 	
-	//html-en för shalalie-menyn. bör kanske läggas i egen fil
-	var template = '<ion-popover-view><ion-header-bar class="bar-ctfys"> <h1 class="title">Sha-la-lie på...</h1></ion-header-bar> <ion-content><div class="list" style="border-bottom: 1px solid #ccc; border-top: 1px solid #ccc; padding-top: 0;">'
-	+ '<div class="item" style="text-align: center;" on-tap="openInBrowser(\'spotify:track:5TnZihe1AVVHPtgX1osH6Y\') || shalaliePopover.hide()">Spotify</div>'
-	+ '<div class="item" style="text-align: center;" on-tap="openInBrowser(\'https://youtu.be/PtBG_df3QbQ\') || shalaliePopover.hide()">YouTube</div>'
-	+ '<div class="item" style="text-align: center;" on-tap="openInBrowser(\'https://youtu.be/wzRHqOSg--s\') || shalaliePopover.hide()">Nederländska</div>'
-    + '</div></ion-content></ion-popover-view>';
+	var noteButtonContent = ((GitService.getContent() || {}).notebutton || {})[DataService.getNotFanclub().enabled ? DataService.getNotFanclub().startYear : "2015"] || {
+	    "title": "Sha-la-lie på...",
+	    "links": [{
+	        "url": "spotify:track:5TnZihe1AVVHPtgX1osH6Y",
+	        "name": "Spotify"
+	    }, {
+	        "url": "https://youtu.be/PtBG_df3QbQ",
+	        "name": "YouTube"
+	    }, {
+	        "url": "https://youtu.be/wzRHqOSg--s",
+	        "name": "Nederländska"
+	    }]
+	};
+
+	var template = '<ion-popover-view><ion-header-bar class="bar-ctfys"> <h1 class="title">' + noteButtonContent.title + '</h1></ion-header-bar> <ion-content><div class="list" style="border-bottom: 1px solid #ccc; border-top: 1px solid #ccc; padding-top: 0;">';
+	for (var i = 0; i < noteButtonContent.links.length; i++)
+	    template += '<div class="item" style="text-align: center;" on-tap="openInBrowser(\'' + noteButtonContent.links[i].url + '\') || shalaliePopover.hide()">' + noteButtonContent.links[i].name + '</div>'
+    template += '</div></ion-content></ion-popover-view>';
 
 	//gör en popover-meny av koden ovan
 	//popovers öppnas på en viss plats på skärmen, i stället för att ta upp hela likt modals

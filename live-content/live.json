@@ -173,8 +173,8 @@
 		"htmlLink": "https://f.kth.se/fadderiet/schema/",
 		"created": "",
 		"subject": "Lunchföreläsning",
-		"title": "Lunchföreläsning med Ampfield",
-		"location": "D1",
+		"title": "Lunchföreläsning med Sveriges Ingenjörer",
+		"location": "Nymble",
 		"description": "Gratis lunch om man anmäler sig! Hör med dina förfaddrar.",
 		"isAllDayEvent": false,
 		"start": "2016/08/16 12:00:00",
@@ -268,7 +268,7 @@
 		"location": "Q21, Q22, Q31",
 		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
 		"isAllDayEvent": false,
-		"start": "2016/08/17 08:45:00",
+		"start": "2016/08/17 09:00:00",
 		"end": "2016/08/17 12:00:00",
 		"years": [-1]
 	},
@@ -881,21 +881,34 @@
 	  }
   },
   "discard": {
-	  "2015": [{
-			"code": ["case insensitive equals", "EI1240"],
-			"start": ["earlier than", "2017/01/01 01:00:00"]
-		}, {
-			"code": ["case insensitive equals", "SF1901"],
-			"start": ["earlier than", "2017/01/01 01:00:00"]
-		}, {
-			"code": ["case insensitive equals", "SF1901"],
-			"start": ["later than", "2017/03/15 01:00:00"]
-		}
-	  ],
-	  "2016": [{
-			"code": ["case insensitive equals", "SF1901"],
-			"start": ["earlier than", "2017/03/15 01:00:00"]
-		}
-	  ]
-  }
+    "2015": [
+      {
+        "code": [ "case insensitive equals", "EI1240" ],
+        "start": [ "earlier than", "2017/01/01 01:00:00" ]
+      },
+      {
+        "code": [ "case insensitive equals", "SF1901" ],
+        "start": [ "earlier than", "2017/01/01 01:00:00" ]
+      },
+      {
+        "code": [ "case insensitive equals", "SF1901" ],
+        "start": [ "later than", "2017/03/15 01:00:00" ]
+      }
+    ],
+    "2016": [
+      {
+        "code": [ "case insensitive equals", "SF1901" ],
+        "start": [ "earlier than", "2017/03/15 01:00:00" ]
+      }
+    ]
+  },
+  "hyphens": {
+    "Differentialekvationer": "Differential\u00ADekvationer och transformer II",
+    "Differentialekvationer och transformer": "Differential\u00ADekvationer och transformer",
+    "Sannolikhetsteori och statistik I": "Sannolikhets\u00ADteori och statistik I",
+    "Hållfasthetslära, grundkurs med energimetoder": "Hållfasthets\u00ADlära, grundkurs med energi\u00ADmetoder",
+    "Mekanik, fortsättningskurs": "Mekanik, fortsättnings\u00ADkurs",
+    "Datorintroduktion": "Dator\u00ADintroduktion"
+  },
+  "notebutton": { }
 }

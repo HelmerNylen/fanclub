@@ -659,7 +659,7 @@ angular.module('starter.services', [])
 		var discardArray;
 		try {
 			discardArray = GitService.getContent().discard["" + (notFanclub.enabled ? notFanclub.startYear : 2015)];
-			DebuggerService.log(discardArray);
+			//DebuggerService.log(discardArray);
 		} catch (e) {
 			DebuggerService.log("Error when reading discard object");
 			DebuggerService.log(e);
@@ -1059,8 +1059,14 @@ angular.module('starter.services', [])
             event.title = title.textContent.trim();
             
             var time = getElementsByClassName(h, "time")[0].textContent.trim();
-            event.start = getDateString(time, true);
-            event.end = getDateString(time, false);
+            try {
+                event.start = getDateString(time, true);
+                event.end = getDateString(time, false);
+            } catch (e) {
+                DebuggerService.log("Error when reading program event start and end, skipping event.");
+                DebuggerService.log(e);
+                continue;
+            }
 
             event.type_name.sv = getElementByClassName(d, "type").textContent.trim();
             event.type = getAppropriateType(event.type_name.sv);
@@ -1103,6 +1109,9 @@ angular.module('starter.services', [])
 
     var getDateString = function (str, getStart) {
         var split = str.split(" ");
+        if (split.length != 4)
+            throw "Incorrectly formatted string: " + str;
+
         var year = new Date().getFullYear();
         var month = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"].indexOf(split[2].toLowerCase());
         if (month == -1)
@@ -1120,7 +1129,14 @@ angular.module('starter.services', [])
             hour = subsplit[4];
             minute = subsplit[6];
         }
-        return year + "/" + (month + 1) + "/" + date + " " + hour + ":" + minute + ":00";
+
+        month++;
+        if (month < 10)
+            month = "0" + month;
+        if (date < 10)
+            date = "0" + date;
+
+        return year + "/" + month + "/" + date + " " + hour.trim() + ":" + minute.trim() + ":00";
     };
 
     var getAppropriateType = function (str) {
@@ -1237,7 +1253,7 @@ angular.module('starter.services', [])
 		
 		var latestDate = null;
 		var add = function (event) {
-			if (new Date(event.start).toDateString() != latestDate) {
+		    if (new Date(event.start).toDateString() != latestDate) {
 				latestDate = new Date(event.start).toDateString();
 				index[latestDate] = all.length;
 			}

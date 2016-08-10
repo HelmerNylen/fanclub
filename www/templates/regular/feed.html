@@ -51,7 +51,7 @@
 										<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 24px">
 											<i class="icon ion-social-freebsd-devil"></i>
 										</div>
-										{{ event.course.name || event.title }}
+										{{ softHyphenate(event.course.name || event.title) }}
 									</div>
 								</div>
 								<div class="row" ng-if="(event.locations && location(event.locations)) || hasNote(event)">

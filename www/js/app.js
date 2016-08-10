@@ -105,7 +105,7 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
             return s.toString();
         };
 
-        return "veckans-meny/?week-for=" + new Date().getFullYear() + "-" + pad(new Date().getMonth() + 1) + "-" + pad(new Date().getDate());
+        return "veckans-meny/?week-for=" + new Date().getFullYear() + "-" + pad(new Date().getMonth() + 1) + "-" + pad(new Date().getDate()) + "&rest=171";
     },
 
     weekMenuNymble: function () {
