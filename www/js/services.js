@@ -688,9 +688,9 @@ angular.module('starter.services', [])
 						if (property == "code")
 							propertyValue = event.course.courseCode;
 						else if (property == "locations")
-							propertyValue = event.locations.map((l) => l.name);
+						    propertyValue = event.locations.map(function (l) { return l.name; });
 						else if (property == "locations_url")
-							propertyValue = event.locations.map((l) => l.url);
+						    propertyValue = event.locations.map(function (l) { return l.url; });
 						else if (property == "type_name_swe")
 							propertyValue = event.type_name.sv;
 						else {
@@ -702,34 +702,38 @@ angular.module('starter.services', [])
 								return false;
 							}
 						}
+
+						if (property == "start" || property == "end")
+						    propertyValue = propertyValue.replace(/-/ig, "/");
 						
+						//(a, b) => a == b finns tydligen inte på ios :/
 						var comparison = {
 							//grundläggande
-							"==": (a, b) => a == b,
-							"===": (a, b) => a === b,
-							"!=": (a, b) => a != b,
-							"!==": (a, b) => a !== b,
-							">": (a, b) => a > b,
-							"<": (a, b) => a < b,
+						    "==": function (a, b) { return a == b; },
+						    "===": function (a, b) { return a === b; },
+							"!=": function (a, b) { return a != b; },
+							"!==": function (a, b) { return a !== b; },
+							">": function (a, b) { return a > b; },
+							"<": function (a, b) { return a < b; },
 							//strings
-							"case insensitive equals": (a, b) => a.toLowerCase() == b.toLowerCase(),
-							"case insensitive inequals": (a, b) => a.toLowerCase() != b.toLowerCase(),
-							"matches": (a, b) => !!(a.match(new RegExp(b, "ig"))),
-							"case sensitive matches": (a, b) => !!(a.match(new RegExp(b, "g"))),
+							"case insensitive equals": function (a, b) { return a.toLowerCase() == b.toLowerCase(); },
+							"case insensitive inequals": function (a, b) { return a.toLowerCase() != b.toLowerCase(); },
+							"matches": function (a, b) { return !!(a.match(new RegExp(b, "ig"))); },
+							"case sensitive matches": function (a, b) { return !!(a.match(new RegExp(b, "g"))); },
 							//datum
-							"earlier than": (a, b) => new Date(a) < new Date(b),
-							"later than": (a, b) => new Date(a) > new Date(b),
-							"same date": (a, b) => new Date(a).toDateString() == new Date(b).toDateString(),
-							"different date": (a, b) => new Date(a).toDateString() != new Date(b).toDateString(),
+							"earlier than": function (a, b) { return new Date(a) < new Date(b); },
+							"later than": function (a, b) { return new Date(a) > new Date(b); },
+							"same date": function (a, b) { return new Date(a).toDateString() == new Date(b).toDateString(); },
+							"different date": function (a, b) { return new Date(a).toDateString() != new Date(b).toDateString(); },
 							//för arrayer
-							"contains": (a, b) => a.indexOf(b) != -1,
-							"lacks": (a, b) => a.indexOf(b) == -1,
-							"no match": (a, b) => !(a.some((x) => x.match(new RegExp(b, "ig")))),
-							"no case sensitive match": (a, b) => !(a.some((x) => x.match(new RegExp(b, "g")))),
-							"any match": (a, b) => a.some((x) => x.match(new RegExp(b, "ig"))),
-							"any case sensitive match": (a, b) => a.some((x) => x.match(new RegExp(b, "g"))),
-							"all match": (a, b) => a.every((x) => x.match(new RegExp(b, "ig"))),
-							"all case sensitive match": (a, b) => a.every((x) => x.match(new RegExp(b, "g")))
+							"contains": function (a, b) { return a.indexOf(b) != -1; },
+							"lacks": function (a, b) { return a.indexOf(b) == -1; },
+							"no match": function (a, b) { return !(a.some(function (x) { return x.match(new RegExp(b, "ig")); })); },
+							"no case sensitive match": function (a, b) { return !(a.some(function (x) { return x.match(new RegExp(b, "g")); })); },
+							"any match": function (a, b) { return a.some(function (x) { return x.match(new RegExp(b, "ig")); }); },
+							"any case sensitive match": function (a, b) { return a.some(function (x) { return x.match(new RegExp(b, "g")); }); },
+							"all match": function (a, b) { return a.every(function (x) { return x.match(new RegExp(b, "ig")); }); },
+							"all case sensitive match": function (a, b) { return a.every(function (x) { return x.match(new RegExp(b, "g")); }); }
 						}[rule[property][0]];
 						
 						if (comparison) {
