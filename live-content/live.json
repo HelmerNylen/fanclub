@@ -189,7 +189,7 @@
         },
         "nji956pncrqqll1v6m2u3q6uo8": {
             "summary": "Karriärskväll med FN",
-            "description": "Fysiksektionens näringslivsutskott arrangerar en kväll med företag och framtiden i fokus. Gratis middag! Anmäl dig hos dina förfaddrar."
+            "description": "Fysiksektionens näringslivsutskott arrangerar en kväll med företag och framtiden i fokus."
         },
         "a2po0f14j8aemcalqo8e823um4": {
             "summary": "Info",
@@ -216,7 +216,7 @@
             "description": "Information om utlandsstudier med Ann Rosander. Framträdande av Fadderiet och Föhseriet."
         },
         "npd6mef4jtdck0ota4tksgn9ek": {
-            "description": "Lite olika idrottsaktiviteter tillsammans med Tekniskt basårs mottagning. Arrangeras av Fysiksektions Idrottsnämnd."
+            "description": "Lite olika idrottsaktiviteter tillsammans med Tekniskt basårs mottagning. Arrangeras av Fysiksektionens Idrottsnämnd."
         },
         "kq6l6auurrbctdf3hpipbfbo1k": {
             "location": "Brunnsviken",
@@ -243,7 +243,8 @@
         },
         "mbmrrsuqbhhe9qm4tmpj84gs2k": {
             "location": "Nymble",
-            "description": "De olika kårföreningarna vid Tekniska Högskolans Studentkår visar upp sig."
+            "description": "De olika kårföreningarna vid Tekniska Högskolans Studentkår visar upp sig.",
+			"summary": "Kårens dag"
         },
         "7pi42jdrbef5gqgni4h0su601c": {
             "summary": "Info",
@@ -283,7 +284,8 @@
             "description": "Introduktion till datalogi av Ann Bengtsson. Framträdande av Fadderiet och Föhseriet. Introduktion till fysik på Teknisk Fysik med Göran Manneberg."
         },
         "io1s5r805kkhtlm1mqtemvmibo": {
-            "description": "En lite finare sittning tillsammans med en kompisnØllegrupp. Gratis middag!"
+            "description": "En lite finare sittning tillsammans med en kompisnØllegrupp. Gratis middag!",
+            "summary": "Binärmiddag"
         },
         "3fvrjoj7jm3nr3l30s702hmu5o": {
             "summary": "Matte",
@@ -314,7 +316,7 @@
             "description": "Information med studievägledare Susanne Lilliehöök. Framträdande av Fadderiet och Föhseriet."
         },
         "1c6145drdpi07m43mkpuk67ffo": {
-            "summary": "Matte",
+            "summary": "Matteprov",
             "location": "Q31, Q33, Q34",
             "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp."
         },
