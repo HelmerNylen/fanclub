@@ -48,7 +48,7 @@
 									<div class="col col-25 item-text-wrap" style="font-weight: bold" ng-if="event.isSectionEvent || event.isCustomEvent">{{ sectionEventDuration(event.original || event) }}</div>
 									<div class="col item-text-wrap">
 										<div class="custombadge" ng-if="!event.isSectionEvent && !event.isOfficialEvent && !event.isCustomEvent" style="background-color: {{ color(event) }}">{{ event.title }}</div>
-										<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 10px; font-size: 24px">
+										<div class="euclid" ng-if="event.isSectionEvent" style="color: #ff642b; float: right; margin-left: 10px; margin-bottom: 0px; font-size: 24px">
 											<i class="icon ion-social-freebsd-devil"></i>
 										</div>
 										{{ softHyphenate(event.course.name || event.title) }}

@@ -1,914 +1,338 @@
 ﻿{
-  "lastupdated": "2016-08-08",
-  "tools": {
-	"modals": {
-	  "school": [
-		{
-		  "title": "Mottagningen 2016",
-		  "icon": "ion-social-tux",
-		  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mottagningen 2016</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Mottagningens schema i appen med reservation för felaktigheter och ändringar. För korrekt schema, se fadderiets hemsida.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"site in vars.sites\" ng-click=\"openURL(site.url)\">{{site.name}}</div></div><i src=\"{{vars.schema}}\" /><i src=\"{{vars.matschema}}\" /></ion-content></ion-modal-view>",
-		  "vars": {
-			"sites": [{"name": "Fadderiets hemsida", "url": "http://f.kth.se/fadderiet"}, {"name": "Fadderiets facebooksida", "url": "https://www.facebook.com/mottagningen"}, {"name": "HM Ferrie K Trendåsnan", "url": "https://www.facebook.com/hmferriek.trendasnan"}]
-		  }
-		},
-		{
-		  "title": "Mekanikövningar",
-		  "icon": "ion-university",
-		  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mekanikövningar</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Anteckningar gjorda av <a href=\"{{ vars.backmanURL }}\" target=\"_blank\">Jonathan Backman</a>.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen', 'Kraftekvationen fortsättning', 'Arbete och energi', 'Momentekvationen']\" ng-click=\"openURL(vars.backmanURL + vars.backmanPDF + ($index+1) + '.pdf')\">Övning {{ $index + 1 }} - {{ subject }}</div></div></ion-content></ion-modal-view>",
-		  "vars": {
-			"backmanURL": "http://www.jonathanbackman.com/",
-			"backmanPDF": "wp-content/uploads/2016/01/Övning"
-		  }
-		}
-	  ],
-	  "other": [ ]
-	}
-  },
-  "events": [
-	{
-		"id": "customevent_1",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Tjejmingel",
-		"title": "Tjejmingel",
-		"location": "Kröken",
-		"description": "Alla som identifierar sig själv helt eller delvis som \"tjej\" får chansen att lära känna varandra och äldre \"fysiktjejer\" under lugna former med gratis mat.",
-		"isAllDayEvent": false,
-		"start": "2016/08/13 13:00:00",
-		"end": "2016/08/13 16:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_2",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Lekar",
-		"title": "Lekar",
-		"location": "Rålis",
-		"description": "",
-		"isAllDayEvent": false,
-		"start": "2016/08/14 15:00:00",
-		"end": "2016/08/14 17:30:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_3",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Stadshuset",
-		"title": "Stadshuset",
-		"location": "Stadshuset",
-		"description": "Välkomstcermoni för alla nyantagna på KTH med tal av rektor Peter Gudmundson. Även 28 augusti.",
-		"isAllDayEvent": false,
-		"start": "2016/08/14 17:30:00",
-		"end": "2016/08/14 19:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_4",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Kväll på kåren",
-		"title": "Kväll på kåren",
-		"location": "Nymble",
-		"description": "Chillkväll på Nymble för alla nyantagna studenter.",
-		"isAllDayEvent": false,
-		"start": "2016/08/14 19:00:00",
-		"end": "2016/08/14 23:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_5",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Upprop",
-		"title": "Upprop",
-		"location": "Sing Sing",
-		"description": "Obligatorisk närvaro. Kontakta studievägledare Susanne Lilliehöök så snart som möjligt om du inte kan närvara.",
-		"isAllDayEvent": false,
-		"start": "2016/08/15 10:00:00",
-		"end": "2016/08/15 11:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_6",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 1",
-		"location": "F2",
-		"description": "Välkomnande från Programansvarig, Studievägledare och Ordförande på Fysksektionen. Fadderiet presenterar mottagningen och faddrarna. Inspirationsföreläsning av Gustaf Mårtensson.",
-		"isAllDayEvent": false,
-		"start": "2016/08/15 11:00:00",
-		"end": "2016/08/15 12:45:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_7",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Lunch",
-		"title": "Lunch",
-		"location": "Terrassen",
-		"description": "Gratis lunch!",
-		"isAllDayEvent": false,
-		"start": "2016/08/15 12:45:00",
-		"end": "2016/08/15 14:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_8",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Matte-KS",
-		"title": "Matte-KS",
-		"location": "Q31, Q33, Q34",
-		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
-		"isAllDayEvent": false,
-		"start": "2016/08/15 14:00:00",
-		"end": "2016/08/15 16:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_9",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "nØllegruppsaktiviteter",
-		"title": "nØllegruppsaktiviteter",
-		"location": "",
-		"description": "Aktiviteter med den egna nØllegruppen. Middag finns att köpa.",
-		"isAllDayEvent": false,
-		"start": "2016/08/15 16:00:00",
-		"end": "2016/08/15 18:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_10",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Alumnimingel",
-		"title": "Alumnimingel",
-		"location": "Hyllan",
-		"description": "Mingel med alumnis som berättar om vad man kan göra efter studierna.",
-		"isAllDayEvent": false,
-		"start": "2016/08/15 18:00:00",
-		"end": "2016/08/15 21:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_11",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Matte",
-		"title": "Matte",
-		"location": "D34, D41, D42",
-		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 09:00:00",
-		"end": "2016/08/16 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_12",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Lunchföreläsning",
-		"title": "Lunchföreläsning med Sveriges Ingenjörer",
-		"location": "Nymble",
-		"description": "Gratis lunch om man anmäler sig! Hör med dina förfaddrar.",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 12:00:00",
-		"end": "2016/08/16 13:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_13",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 2",
-		"location": "E1",
-		"description": "Inspirerande föreläsning till fysik, Stella Riad och Jessica Elevant från Fysikpodden, genomgång av säkerhetsrutiner på KTH med Fredrik Holmström tillsammans med väktare samt framträdande av Fadderiet och Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 13:00:00",
-		"end": "2016/08/16 15:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_14",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Gyckelskola",
-		"title": "Gyckelskola",
-		"location": "F2",
-		"description": "De nyantagna får lära sig vad ett gyckel är och får chansen att testa själv.",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 15:00:00",
-		"end": "2016/08/16 16:30:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_15",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Klubbisinfo",
-		"title": "Klubbisinfo",
-		"location": "F2",
-		"description": "Klubbmästarna informerar om vad fkm* (fysiks klubbmästeri) gör och hur du kan engagera dig.",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 16:30:00",
-		"end": "2016/08/16 17:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_16",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Vettiquette-föreläsning",
-		"title": "Vettiquette-föreläsning",
-		"location": "F2",
-		"description": "Lite information om hur man uppträder på de olika festerna vi har på sektionen.",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 17:00:00",
-		"end": "2016/08/16 18:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_17",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Övningsgasque",
-		"title": "Övningsgasque",
-		"location": "",
-		"description": "De nyantagna får lära sig hur en gasque går till tillsammans med sina nØllegrupper. Gratis middag! Anmäl dig hos dina förfaddrar.",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 18:00:00",
-		"end": "2016/08/16 22:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_18",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Efterkör",
-		"title": "Efterkör",
-		"location": "Hyllan",
-		"description": "",
-		"isAllDayEvent": false,
-		"start": "2016/08/16 22:00:00",
-		"end": "2016/08/16 23:59:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_19",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Matte",
-		"title": "Matte",
-		"location": "Q21, Q22, Q31",
-		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
-		"isAllDayEvent": false,
-		"start": "2016/08/17 09:00:00",
-		"end": "2016/08/17 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_20",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 3",
-		"location": "M1",
-		"description": "Information om Tekniska högskolans studentkår (THS). Framträdande av Fadderiet och Föhseriet samt Fysikens filosofi med Maria Nordström.",
-		"isAllDayEvent": false,
-		"start": "2016/08/17 13:00:00",
-		"end": "2016/08/17 15:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_21",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Karriärskväll med FN",
-		"title": "Karriärskväll med FN",
-		"location": "M-huset",
-		"description": "Fysiksektionens näringslivsutskott arrangerar en kväll med företag och framtiden i fokus. Gratis middag! Anmäl dig hos dina förfaddrar.",
-		"isAllDayEvent": false,
-		"start": "2016/08/17 15:00:00",
-		"end": "2016/08/17 20:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_22",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Sångföhs",
-		"title": "Sångföhs",
-		"location": "F2",
-		"description": "Arrangeras av Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/18 11:00:00",
-		"end": "2016/08/18 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_23",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Festa smart",
-		"title": "Festa smart",
-		"location": "F1",
-		"description": "Föreläsning om alkohol och alkoholvanor.",
-		"isAllDayEvent": false,
-		"start": "2016/08/18 13:00:00",
-		"end": "2016/08/18 15:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_24",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 4",
-		"location": "F2",
-		"description": "Presentation av Studenthälsan, FUNKA och Akademiskt Resurscentrum. Framträdande av Fadderiet och Föhseriet. Hälsa och Balans som student. Introduktion till Matematik av Tomas Ekholm.",
-		"isAllDayEvent": false,
-		"start": "2016/08/18 15:00:00",
-		"end": "2016/08/18 17:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_25",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Välkomstföhs",
-		"title": "Välkomstföhs",
-		"location": "",
-		"description": "Arrangeras av Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/18 17:30:00",
-		"end": "2016/08/18 19:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_26",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Välkomstgasque",
-		"title": "Välkomstgasque",
-		"location": "",
-		"description": "Första riktiga gasquen! Middag inkluderas i priset för festen.",
-		"isAllDayEvent": false,
-		"start": "2016/08/18 19:00:00",
-		"end": "2016/08/18 23:59:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_27",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Dansövning",
-		"title": "Dansövning",
-		"location": "KTH-hallen",
-		"description": "De nyantagna får lära sig dansa bugg, foxtrott och vals inför banquetten.",
-		"isAllDayEvent": false,
-		"start": "2016/08/19 09:00:00",
-		"end": "2016/08/19 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_28",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 5",
-		"location": "F2",
-		"description": "Information om utlandsstudier med Ann Rosander. Framträdande av Fadderiet och Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/19 13:00:00",
-		"end": "2016/08/19 14:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_29",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "nØllan games",
-		"title": "nØllan games med Tekniskt basår",
-		"location": "Maskinparken",
-		"description": "Lite olika idrottsaktiviteter tillsammans med Tekniskt basårs mottagning. Arrangeras av Fysiksektions Idrottsnämnd.",
-		"isAllDayEvent": false,
-		"start": "2016/08/19 14:00:00",
-		"end": "2016/08/19 17:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_30",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Bad och grillning",
-		"title": "Bad och grillning",
-		"location": "Brunnsviken",
-		"description": "Middag finns att köpa.",
-		"isAllDayEvent": false,
-		"start": "2016/08/19 17:00:00",
-		"end": "2016/08/19 20:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_31",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Panikdans",
-		"title": "Panikdans",
-		"location": "Kröken",
-		"description": "Sista chansen att slipa på dansstegen.",
-		"isAllDayEvent": false,
-		"start": "2016/08/20 13:00:00",
-		"end": "2016/08/20 14:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_32",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "\"Förfest\"",
-		"title": "\"Förfest\"",
-		"location": "Kröken",
-		"description": "Tillfälle att hänga lite med sina nyfunna vänner, slipa på de sista dansstegen och göra sig i ordning tillsammans för att sedan gemensamt ta sig till nØllebanquetten.",
-		"isAllDayEvent": false,
-		"start": "2016/08/20 14:00:00",
-		"end": "2016/08/20 17:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_33",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "nØllebanquetten",
-		"title": "nØllebanquetten",
-		"location": "Nymble",
-		"description": "De nyantagna får gå på banquette. Middag inkluderas i priset för festen.",
-		"isAllDayEvent": false,
-		"start": "2016/08/20 18:00:00",
-		"end": "2016/08/20 23:59:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_34",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Varning på stan",
-		"title": "Varning på stan",
-		"location": "Andra sidan Vallhallavägen, Konsulatet",
-		"description": "Samarbetsövningar i form av en poängjakt.",
-		"isAllDayEvent": false,
-		"start": "2016/08/21 13:00:00",
-		"end": "2016/08/21 21:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_35",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Matte",
-		"title": "Matte",
-		"location": "D34, D41, D42",
-		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
-		"isAllDayEvent": false,
-		"start": "2016/08/22 09:00:00",
-		"end": "2016/08/22 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_36",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Kårens dag",
-		"title": "Kårens dag",
-		"location": "KTHB, KTH entré",
-		"description": "De olika kårföreningarna vid Tekniska Högskolans Studentkår visar upp sig.",
-		"isAllDayEvent": false,
-		"start": "2016/08/22 13:00:00",
-		"end": "2016/08/22 15:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_37",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 6",
-		"location": "F2",
-		"description": "Lärarföhs Christian Smith. Framträdande av Fadderiet och Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/22 15:00:00",
-		"end": "2016/08/22 16:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_38",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Q-nØllan",
-		"title": "Q-nØllan",
-		"location": "Maskinparken",
-		"description": "Jippon, mat, grym underhållning samt en chans för er alla att hänga med taggade studenter från andra sektioner.",
-		"isAllDayEvent": false,
-		"start": "2016/08/22 16:00:00",
-		"end": "2016/08/22 17:30:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_39",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Nämndlekar",
-		"title": "Nämndlekar",
-		"location": "D32-35, D41",
-		"description": "Lek med fysiksektionens nämnder som berättar om vad de gör och hur du kan engagera dig.",
-		"isAllDayEvent": false,
-		"start": "2016/08/22 17:30:00",
-		"end": "2016/08/22 21:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_40",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Kårens kväll",
-		"title": "Kårens kväll",
-		"location": "Nymble",
-		"description": "Pub i Nymble för alla nyantagna.",
-		"isAllDayEvent": false,
-		"start": "2016/08/22 21:00:00",
-		"end": "2016/08/22 23:59:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_41",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Matte",
-		"title": "Matte",
-		"location": "L44, L51, L52",
-		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
-		"isAllDayEvent": false,
-		"start": "2016/08/23 09:00:00",
-		"end": "2016/08/23 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_42",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 7",
-		"location": "M1",
-		"description": "Introduktion till Mekanik av Nicholas Apazidis. Framträdande av Fadderiet och Föhseriet. Programansvarig Mårten Olsson pratar om dina studier.",
-		"isAllDayEvent": false,
-		"start": "2016/08/23 13:00:00",
-		"end": "2016/08/23 15:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_43",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "nØllegruppslekar och Svarta hålet",
-		"title": "nØllegruppslekar och Svarta hålet",
-		"location": "Albanova",
-		"description": "Lekar med faddrar från alla olika nØllegrupper; en grupp i taget!",
-		"isAllDayEvent": false,
-		"start": "2016/08/23 15:00:00",
-		"end": "2016/08/23 19:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_44",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "nØlLan",
-		"title": "nØlLan med Data",
-		"location": "E-huset",
-		"description": "LAN och spelkväll med Datasektionen.",
-		"isAllDayEvent": false,
-		"start": "2016/08/23 19:00:00",
-		"end": "2016/08/23 23:59:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_45",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 8",
-		"location": "M1",
-		"description": "Introduktion till datalogi av Ann Bengtsson. Framträdande av Fadderiet och Föhseriet. Introduktion till fysik på Teknisk Fysik med Göran Manneberg.",
-		"isAllDayEvent": false,
-		"start": "2016/08/24 10:00:00",
-		"end": "2016/08/24 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_46",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Spexföhsning",
-		"title": "Spexföhsning",
-		"location": "V1, V01, V11, V12, V21, V22",
-		"description": "Arrangeras av Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/24 13:00:00",
-		"end": "2016/08/24 18:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_47",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Binärmiddag",
-		"title": "Binärmiddag",
-		"location": "",
-		"description": "En lite finare sittning tillsammans med en kompisnØllegrupp. Gratis middag!",
-		"isAllDayEvent": false,
-		"start": "2016/08/24 18:00:00",
-		"end": "2016/08/24 23:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_48",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Matte",
-		"title": "Matte",
-		"location": "E51, E52, E53",
-		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
-		"isAllDayEvent": false,
-		"start": "2016/08/25 09:00:00",
-		"end": "2016/08/25 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_49",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "SMØ",
-		"title": "SMØ",
-		"location": "F2",
-		"description": "Fysiksektionens styrelse demonstrerar hur ett sektionsmöte går till. Gratis lunch om man anmäler sig! Hör med dina förfaddrar.",
-		"isAllDayEvent": false,
-		"start": "2016/08/25 12:00:00",
-		"end": "2016/08/25 14:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_50",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 9",
-		"location": "F2",
-		"description": "Introduktion till studier på KTH. Framträdande av Fadderiet och Föhseriet. Introduktion till Termodynamik och Statistisk fysik med Patrik Henelius. Studier och Ansvar med programansvarig Mårten Olsson.",
-		"isAllDayEvent": false,
-		"start": "2016/08/25 14:00:00",
-		"end": "2016/08/25 16:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_51",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Open AIR-space",
-		"title": "Open AIR-space",
-		"location": "Naturen",
-		"description": "Raketbygge och uppskjutning tillsammans med Opens (öppen ingångs) mottagning. Middag finns att köpa.",
-		"isAllDayEvent": false,
-		"start": "2016/08/25 16:00:00",
-		"end": "2016/08/25 19:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_52",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Fjortisdisco",
-		"title": "Fjortisdisco",
-		"location": "Kröken",
-		"description": "Tänk mellanstadiedisco fast med bar.",
-		"isAllDayEvent": false,
-		"start": "2016/08/25 19:00:00",
-		"end": "2016/08/25 23:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_53",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Pluggstuga",
-		"title": "Pluggstuga med FSN",
-		"location": "L21",
-		"description": "Fysiksektionens Studienämnd hjälper de som vill med förberedelserna inför tentan i intromatte.",
-		"isAllDayEvent": false,
-		"start": "2016/08/26 09:00:00",
-		"end": "2016/08/26 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_54",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Populärvetenskaplig föreläsning",
-		"title": "Populärvetenskaplig föreläsning i matte",
-		"location": "",
-		"description": "",
-		"isAllDayEvent": false,
-		"start": "2016/08/26 11:00:00",
-		"end": "2016/08/26 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_55",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Info",
-		"title": "Info 10",
-		"location": "F2",
-		"description": "Information med studievägledare Susanne Lilliehöök. Framträdande av Fadderiet och Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/26 13:00:00",
-		"end": "2016/08/26 14:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_56",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Matteprov",
-		"title": "Matteprov",
-		"location": "Q31, Q33, Q34",
-		"description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
-		"isAllDayEvent": false,
-		"start": "2016/08/26 14:00:00",
-		"end": "2016/08/26 16:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_57",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Föhsarbrännboll",
-		"title": "Föhsarbrännboll",
-		"location": "Ugglan",
-		"description": "Arrangeras av Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/26 16:00:00",
-		"end": "2016/08/26 17:30:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_58",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Grill och parkhäng",
-		"title": "Grill och parkhäng",
-		"location": "Konsulatet",
-		"description": "Middag finns att köpa.",
-		"isAllDayEvent": false,
-		"start": "2016/08/26 17:30:00",
-		"end": "2016/08/26 20:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_59",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Kollektivtrafik",
-		"title": "Kollektivtrafik",
-		"location": "",
-		"description": "Arrangeras av Föhseriet.",
-		"isAllDayEvent": false,
-		"start": "2016/08/27 09:00:00",
-		"end": "2016/08/27 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_60",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Stuggasque",
-		"title": "Stuggasque",
-		"location": "Osqvik",
-		"description": "Gasque ute på Osqvik, en stuga som THS tillhandahåller.",
-		"isAllDayEvent": false,
-		"start": "2016/08/27 13:00:00",
-		"end": "2016/08/27 23:059:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_61",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Stadshuset",
-		"title": "Stadshuset",
-		"location": "Stadshuset",
-		"description": "Välkomstcermoni för alla nyantagna på KTH med tal av rektor Peter Gudmundson. Även 14 augusti.",
-		"isAllDayEvent": false,
-		"start": "2016/08/28 17:30:00",
-		"end": "2016/08/28 19:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_62",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Kväll på kåren",
-		"title": "Kväll på kåren",
-		"location": "Nymble",
-		"description": "Chillkväll på Nymble för alla nyantagna studenter.",
-		"isAllDayEvent": false,
-		"start": "2016/08/28 19:00:00",
-		"end": "2016/08/28 23:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_63",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Inskrivning",
-		"title": "Inskrivning",
-		"location": "D3",
-		"description": "Obligatorisk närvaro. Kontakta studievägledare Susanne Lilliehöök så snart som möjligt om du inte kan närvara.",
-		"isAllDayEvent": false,
-		"start": "2016/08/29 10:00:00",
-		"end": "2016/08/29 12:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_64",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "Kårspexet",
-		"title": "Kårspexet",
-		"location": "",
-		"description": "Kårspexet kör en föreställning av sin uppsättning Bonnie & Clyde för de nyantagna studenterna.",
-		"isAllDayEvent": false,
-		"start": "2016/08/29 18:00:00",
-		"end": "2016/08/29 22:00:00",
-		"years": [-1]
-	},
-	{
-		"id": "customevent_65",
-		"htmlLink": "https://f.kth.se/fadderiet/schema/",
-		"created": "",
-		"subject": "nØllepubrunda",
-		"title": "nØllepubrunda",
-		"location": "Sektionslokalerna",
-		"description": "Alla Campus sektioner har sina pubar öppna särskilt för nyantagna studenter och faddrar.",
-		"isAllDayEvent": false,
-		"start": "2016/08/30 18:00:00",
-		"end": "2016/08/30 22:00:00",
-		"years": [-1]
-	}
-  ],
-  "settings": {
-	  "years": {
-		  "nØllan": 2016,
-		  "Fanclub": 2015,
-		  "Folkvett": 2014,
-		  "Frågvis": 2013,
-		  "Fumla": 2012
-	  }
-  },
-  "discard": {
-    "2015": [
+    "lastupdated": "2016-08-08",
+    "tools": {
+        "modals": {
+            "school": [
+              {
+                  "title": "Mottagningen 2016",
+                  "icon": "ion-social-tux",
+                  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mottagningen 2016</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Mottagningens schema i appen med reservation för felaktigheter och ändringar. För korrekt schema, se fadderiets hemsida.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"site in vars.sites\" ng-click=\"openURL(site.url)\">{{site.name}}</div></div><i src=\"{{vars.schema}}\" /><i src=\"{{vars.matschema}}\" /></ion-content></ion-modal-view>",
+                  "vars": {
+                      "sites": [{ "name": "Fadderiets hemsida", "url": "http://f.kth.se/fadderiet" }, { "name": "Fadderiets facebooksida", "url": "https://www.facebook.com/mottagningen" }, { "name": "HM Ferrie K Trendåsnan", "url": "https://www.facebook.com/hmferriek.trendasnan" }]
+                  }
+              },
+              {
+                  "title": "Mekanikövningar",
+                  "icon": "ion-university",
+                  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mekanikövningar</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Anteckningar gjorda av <a href=\"{{ vars.backmanURL }}\" target=\"_blank\">Jonathan Backman</a>.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen', 'Kraftekvationen fortsättning', 'Arbete och energi', 'Momentekvationen']\" ng-click=\"openURL(vars.backmanURL + vars.backmanPDF + ($index+1) + '.pdf')\">Övning {{ $index + 1 }} - {{ subject }}</div></div></ion-content></ion-modal-view>",
+                  "vars": {
+                      "backmanURL": "http://www.jonathanbackman.com/",
+                      "backmanPDF": "wp-content/uploads/2016/01/Övning"
+                  }
+              }
+            ],
+            "other": []
+        }
+    },
+    "events": [
       {
-        "code": [ "case insensitive equals", "EI1240" ],
-        "start": [ "earlier than", "2017/01/01 01:00:00" ]
+          "id": "customevent_61",
+          "htmlLink": "https://f.kth.se/fadderiet/schema/",
+          "created": "",
+          "subject": "Stadshuset",
+          "title": "Stadshuset",
+          "location": "Stadshuset",
+          "description": "Välkomstcermoni för alla nyantagna på KTH med tal av rektor Peter Gudmundson. Även 14 augusti.",
+          "isAllDayEvent": false,
+          "start": "2016/08/28 17:30:00",
+          "end": "2016/08/28 19:00:00",
+          "years": [-1]
       },
       {
-        "code": [ "case insensitive equals", "SF1901" ],
-        "start": [ "earlier than", "2017/01/01 01:00:00" ]
+          "id": "customevent_62",
+          "htmlLink": "https://f.kth.se/fadderiet/schema/",
+          "created": "",
+          "subject": "Kväll på kåren",
+          "title": "Kväll på kåren",
+          "location": "Nymble",
+          "description": "Chillkväll på Nymble för alla nyantagna studenter.",
+          "isAllDayEvent": false,
+          "start": "2016/08/28 19:00:00",
+          "end": "2016/08/28 23:00:00",
+          "years": [-1]
       },
       {
-        "code": [ "case insensitive equals", "SF1901" ],
-        "start": [ "later than", "2017/03/15 01:00:00" ]
+          "id": "customevent_63",
+          "htmlLink": "https://f.kth.se/fadderiet/schema/",
+          "created": "",
+          "subject": "Inskrivning",
+          "title": "Inskrivning",
+          "location": "D3",
+          "description": "Obligatorisk närvaro. Kontakta studievägledare Susanne Lilliehöök så snart som möjligt om du inte kan närvara.",
+          "isAllDayEvent": false,
+          "start": "2016/08/29 10:00:00",
+          "end": "2016/08/29 12:00:00",
+          "years": [16]
+      },
+      {
+          "id": "customevent_64",
+          "htmlLink": "https://f.kth.se/fadderiet/schema/",
+          "created": "",
+          "subject": "Kårspexet",
+          "title": "Kårspexet",
+          "location": "",
+          "description": "Kårspexet kör en föreställning av sin uppsättning Bonnie & Clyde för de nyantagna studenterna.",
+          "isAllDayEvent": false,
+          "start": "2016/08/29 18:00:00",
+          "end": "2016/08/29 22:00:00",
+          "years": [-1]
       }
     ],
-    "2016": [
-      {
-        "code": [ "case insensitive equals", "SF1901" ],
-        "start": [ "earlier than", "2017/03/15 01:00:00" ]
-      }
-    ]
-  },
-  "hyphens": {
-    "Differentialekvationer": "Differential\u00ADekvationer och transformer II",
-    "Differentialekvationer och transformer": "Differential\u00ADekvationer och transformer",
-    "Sannolikhetsteori och statistik I": "Sannolikhets\u00ADteori och statistik I",
-    "Hållfasthetslära, grundkurs med energimetoder": "Hållfasthets\u00ADlära, grundkurs med energi\u00ADmetoder",
-    "Mekanik, fortsättningskurs": "Mekanik, fortsättnings\u00ADkurs",
-    "Datorintroduktion": "Dator\u00ADintroduktion"
-  },
-  "notebutton": { }
+    "settings": {
+        "years": {
+            "nØllan": 2016,
+            "Fanclub": 2015,
+            "Folkvett": 2014,
+            "Frågvis": 2013,
+            "Fumla": 2012
+        }
+    },
+    "discard": {
+        "2015": [
+          {
+              "code": ["case insensitive equals", "EI1240"],
+              "start": ["earlier than", "2017/01/01 01:00:00"]
+          },
+          {
+              "code": ["case insensitive equals", "SF1901"],
+              "start": ["earlier than", "2017/01/01 01:00:00"]
+          },
+          {
+              "code": ["case insensitive equals", "SF1901"],
+              "start": ["later than", "2017/03/15 01:00:00"]
+          }
+        ],
+        "2016": [
+          {
+              "code": ["case insensitive equals", "SF1901"],
+              "start": ["earlier than", "2017/03/15 01:00:00"]
+          }
+        ]
+    },
+    "hyphens": {
+        "Differentialekvationer": "Differential\u00ADekvationer och transformer II",
+        "Differentialekvationer och transformer": "Differential\u00ADekvationer och transformer",
+        "Sannolikhetsteori och statistik I": "Sannolikhets\u00ADteori och statistik I",
+        "Hållfasthetslära, grundkurs med energimetoder": "Hållfasthets\u00ADlära, grundkurs med energi\u00ADmetoder",
+        "Mekanik, fortsättningskurs": "Mekanik, fortsättnings\u00ADkurs",
+        "Datorintroduktion": "Dator\u00ADintroduktion"
+    },
+    "notebutton": {},
+    "eventmod": {
+        "5nm2k5hjt17bd5n8nt3seq8rhc": {
+            "summary": "Tjejlunch",
+            "location": "Kröken",
+            "description": "Alla som identifierar sig själv helt eller delvis som \"tjej\" får chansen att lära känna varandra och äldre \"fysiktjejer\" under lugna former med gratis mat."
+        },
+        "07ki8ja113523o1a2vcrdvvp5g": {
+            "location": "Rålis"
+        },
+        "6315s8ae2irg1h7ocq83l2b4dg": {
+            "description": "Välkomstcermoni för alla nyantagna på KTH med tal av rektor Peter Gudmundson. Även 28 augusti."
+        },
+        "smos2ehdjci4knff0jgh9t7uhs": {
+            "description": "Chillkväll på Nymble för alla nyantagna studenter.",
+            "location": "Nymble"
+        },
+        "b7oh5j30uhbd5t9qtagvhek164": {
+            "description": "Obligatorisk närvaro. Kontakta studievägledare Susanne Lilliehöök så snart som möjligt om du inte kan närvara."
+        },
+        "jtla6gesp8dvseq2ksvmjnn660": {
+            "description": "Välkomnande från Programansvarig, Studievägledare och Ordförande på Fysksektionen. Fadderiet presenterar mottagningen och faddrarna. Inspirationsföreläsning av Gustaf Mårtensson."
+        },
+        "oe42sbho1ur7s99etotm7n7pn4": {
+            "description": "Gratis lunch!"
+        },
+        "676me802onck7epumqrpak1b60": {
+            "location": "Q31, Q33, Q34",
+            "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp."
+        },
+        "pscach561gvv37sv0ii51j9ksg": {
+            "description": "Aktiviteter med den egna nØllegruppen. Middag finns att köpa.",
+            "summary": "nØllegruppsaktiviteter"
+        },
+        "gd10q6hf4r8g3r04e7ve4fri6s": {
+            "description": "Mingel med alumnis som berättar om vad man kan göra efter studierna.",
+            "summary": "Alumni-mingel"
+        },
+        "1rqlcg3rjd8b5btj5ue5jigf8g": {
+            "summary": "Matte",
+            "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp."
+        },
+        "fflsgphfklkieaffgu915il04c": {
+            "description": "Gratis lunch om man anmäler sig! Hör med dina förfaddrar.",
+            "location": "Nymble"
+        },
+        "hrplugo5bsmftu6grqaen3b960": {
+            "description": "Inspirerande föreläsning till fysik, Stella Riad och Jessica Elevant från Fysikpodden, genomgång av säkerhetsrutiner på KTH med Fredrik Holmström tillsammans med väktare samt framträdande av Fadderiet och Föhseriet."
+        },
+        "ojljs0al61jojq629uqs79u8a0": {
+            "summary": "Gyckelskola",
+            "description": "De nyantagna får lära sig vad ett gyckel är och får chansen att testa själv."
+        },
+        "bn4e8ocs95vbst42k0b86dkclk": {
+            "summary": "Klubbisinfo",
+            "description": "Klubbmästarna informerar om vad fkm* (fysiks klubbmästeri) gör och hur du kan engagera dig."
+        },
+        "fknkfqcmu2710sgo72i5hbu1ko": {
+            "summary": "Vettiquette-föreläsning",
+            "description": "Lite information om hur man uppträder på de olika festerna vi har på sektionen."
+        },
+        "6931q8bbb06fkapq9f0si8hu00": {
+            "summary": "Övningsgasque",
+            "description": "De nyantagna får lära sig hur en gasque går till tillsammans med sina nØllegrupper. Gratis middag! Anmäl dig hos dina förfaddrar."
+        },
+        "uqjm9u9dn2114gp0rt7us9qgsc": {
+            "summary": "Matte",
+            "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp.",
+            "location": "Q21, Q22, Q31"
+        },
+        "nji956pncrqqll1v6m2u3q6uo8": {
+            "summary": "Karriärskväll med FN",
+            "description": "Fysiksektionens näringslivsutskott arrangerar en kväll med företag och framtiden i fokus. Gratis middag! Anmäl dig hos dina förfaddrar."
+        },
+        "a2po0f14j8aemcalqo8e823um4": {
+            "summary": "Info",
+            "description": "Information om Tekniska högskolans studentkår (THS). Framträdande av Fadderiet och Föhseriet samt Fysikens filosofi med Maria Nordström."
+        },
+        "ufh8c126ruq8dbq9cn9n1ukgpk": {
+            "description": "Föreläsning om alkohol och alkoholvanor."
+        },
+        "d5bj9tlv09rlot410f2afg9bg0": {
+            "description": "Presentation av Studenthälsan, FUNKA och Akademiskt Resurscentrum. Framträdande av Fadderiet och Föhseriet. Hälsa och Balans som student. Introduktion till Matematik av Tomas Ekholm."
+        },
+        "pidlc0tslqoi6s1t67i1dgokdc": {
+            "summary": "Välkomstföhs"
+        },
+        "88jduek9ovr0pksb4s20pjeicc": {
+            "summary": "Välkomstgasque",
+            "description": "Första riktiga gasquen! Middag inkluderas i priset för festen.",
+            "location": "Konsulatet"
+        },
+        "n1tiv67m9kkqf2cnmi4cvenks0": {
+            "description": "De nyantagna får lära sig dansa bugg, foxtrott och vals inför banquetten."
+        },
+        "21978vlkshri15iugsjbbffhe0": {
+            "description": "Information om utlandsstudier med Ann Rosander. Framträdande av Fadderiet och Föhseriet."
+        },
+        "npd6mef4jtdck0ota4tksgn9ek": {
+            "description": "Lite olika idrottsaktiviteter tillsammans med Tekniskt basårs mottagning. Arrangeras av Fysiksektions Idrottsnämnd."
+        },
+        "kq6l6auurrbctdf3hpipbfbo1k": {
+            "location": "Brunnsviken",
+            "description": "Middag finns att köpa."
+        },
+        "pnm5jrb171gudmsqn37loif2e8": {
+            "description": "Sista chansen att slipa på dansstegen."
+        },
+        "65tptp4q1m1o4773gaip9rpl0g": {
+            "description": "Tillfälle att hänga lite med sina nyfunna vänner, slipa på de sista dansstegen och göra sig i ordning tillsammans för att sedan gemensamt ta sig till nØllebanquetten."
+        },
+        "1iccg14h42mne84fmesqt5vjmk": {
+            "location": "Nymble",
+            "description": "De nyantagna får gå på banquette. Middag inkluderas i priset för festen."
+        },
+        "gaeregse04fpkjiqa35rpbg47c": {
+            "summary": "Varning på stan",
+            "location": "Andra sidan Vallhallavägen, Konsulatet",
+            "description": "Samarbetsövningar i form av en poängjakt."
+        },
+        "7vio255enqhb9dd4aq386ge4bs": {
+            "summary": "Matte",
+            "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp."
+        },
+        "mbmrrsuqbhhe9qm4tmpj84gs2k": {
+            "location": "Nymble",
+            "description": "De olika kårföreningarna vid Tekniska Högskolans Studentkår visar upp sig."
+        },
+        "7pi42jdrbef5gqgni4h0su601c": {
+            "summary": "Info",
+            "description": "Lärarföhs Christian Smith. Framträdande av Fadderiet och Föhseriet."
+        },
+        "http://www.kth.se/social/program/ctfys/event/36128/": {
+            "info": "",
+            "course": { "color": "#1954a6", "courseCode": "Ej angivet", "name": "" },
+            "locations": []
+        },
+        "cktvlpvq5diiqekt35fgishocg": {
+            "summary": "Q-nØllan",
+            "location": "Maskinparken",
+            "description": "Jippon, mat, grym underhållning samt en chans för er alla att hänga med taggade studenter från andra sektioner."
+        },
+        "hr2lksm4touo8ah2g8jmu6hjqg": {
+            "description": "Lek med fysiksektionens nämnder som berättar om vad de gör och hur du kan engagera dig."
+        },
+        "ctrqesi1o0p04t8t92li2lhtdc": {
+            "description": "Pub i Nymble för alla nyantagna."
+        },
+        "mrkqanj3hopn4c54u41fqag9m4": {
+            "summary": "Matte",
+            "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp."
+        },
+        "klt8s5a509fqa79jp63jkgm5o8": {
+            "description": "Introduktion till Mekanik av Nicholas Apazidis. Framträdande av Fadderiet och Föhseriet. Programansvarig Mårten Olsson pratar om dina studier."
+        },
+        "a7q45em15v173vm4p3a4dtgovs": {
+            "location": "Albanova",
+            "description": "Lekar med faddrar från alla olika nØllegrupper; en grupp i taget!"
+        },
+        "jbshhq547nk2al2ur1jkj37g08": {
+            "description": "LAN och spelkväll med Datasektionen."
+        },
+        "4l08lhcj013hjv047c3ccevlf0": {
+            "description": "Introduktion till datalogi av Ann Bengtsson. Framträdande av Fadderiet och Föhseriet. Introduktion till fysik på Teknisk Fysik med Göran Manneberg."
+        },
+        "io1s5r805kkhtlm1mqtemvmibo": {
+            "description": "En lite finare sittning tillsammans med en kompisnØllegrupp. Gratis middag!"
+        },
+        "3fvrjoj7jm3nr3l30s702hmu5o": {
+            "summary": "Matte",
+            "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp."
+        },
+        "fntan9q2bbmsm49eplh00hpgqs": {
+            "description": "Fysiksektionens styrelse demonstrerar hur ett sektionsmöte går till. Gratis lunch om man anmäler sig! Hör med dina förfaddrar."
+        },
+        "39iq1opsqic2sns0kh4fapmnmc": {
+            "description": "Introduktion till studier på KTH. Framträdande av Fadderiet och Föhseriet. Introduktion till Termodynamik och Statistisk fysik med Patrik Henelius. Studier och Ansvar med programansvarig Mårten Olsson."
+        },
+        "69f9alltn6pjul81u5eltnro0s": {
+            "description": "Raketbygge och uppskjutning tillsammans med Opens (öppen ingångs) mottagning. Middag finns att köpa."
+        },
+        "pvd0ptodkng6568dcva7n1c48k": {
+            "location": "Kröken",
+            "description": "Tänk mellanstadiedisco fast med bar."
+        },
+        "58h2rj74p7624d0qonpmov7d44": {
+            "summary": "Pluggstuga med FSN",
+            "description": "Fysiksektionens Studienämnd hjälper de som vill med förberedelserna inför tentan i intromatte."
+        },
+        "fesqpsdnm09govv7fqcpd363bo": {
+            "description": "Populärvetenskaplig föreläsning i matte"
+        },
+        "dnb925tg5jujuh560vjlbek1q4": {
+            "summary": "Info",
+            "description": "Information med studievägledare Susanne Lilliehöök. Framträdande av Fadderiet och Föhseriet."
+        },
+        "1c6145drdpi07m43mkpuk67ffo": {
+            "summary": "Matte",
+            "location": "Q31, Q33, Q34",
+            "description": "Introduktionskurs i matte (1.5hp). Bra för den som vill fräscha upp sina mattekunskaper eller vill säkra några hp."
+        },
+        "l5qcmi4aplc4vroik6hj6oiq2c": {
+            "location": "Ugglan"
+        },
+        "giog1i0v2mdnbr008fuubt7vfo": {
+            "location": "Konsulatet",
+            "description": "Middag finns att köpa."
+        },
+        "69usnebmb2lvi1uhtmboqiq1a4": {
+            "summary": "Stuggasque",
+            "location": "Osqvik",
+            "description": "Gasque ute på Osqvik, en stuga som THS tillhandahåller."
+        },
+        "ju2bklfkr3i48s3p2dn8no5s8o": {
+            "location": "Sektionslokalerna",
+            "description": "Alla Campus sektioner har sina pubar öppna särskilt för nyantagna studenter och faddrar."
+        }
+    }
 }

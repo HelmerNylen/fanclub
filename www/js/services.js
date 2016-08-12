@@ -1205,7 +1205,7 @@ angular.module('starter.services', [])
 })
 
 
-.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService, KthCalendarService, ProgramService, GitService) {
+.factory('EventService', function (DataService, SectionService, StorageService, ConvenientService, KthCalendarService, ProgramService, GitService, DebuggerService) {
 	var ready = false;
 	var callbacks = [];
 	
@@ -1289,7 +1289,8 @@ angular.module('starter.services', [])
 				earliest = currentSorted;
 			if (currentGit && new Date(currentGit.start).getTime() < new Date(earliest.start).getTime())
 				earliest = currentGit;
-			
+
+			modifyEvent(earliest); //kan säkert förstöra saker genom att ändra när eventen börjar, så bör åtgärdas
 			add(earliest);
 			if (earliest == currentOfficial) officialIndex++;
 			else if (earliest == currentSection) sectionIndex++;
@@ -1334,6 +1335,17 @@ angular.module('starter.services', [])
 		}
 		
 		return res;
+	};
+
+	var eventMod = (GitService.getContent() || {}).eventmod;
+	var modifyEvent = function (event) {
+	    if (event.isSectionEvent || !eventMod || !(event.id || event.url) || !eventMod[event.id || event.url])
+	        return;
+
+	    for (var prop in eventMod[event.id || event.url]) {
+	        //DebuggerService.log(prop + ": " + event[prop] + " -> " + eventMod[event.id || event.url][prop]);
+	        event[prop] = eventMod[event.id || event.url][prop];
+	    }
 	};
 	
 	merge();

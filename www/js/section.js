@@ -1,7 +1,7 @@
 angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 //service som hämtar sektionshändelser från googlekalendern
-.factory('SectionService', function ($http, $state, DebuggerService, CalendarEndpoint, URLs, DataService, StorageService, APIkey) {
+.factory('SectionService', function ($http, $state, DebuggerService, CalendarEndpoint, URLs, DataService, StorageService, APIkey, GitService) {
 	//taget från http://stackoverflow.com/a/7244288
 	//gör en giltig timestamp av ett Date
 	var RFC3339 = function (d) {
@@ -94,6 +94,17 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			return (days == 1 ? "Hela dagen" : days + " dagar");
 		} else return getTime(start) + "-" + getTime(end);
 	};
+
+	var eventMod = (GitService.getContent() || {}).eventmod;
+	var modifyEvent = function (event) {
+		if (!eventMod || !(event.id || event.url) || !eventMod[event.id || event.url])
+		    return;
+
+		for (var prop in eventMod[event.id || event.url]) {
+		    //DebuggerService.log(prop + ": " + event[prop] + " -> " + eventMod[event.id || event.url][prop]);
+		    event[prop] = eventMod[event.id || event.url][prop];
+		}
+	};
 	
     return {
 		getEvents: function () {
@@ -104,6 +115,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 		},
 		//ugly hack to display section events (from the google calendar api) as regular events (from the kth schema api)
 		convert: function (event) {
+		    modifyEvent(event);
 			return {
 				isSectionEvent: true,
 				//googleeventsen har ingen flagga om de är heldagshändelser eller inte,
