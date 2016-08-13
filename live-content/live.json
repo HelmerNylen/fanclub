@@ -1,5 +1,5 @@
 ﻿{
-    "lastupdated": "2016-08-08",
+    "lastupdated": "2016-08-13",
     "tools": {
         "modals": {
             "school": [
@@ -117,7 +117,21 @@
         "Mekanik, fortsättningskurs": "Mekanik, fortsättnings\u00ADkurs",
         "Datorintroduktion": "Dator\u00ADintroduktion"
     },
-    "notebutton": {},
+    "notebutton": {
+		"2016": {
+			"title": "Du hänger väl med opp",
+			"links": [{
+				"url": "spotify:track:5aXXvlVwRHOEwS5luQWLLA",
+				"name": "Spotify"
+			}, {
+				"url": "https://youtu.be/97502mRnGV0",
+				"name": "YouTube"
+			}, {
+				"url": "https://youtu.be/h4-lKMGII_k",
+				"name": "80-tal"
+			}]
+		}
+	},
     "eventmod": {
         "5nm2k5hjt17bd5n8nt3seq8rhc": {
             "summary": "Tjejlunch",
