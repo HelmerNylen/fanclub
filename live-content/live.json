@@ -1,20 +1,12 @@
 ﻿{
-    "lastupdated": "2016-08-13",
+    "lastupdated": "2016-08-31",
     "tools": {
         "modals": {
             "school": [
               {
-                  "title": "Mottagningen 2016",
-                  "icon": "ion-social-tux",
-                  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mottagningen 2016</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Mottagningens schema i appen med reservation för felaktigheter och ändringar. För korrekt schema, se fadderiets hemsida.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"site in vars.sites\" ng-click=\"openURL(site.url)\">{{site.name}}</div></div><i src=\"{{vars.schema}}\" /><i src=\"{{vars.matschema}}\" /></ion-content></ion-modal-view>",
-                  "vars": {
-                      "sites": [{ "name": "Fadderiets hemsida", "url": "http://f.kth.se/fadderiet" }, { "name": "Fadderiets facebooksida", "url": "https://www.facebook.com/mottagningen" }, { "name": "HM Ferrie K Trendåsnan", "url": "https://www.facebook.com/hmferriek.trendasnan" }]
-                  }
-              },
-              {
                   "title": "Mekanikövningar",
                   "icon": "ion-university",
-                  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mekanikövningar</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Anteckningar gjorda av <a href=\"{{ vars.backmanURL }}\" target=\"_blank\">Jonathan Backman</a>.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen', 'Kraftekvationen fortsättning', 'Arbete och energi', 'Momentekvationen']\" ng-click=\"openURL(vars.backmanURL + vars.backmanPDF + ($index+1) + '.pdf')\">Övning {{ $index + 1 }} - {{ subject }}</div></div></ion-content></ion-modal-view>",
+                  "template": "<ion-modal-view><ion-header-bar class=\"bar-ctfys\"><h1 class=\"title\">Mekanikövningar</h1><div class=\"buttons\"><button class=\"button button-clear\" ng-click=\"closeToolModal()\">Stäng</button></div></ion-header-bar><ion-content on-swipe-right="closeToolModal()"><div style=\"text-align: center; padding: 1em; padding-top: 2em;\">Anteckningar gjorda av <a href=\"{{ vars.backmanURL }}\" target=\"_blank\">Jonathan Backman</a>.</div><div class=\"card list\"><div class=\"item item-text-wrap\" ng-repeat=\"subject in ['Vektoralgebra och dimensionsbetraktelser', 'Kraft, kraftmoment och kraftsystem', 'Masscentrum', 'Jämvikt 2D', 'Jämvikt 3D', 'Kinematik', 'Kraftekvationen', 'Kraftekvationen fortsättning', 'Arbete och energi', 'Momentekvationen']\" ng-click=\"openURL(vars.backmanURL + vars.backmanPDF + ($index+1) + '.pdf')\">Övning {{ $index + 1 }} - {{ subject }}</div></div></ion-content></ion-modal-view>",
                   "vars": {
                       "backmanURL": "http://www.jonathanbackman.com/",
                       "backmanPDF": "wp-content/uploads/2016/01/Övning"
@@ -110,7 +102,7 @@
         ]
     },
     "hyphens": {
-        "Differentialekvationer": "Differential\u00ADekvationer och transformer II",
+        "Differentialekvationer och transformer II": "Differential\u00ADekvationer och transformer II",
         "Differentialekvationer och transformer": "Differential\u00ADekvationer och transformer",
         "Sannolikhetsteori och statistik I": "Sannolikhets\u00ADteori och statistik I",
         "Hållfasthetslära, grundkurs med energimetoder": "Hållfasthets\u00ADlära, grundkurs med energi\u00ADmetoder",

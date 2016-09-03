@@ -5,7 +5,7 @@
             <button class="button button-clear" ng-click="closeLyrics()" style="color: white">Stäng</button>
         </div>
         <div class="buttons" side="left">
-            <button class="button button-large button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter" ng-click="backLyrics()" style="padding-left: 1.5ex; padding-right: 2.5ex;"></button>
+            <button class="button button-large button-ctfys icon ion-chevron-left" ng-if="lyricsMode.chapter || lyricsMode.searchResults" ng-click="backLyrics()" style="padding-left: 1.5ex; padding-right: 2.5ex;"></button>
         </div>
     </ion-header-bar>
     <ion-content delegate-handle="lyrics" on-swipe-right="backLyrics()">

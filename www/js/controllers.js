@@ -740,9 +740,9 @@ angular.module('starter.controllers', [])
 	};
 	$scope.getFromStorage = function () {
 		$ionicPopup.prompt({
-			title: "Cache",
+			title: "Prompt",
 			okType: "button-ctfys",
-			inputPlaceholder: "Nyckel",
+			inputPlaceholder: "Kommando",
 			cancelText: "Avbryt",
 			cancelType: "button-stable"
 		}).then(function (value) {
