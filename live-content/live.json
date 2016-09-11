@@ -101,6 +101,9 @@
           }
         ]
     },
+    "foodsettings": {
+      "qurlsuffix":  ""
+    },
     "hyphens": {
         "Differentialekvationer och transformer II": "Differential\u00ADekvationer och transformer II",
         "Differentialekvationer och transformer": "Differential\u00ADekvationer och transformer",

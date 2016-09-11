@@ -98,18 +98,18 @@ angular.module('starter', ['ionic', 'starter.apikey', 'starter.controllers', 'st
         return "api/kopps/v1/course/" + courseCode;// + "/round/" + startTerm.substring(0, 4) + ":" + startTerm.substring(4, 5) + "/" + roundId;
     },
 
-    weekMenuQ: function () {
+    weekMenuQ: function (suffix) {
         var pad = function (s) {
             if (s.toString().length < 2)
                 return "0" + s.toString();
             return s.toString();
         };
 
-        return "veckans-meny/?week-for=" + new Date().getFullYear() + "-" + pad(new Date().getMonth() + 1) + "-" + pad(new Date().getDate()) + "&rest=171";
+        return "veckans-meny/?week-for=" + new Date().getFullYear() + "-" + pad(new Date().getMonth() + 1) + "-" + pad(new Date().getDate()) + (suffix || "");
     },
 
     weekMenuNymble: function () {
-        return "om-ths/restaurang-cafe/restaurang-nymble-meny/";
+        return "api/acf/v2/options";
     },
 
     weekMenuBrazilia: function () {

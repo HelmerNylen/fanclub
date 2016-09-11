@@ -56,7 +56,7 @@ angular.module('starter.getfood', ['starter.services'])
 		DebuggerService.log("Updating menus");
 		try {
 			//Restaurang Q
-			$http.get(FoodEndpoint.q + URLs.weekMenuQ()
+		    $http.get(FoodEndpoint.q + URLs.weekMenuQ((StorageService.getOrDefault("gitContent", {}).foodsettings || {}).qurlsuffix)
 				).then(
 				function successCallback(response) {
 					var partial = response.data.substring(response.data.indexOf("<table id=\"mattabellen\""));
@@ -86,56 +86,16 @@ angular.module('starter.getfood', ['starter.services'])
 				).then(
 				function successCallback(response) {
 				    var menu = [];
-					
-					var getDishes = function (str) {
-						//efter första bolden kommer priserna, de är inte sallad
-						var d = str.indexOf("<b>") != -1 ? str.substring(0, str.indexOf("<b>")) : str;
-						d = d.replace(/<([^>]+)>/ig, "|").split("|");
-						
-						var res = [];
-						for (var i = 0; i < d.length; i++)
-							if (d[i].trim().length)
-								res.push(d[i]);
-						
-						return res;
-					};
 
 				    try {
-					    var partial = response.data.substring(response.data.indexOf("<div class=\"post realpost page\""));
-					    partial = partial.substring(0, partial.indexOf("<!-- You can start editing here. -->"));
-						
-						var dayNames = ["måndag", "tisdag", "onsdag", "torsdag", "fredag"];
-						
-						//matcha alla rubriker med dagar/veckans fisk/etc.
-					    var matches = partial.match(/<strong>([^<]+)<\/strong>/ig);
-						var dishes = [];
-						for (var i = 0; i < matches.length; i++) {
-							if (/lunch vecka/ig.test(matches[i]))
-								continue;
-							
-							var str = partial.substring(partial.indexOf(matches[i]) + matches[i].length);
-							str = str.substring(0, str.indexOf(matches[i + 1]));
-							
-							dishes.push({
-								title: matches[i].replace(/<(strong|\/strong)>/ig, ""),
-								dish: str
-							});
-						}
-						
-						for (var i = 0; i < dishes.length; i++) {
-							if (/(monday|lunch|priser)/ig.test(dishes[i].title))
-								break;
-							
-							var todays = getDishes(dishes[i].dish);
-							//dagens
-							if (dishes[i].title.toLowerCase().indexOf(dayNames[day]) != -1)
-								for (var j = 0; j < todays.length; j++)
-									menu.push(todays[j]);
-							//veckans
-							else if (dayNames.indexOf(dishes[i].title.toLowerCase()) == -1)
-								for (var j = 0; j < todays.length; j++)
-									menu.push(dishes[i].title + "<br />" + todays[j]);
-						}
+				        var raw = response.data.acf.meal_of_the_day[0].menu[0][["monday", "tuesday", "wednesday", "thursday", "friday"][day]];
+				        var lines = raw.replace(/<[^>]+>/ig, "|").split("|");
+
+				        for (var i = 0; i < lines.length; i++) {
+				            var line = lines[i].trim();
+				            if (line.length > 1)
+				                menu.push(line);
+				        }
 					}
 					catch (e) {
 						DebuggerService.log("Error parsing Nymble's menu: " + e, "red");

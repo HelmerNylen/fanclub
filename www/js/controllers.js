@@ -1009,7 +1009,7 @@ angular.module('starter.controllers', [])
 	{
 		name: "Restaurang Nymble",
 		shortName: "nymble",
-		url: FoodEndpoint.nymble + URLs.weekMenuNymble()
+		url: "http://ths.kth.se/om-ths/restaurang-cafe/restaurang-nymble-meny/"
 	},
 	{
 		name: "Brazilia",
@@ -1242,24 +1242,29 @@ angular.module('starter.controllers', [])
         if ($scope.lyricsMode.filter.trim().length == 0)
             $scope.lyricsMode.searchResults = false;
         else {
-            var res = [];
+            var titleHits = [];
+            var otherHits = [];
             var strs = $scope.lyricsMode.filter.toLowerCase().trim().split(" ");
 
             for (var i = 0; i < $scope.lyrics.length; i++)
                 for (var j = 0; j < $scope.lyrics[i].songs.length; j++) {
-                    var skip = false;
+                    var inTitle = false;
+                    var inOther = false;
                     for (var k = 0; k < strs.length; k++) {
-                        if (!($scope.lyrics[i].songs[j].title.toLowerCase().indexOf(strs[k]) != -1
-                            || $scope.lyrics[i].songs[j].text.toLowerCase().indexOf(strs[k]) != -1
+                        if ($scope.lyrics[i].songs[j].title.toLowerCase().indexOf(strs[k]) != -1)
+                            inTitle = true;
+                        else if ($scope.lyrics[i].songs[j].text.toLowerCase().indexOf(strs[k]) != -1
                             || ($scope.lyrics[i].songs[j].author || "").toLowerCase().indexOf(strs[k]) != -1
-                            || ($scope.lyrics[i].songs[j].melody || "").toLowerCase().indexOf(strs[k]) != -1))
-                            skip = true;
-
+                            || ($scope.lyrics[i].songs[j].melody || "").toLowerCase().indexOf(strs[k]) != -1)
+                            inOther = true;
                     }
-                    if (!skip)
-                        res.push({ chapter: i + 1, song: j + 1 });
+                    if (inTitle)
+                        titleHits.push({ chapter: i + 1, song: j + 1 });
+                    else if (inOther)
+                        otherHits.push({ chapter: i + 1, song: j + 1 });
                 }
-            $scope.lyricsMode.searchResults = res;
+            ;
+            $scope.lyricsMode.searchResults = titleHits.concat(otherHits);
         }
     };
  	$scope.openLyrics = function () {
