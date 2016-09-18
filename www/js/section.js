@@ -166,11 +166,11 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 				res.push({
 					title: items[i].getElementsByTagName("title")[0].textContent,
 					link: items[i].getElementsByTagName("link")[0].textContent,
-					description: items[i].getElementsByTagName("description")[0].textContent,
+					description: items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, ""),
 					date: getDateString(items[i].getElementsByTagName("pubDate")[0].textContent),
 					creator: "KTH",
-					category: "",
-					content: items[i].getElementsByTagName("description")[0].textContent //samma som description
+					category: "\xa0",
+					content: items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, "") //samma som description
 				});
 			else
 				res.push({
@@ -183,6 +183,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 					content: items[i].getElementsByTagName("encoded")[0].textContent
 				});
 
+        console.log(res);
         return res;
     };
 

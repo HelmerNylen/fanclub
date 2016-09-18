@@ -6,6 +6,11 @@
         </div>
     </ion-header-bar>
     <ion-content delegate-handle="rss" on-swipe-right="closeRss()">
+        <style>
+            .item p {
+                color: #333;
+            }
+        </style>
         <div class="list">
             <div class="item section-news" ng-repeat="item in currentRss" on-tap="openInBrowser(item.link)">
                 <div class="item-text-wrap news-title">

@@ -45,6 +45,9 @@ angular.module('starter.notes', ['starter.services'])
             var index = find(event);
             return index != -1 ? notes[index].note : null;
         },
+        getAllNotes: function () {
+            return notes.map(function (a, b, c) { return a; });
+        },
         clearNote: function (event) {
             DebuggerService.log("Deleting note");
 

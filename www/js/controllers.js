@@ -268,7 +268,7 @@ angular.module('starter.controllers', [])
 					//heldagshändelser krockar inte utan staplas alltid på varandra, så vi hårdkodar att de är ensamma och först
 					if ((events[j].isSectionEvent && events[j].original.start.date) || (events[j].isCustomEvent && events[j].isAllDayEvent)) {
 						var dur = Math.round((new Date(events[j].end).getTime() - new Date(events[j].start).getTime()) / (1000 * 3600 * 24));
-						for (var k = 0; k < dur && start.getDay() + k - 1 < 7; k++) {
+						for (var k = 0; k < dur && (start.getDay() + 6) % 7 + k < 7; k++) {
 							days[(start.getDay() + 6 + k) % 7].eventBoxes.push({
 								event: events[j],
 								simultaneous: 1,
@@ -563,7 +563,18 @@ angular.module('starter.controllers', [])
 
 	        $scope.days = days;
 	    }
-    };
+	};
+
+	/*setTimeout(function () {
+	    //rensa ut gamla notes en gång i månaden
+	    if (StorageService.getOrDefault("lastNotePurge", new Date().getMonth()) == new Date().getMonth()) {
+	        var notes = NoteService.getAllNotes();
+
+            //TODO: skriv kod
+
+	        StorageService.set("lastNotePurge", new Date().getMonth());
+	    }
+	}, 0);*/
 	
 	$scope.currentlyLoading = false;
 	$scope.loadMore = function () {
