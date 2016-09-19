@@ -157,32 +157,45 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 	//läser in händelser från ett xmlträd med rss
 	//händelser = anonyma objekt med title, skapare, beskrivning etc
-    var parseRss = function (xml, isKTH) {
+    var parseRss = function (data, isKTH, isTHS) {
         var res = [];
-
-        var items = xml.getElementsByTagName("item");
-        for (var i = 0; i < items.length; i++)
-			if (isKTH)
+		
+		if (isTHS) {
+			for (var i = 0; i < data.length; i++)
 				res.push({
-					title: items[i].getElementsByTagName("title")[0].textContent,
-					link: items[i].getElementsByTagName("link")[0].textContent,
-					description: items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, ""),
-					date: getDateString(items[i].getElementsByTagName("pubDate")[0].textContent),
-					creator: "KTH",
-					category: "\xa0",
-					content: items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, "") //samma som description
+					title: data[i].title.rendered,
+					link: data[i].link,
+					date: new Date(data[i].date),
+					creator: "THS",
+					category: data[i].category.length > 0 ? (data[i].category.find(function (a, b, c) {return a.name.indexOf("THS") == -1 && a.name.indexOf("Sektioner" == -1) }) || data[i].category[0]).name : "\xa0",
+					description: data[i].excerpt.rendered || data[i].content.rendered,
+					content: data[i].content.rendered
 				});
-			else
-				res.push({
-					title: items[i].getElementsByTagName("title")[0].textContent,
-					link: items[i].getElementsByTagName("link")[0].textContent,
-					date: getDateString(items[i].getElementsByTagName("pubDate")[0].textContent),
-					creator: items[i].getElementsByTagName("creator")[0].textContent,
-					category: items[i].getElementsByTagName("category")[0].textContent,
-					description: items[i].getElementsByTagName("description")[0].textContent,
-					content: items[i].getElementsByTagName("encoded")[0].textContent
-				});
-
+		}
+		else {
+			var items = data.getElementsByTagName("item");
+			for (var i = 0; i < items.length; i++)
+				if (isKTH)
+					res.push({
+						title: items[i].getElementsByTagName("title")[0].textContent,
+						link: items[i].getElementsByTagName("link")[0].textContent,
+						description: items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, ""),
+						date: getDateString(items[i].getElementsByTagName("pubDate")[0].textContent),
+						creator: "KTH",
+						category: "\xa0",
+						content: items[i].getElementsByTagName("description")[0].textContent.replace(/<br>/ig, "") //samma som description
+					});
+				else
+					res.push({
+						title: items[i].getElementsByTagName("title")[0].textContent,
+						link: items[i].getElementsByTagName("link")[0].textContent,
+						date: getDateString(items[i].getElementsByTagName("pubDate")[0].textContent),
+						creator: items[i].getElementsByTagName("creator")[0].textContent,
+						category: items[i].getElementsByTagName("category")[0].textContent,
+						description: items[i].getElementsByTagName("description")[0].textContent,
+						content: items[i].getElementsByTagName("encoded")[0].textContent
+					});
+		}
         console.log(res);
         return res;
     };
@@ -244,11 +257,10 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    onDone();
 			});
 
-        $http.get(RssEndpoint.ths + "feed/").then(
+        $http.get(RssEndpoint.ths + "api/wp/v2/posts").then(
 			function successCallback(response) {
 			    try {
-			        var xml = parseXml(response.data);
-			        union = parseRss(xml);
+			        union = parseRss(response.data, false, true);
 			    } catch (e) {
 			        DebuggerService.log(e, 1);
 			        fail = true;

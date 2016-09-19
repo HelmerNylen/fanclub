@@ -565,16 +565,36 @@ angular.module('starter.controllers', [])
 	    }
 	};
 
-	/*setTimeout(function () {
+	setTimeout(function () {
 	    //rensa ut gamla notes en gång i månaden
-	    if (StorageService.getOrDefault("lastNotePurge", new Date().getMonth()) == new Date().getMonth()) {
-	        var notes = NoteService.getAllNotes();
-
-            //TODO: skriv kod
+	    if (StorageService.getOrDefault("lastNotePurge", new Date().getMonth()) != new Date().getMonth()) {
+	        DebuggerService.log("Checking old notes");
+			
+			var notes = NoteService.getAllNotes();
+            var events = EventService.all();
+			
+			var idSet = new Set();
+			for (var i = 0; i < notes.length; i++)
+				idSet.add(notes[i].id || notes[i].url);
+			for (var i = 0; i < events.length; i++)
+				idSet.delete((events[i].original && events[i].original.id) || events[i].id || events[i].url);
+			
+			if (idSet.size > 0) {
+				DebuggerService.log("Deleting " + idSet.size + " note" + (idSet.size > 1 ? "s" : ""));
+				
+				idSet.forEach(function (x) {
+					NoteService.clearNote({id: x});
+				});
+				
+				idSet.forEach(function (x) {
+					NoteService.clearNote({url: x});
+				});
+			}
+			
 
 	        StorageService.set("lastNotePurge", new Date().getMonth());
 	    }
-	}, 0);*/
+	}, 0);
 	
 	$scope.currentlyLoading = false;
 	$scope.loadMore = function () {

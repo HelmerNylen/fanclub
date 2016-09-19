@@ -49,13 +49,13 @@ angular.module('starter.notes', ['starter.services'])
             return notes.map(function (a, b, c) { return a; });
         },
         clearNote: function (event) {
-            DebuggerService.log("Deleting note");
-
             var index = find(event);
-            if (index != -1)
+            if (index != -1) {
+				DebuggerService.log("Deleting note");
+				
                 notes.splice(index, 1);
-
-            StorageService.set("notes", notes);
+				StorageService.set("notes", notes);
+			}
         }
     };
 })

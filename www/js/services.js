@@ -837,12 +837,12 @@ angular.module('starter.services', [])
         $state.go($state.current, {}, { reload: true });
     }
 
-    //uppdatera datan när användaren öppnar appen om det är en ny dag
+	//uppdatera datan när användaren öppnar appen om det är en ny dag
     document.addEventListener("resume", onResume, false);
     function onResume() {
         if (new Date().toDateString() != lastUpdate && new Date().toDateString() != StorageService.getOrDefault("lastUpdate", null)) {
             DebuggerService.log("Reloading due to day change");
-            window.location.reload(true);
+			document.location.href = 'index.html';
         }
     }
 
