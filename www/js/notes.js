@@ -34,7 +34,7 @@ angular.module('starter.notes', ['starter.services'])
 					notes.push(noteobj);
 				}
                 else
-                    DebuggerService.log("event could not be identified: " + JSON.stringify(event), "red");
+                    DebuggerService.log("Event could not be identified: " + JSON.stringify(event), "red");
             }
             else
                 notes[index].note = note;

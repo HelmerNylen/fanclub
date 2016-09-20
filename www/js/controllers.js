@@ -670,7 +670,7 @@ angular.module('starter.controllers', [])
 		$scope.years = GitService.getContent().settings.years;
 	} catch (e) {
 		DebuggerService.log("Error when reading years");
-		DebuggerService.log(e);
+		DebuggerService.log(e.stack || e, 1);
 		DebuggerService.log(GitService.getContent());
 		$scope.years = {"Fanclub": 2015};
 		if (new Date().getMonth() >= 6)
@@ -1313,7 +1313,7 @@ angular.module('starter.controllers', [])
  	    try {
  	        $ionicPlatform.offHardwareBackButton($scope.applyBackLyrics);
  	    } catch (e) {
- 	        DebuggerService.log(e, 1);
+ 	        DebuggerService.log(e.stack || e, 1);
  	    }
  		$scope.lyricsModal.hide();
  	};
@@ -1469,7 +1469,7 @@ angular.module('starter.controllers', [])
 	    try {
 	        $ionicPlatform.offHardwareBackButton($scope.backLyrics);
 	    } catch (e) {
-	        DebuggerService.log(e, 1);
+	        DebuggerService.log(e.stack || e, 1);
 	    }
 	});
 	GitService.registerCallback(refresh);

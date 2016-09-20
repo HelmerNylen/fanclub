@@ -58,7 +58,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			            StorageService.set("sectionLastUpdated", lastUpdated);
 			        }
 			    } catch (e) {
-			        DebuggerService.log(e, 1);
+			        DebuggerService.log(e.stack || e, 1);
 			    }
 				
 				onDone();
@@ -242,7 +242,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        section = parseRss(xml);
 			    } catch (e) {
-			        DebuggerService.log(e, 1);
+			        DebuggerService.log(e.stack || e, 1);
 			        fail = true;
 			    }
 
@@ -262,7 +262,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			    try {
 			        union = parseRss(response.data, false, true);
 			    } catch (e) {
-			        DebuggerService.log(e, 1);
+			        DebuggerService.log(e.stack || e, 1);
 			        fail = true;
 			    }
 
@@ -283,7 +283,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        kth = parseRss(xml, true);
 			    } catch (e) {
-			        DebuggerService.log(e, 1);
+			        DebuggerService.log(e.stack || e, 1);
 			        fail = true;
 			    }
 
@@ -337,7 +337,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
                     return ev.subject.toLowerCase().indexOf("musik") != -1 || ev.longInfo.toLowerCase().indexOf("lunch") != -1 || ev.title.toLowerCase().indexOf("lunch") != -1;
                 }
                 catch (e) {
-                    DebuggerService.log(e, 1);
+                    DebuggerService.log(e.stack || e, 1);
                     return false;
                 }
             case 2:
@@ -437,7 +437,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 
 				res.push(event);
 			} catch (e) {
-				DebuggerService.log(e, 1);
+				DebuggerService.log(e.stack || e, 1);
 				DebuggerService.log("Error occurred while parsing event in official KTH calendar:");
 				DebuggerService.log(event.date);
 			}
@@ -464,7 +464,7 @@ angular.module('starter.section', ['starter.services', 'starter.apikey'])
 			        var xml = parseXml(response.data);
 			        events = parseRss(xml);
 			    } catch (e) {
-			        DebuggerService.log(e, 1);
+			        DebuggerService.log(e.stack || e, 1);
 			        DebuggerService.log("Error when parsing XML or RSS from official KTH calendar feed");
 			        fail = true;
 			    }

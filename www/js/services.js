@@ -446,7 +446,7 @@ angular.module('starter.services', [])
 				for (var i = 0; i < _extra.length; i++)
 					getCourseSchema(_extra[i]);
 		} catch (e) {
-			DebuggerService.log(e, 1);
+			DebuggerService.log(e.stack || e, 1);
 			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
@@ -537,7 +537,7 @@ angular.module('starter.services', [])
 					onDone(true);
 				});
 		} catch (e) {
-			DebuggerService.log(e, 1);
+			DebuggerService.log(e.stack || e, 1);
 			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
@@ -579,7 +579,7 @@ angular.module('starter.services', [])
 						//StorageService.set("courses", courses);
 					}
 					catch (e) {
-						DebuggerService.log("Error when parsing xml: " + e.message, 1);
+						DebuggerService.log("Error when parsing xml: " + (e.stack || e), 1);
 					}
 				},
 				function errorCallback(response) {
@@ -617,7 +617,7 @@ angular.module('starter.services', [])
 					}
 				});
 		} catch (e) {
-			DebuggerService.log(e, 1);
+			DebuggerService.log(e.stack || e, 1);
 			DebuggerService.log("Adding visible error");
 			errors.push({
 				code: "Äpple",
@@ -662,7 +662,7 @@ angular.module('starter.services', [])
 			//DebuggerService.log(discardArray);
 		} catch (e) {
 			DebuggerService.log("Error when reading discard object");
-			DebuggerService.log(e);
+			DebuggerService.log(e.stack || e, "red");
 			DebuggerService.log(GitService.getContent());
 			discardArray = null;
 		}
@@ -697,8 +697,8 @@ angular.module('starter.services', [])
 							try {
 								propertyValue = event[property];
 							} catch (e) {
-								DebuggerService.log("Discard property error")
-								DebuggerService.log(e);
+							    DebuggerService.log("Discard property error");
+								DebuggerService.log(e.stack || e, "red");
 								return false;
 							}
 						}
@@ -747,8 +747,8 @@ angular.module('starter.services', [])
 									break;
 								}
 							} catch (e) {
-								DebuggerService.log("Discard comparison error")
-								DebuggerService.log(e);
+							    DebuggerService.log("Discard comparison error");
+								DebuggerService.log(e.stack || e, "red");
 								return false;
 							}
 						} else return false;
@@ -1068,7 +1068,7 @@ angular.module('starter.services', [])
                 event.end = getDateString(time, false);
             } catch (e) {
                 DebuggerService.log("Error when reading program event start and end, skipping event.");
-                DebuggerService.log(e);
+                DebuggerService.log(e.stack || e, "red");
                 continue;
             }
 
@@ -1170,7 +1170,7 @@ angular.module('starter.services', [])
 			        var xml = parseXml(partial);
 			        events = extractEvents(xml);
 			    } catch (e) {
-			        DebuggerService.log(e, 1);
+			        DebuggerService.log(e.stack || e, 1);
 					DebuggerService.log("Error occurred in program event service")
 			        fail = true;
 			    }

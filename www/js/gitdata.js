@@ -69,7 +69,7 @@
                         callbacks[i]();
                 });
         } catch (e) {
-            console.log(e);
+            DebuggerService.log(e.stack || e, 1);
         }
     };
 

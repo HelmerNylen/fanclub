@@ -51,7 +51,7 @@ angular.module('starter.getxkcd', ['starter.services'])
 
 				});
 				}catch (e) {
-					console.log(e);
+					DebuggerService.log(e.stack || e, 1);
 					}
 	};	
 	return {
