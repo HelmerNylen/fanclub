@@ -739,10 +739,10 @@ angular.module('starter.controllers', [])
 	    $scope.updates = [
             { name: "Kurser och händelser", date: DataService.getLastUpdate() ? ConvenientService.dateFormat(DataService.getLastUpdate()) : "Aldrig" },
             { name: "Programhändelser", date: StorageService.getOrDefault("ProgramLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
-            { name: "Sektionshändelser", date: StorageService.getOrDefault("sectionLastUpdated", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
-            { name: "Matsedlar", date: StorageService.getOrDefault("foodLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
-            { name: "GitHub-data", date: StorageService.getOrDefault("gitLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
-            { name: "Nyhetsflöden", date: StorageService.getOrDefault("rssLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("ProgramLastUpdate", null)) : "Aldrig" },
+            { name: "Sektionshändelser", date: StorageService.getOrDefault("sectionLastUpdated", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("sectionLastUpdated", null)) : "Aldrig" },
+            { name: "Matsedlar", date: StorageService.getOrDefault("foodLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("foodLastUpdate", null)) : "Aldrig" },
+            { name: "GitHub-data", date: StorageService.getOrDefault("gitLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("gitLastUpdate", null)) : "Aldrig" },
+            { name: "Nyhetsflöden", date: StorageService.getOrDefault("rssLastUpdate", null) ? ConvenientService.dateFormat(StorageService.getOrDefault("rssLastUpdate", null)) : "Aldrig" }
 	    ];
 		$scope.aboutModal.show();
 	};

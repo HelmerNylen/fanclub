@@ -68,7 +68,7 @@ angular.module('starter.services', [])
         dateFormat: function (date) {
             var d = new Date(date);
 
-            return d.getFullYear() + "-" + (d.getMonth() < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
+            return d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1).toString()) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate().toString());
         },
 		//formaterar ett datum som ex. "Imorgon, fredag den 19 februari" eller "Torsdag den 5 maj 2013"
         verboseDateFormat: function (date) {
