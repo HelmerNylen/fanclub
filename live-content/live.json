@@ -1,5 +1,5 @@
 ﻿{
-    "lastupdated": "2016-08-31",
+    "lastupdated": "2016-11-15",
     "tools": {
         "modals": {
             "school": [
@@ -68,6 +68,58 @@
           "start": "2016/08/29 18:00:00",
           "end": "2016/08/29 22:00:00",
           "years": [-1]
+      },
+      {
+          "id": "customevent_65",
+          "htmlLink": "",
+          "created": "",
+          "subject": "Supplemental Instruction",
+          "title": "Supplemental Instruction",
+          "location": "Q15, Q17, Q34, Q36",
+          "description": "",
+          "isAllDayEvent": false,
+          "start": "2016/11/22 15:00:00",
+          "end": "2016/11/22 17:00:00",
+          "years": [16]
+      },
+      {
+          "id": "customevent_66",
+          "htmlLink": "",
+          "created": "",
+          "subject": "Supplemental Instruction",
+          "title": "Supplemental Instruction",
+          "location": "M35, M36, M37, M38",
+          "description": "",
+          "isAllDayEvent": false,
+          "start": "2016/11/28 15:00:00",
+          "end": "2016/11/28 17:00:00",
+          "years": [16]
+      },
+      {
+          "id": "customevent_67",
+          "htmlLink": "",
+          "created": "",
+          "subject": "Supplemental Instruction",
+          "title": "Supplemental Instruction",
+          "location": "E32, E33, E36, E53",
+          "description": "",
+          "isAllDayEvent": false,
+          "start": "2016/12/06 15:00:00",
+          "end": "2016/12/06 17:00:00",
+          "years": [16]
+      },
+      {
+          "id": "customevent_68",
+          "htmlLink": "",
+          "created": "",
+          "subject": "Supplemental Instruction",
+          "title": "Supplemental Instruction",
+          "location": "E32, E34, E36, E53",
+          "description": "",
+          "isAllDayEvent": false,
+          "start": "2016/12/12 15:00:00",
+          "end": "2016/12/12 17:00:00",
+          "years": [16]
       }
     ],
     "settings": {
